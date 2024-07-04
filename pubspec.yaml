@@ -1,5 +1,5 @@
 name: stikku_frontend
-description: "A new Flutter project."
+description: 'A new Flutter project.'
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -31,10 +31,17 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
+  get: ^4.6.6 # 상태관리 및 라우팅
+  flutter_dotenv: ^5.1.0 # 보안
+  table_calendar: ^3.1.2 # 달력
+  dio: ^5.5.0 # http
+  isar: ^3.1.0+1 # 로컬드라이브
+  isar_flutter_libs: ^3.1.0+1
+  path_provider: ^2.1.3
+  device_preview: ^1.2.0 # 반응형 확인
 
 dev_dependencies:
   flutter_test:
@@ -46,13 +53,14 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^3.0.0
+  isar_generator: ^3.1.0+1
+  build_runner: ^2.4.11
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
