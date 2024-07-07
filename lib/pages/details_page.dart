@@ -6,6 +6,9 @@ class DetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final PageController controller =
+        PageController(initialPage: 0, viewportFraction: 0.85);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -16,10 +19,29 @@ class DetailsPage extends StatelessWidget {
                       : Get.offAllNamed('/')
                 },
             icon: const Icon(Icons.close)),
-        title: const Text("카드 디테일 페이지"),
+        actions: const [
+          Icon(Icons.delete),
+          Icon(Icons.edit),
+          Icon(Icons.add_box)
+        ],
       ),
-      body: const Center(
-        child: Text("티켓입니다"),
+      body: Center(
+        child: PageView.builder(
+          scrollDirection: Axis.horizontal,
+          controller: controller,
+          itemCount: 2,
+          itemBuilder: (context, index) {
+            return Padding(
+                padding: const EdgeInsets.all(10),
+                child: Card(
+                  color: Colors.black,
+                  elevation: 2.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ));
+          },
+        ),
       ),
     );
   }
