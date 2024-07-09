@@ -13,7 +13,7 @@ class MainScreen extends StatelessWidget {
 
   // 페이지 리스트
   final List<Widget> pages = [
-    const HomePage(),
+    HomePage(),
     const ListPage(),
     const ChartsPage(),
     const SettingsPage()
@@ -25,11 +25,17 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       // 페이지 화면
-      body: Obx(() {
-        // 인덱스 스택으로 상태 유지
-        return IndexedStack(
-          index: navigationController.selectedIndex.value,
-          children: pages,
+      body: LayoutBuilder(builder: (context, constraints) {
+        double paddingValue = constraints.maxWidth * 0.03; // 화면 너비의 3%를 패딩으로 사용
+        return Padding(
+          padding: EdgeInsets.all(paddingValue),
+          child: Obx(() {
+            // 인덱스 스택으로 상태 유지
+            return IndexedStack(
+              index: navigationController.selectedIndex.value,
+              children: pages,
+            );
+          }),
         );
       }),
 

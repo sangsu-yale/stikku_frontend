@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stikku_frontend/controllers/calendar_controller.dart';
+import 'package:stikku_frontend/utils.dart';
 
 class WritePage extends StatelessWidget {
-  const WritePage({super.key});
+  final CalendarController calendarController = Get.put(CalendarController());
+
+  WritePage({super.key});
 
   final itemCount = 3;
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> arguments =
+        Get.arguments ?? {"result": "", "day": DateTime.now()};
+
+    DateTime abc = arguments["day"];
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: true,
@@ -77,6 +85,8 @@ class WritePage extends StatelessWidget {
                     children: <Widget>[
                       InkWell(
                           onTap: () {
+                            calendarController.addEvent(
+                                abc, Event(arguments["result"]));
                             Get.toNamed('/details');
                           },
                           child: const Text("작성 완료",

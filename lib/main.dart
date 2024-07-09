@@ -1,3 +1,5 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/main_screen.dart';
@@ -5,9 +7,16 @@ import 'package:stikku_frontend/pages/details_page.dart';
 import 'package:stikku_frontend/pages/diary_page.dart';
 import 'package:stikku_frontend/pages/notfound_page.dart';
 import 'package:stikku_frontend/pages/write_page.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  // 한국어 지원
+  await initializeDateFormatting();
+
+  runApp(DevicePreview(
+    enabled: !kReleaseMode,
+    builder: (context) => const MyApp(), // Wrap your app
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -16,6 +25,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      useInheritedMediaQuery: true,
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
       title: "스티꾸 s t i k k u, 스포츠 티켓 꾸미기",
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
@@ -23,6 +35,10 @@ class MyApp extends StatelessWidget {
           centerTitle: true,
         ),
         textTheme: const TextTheme(),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          foregroundColor: Theme.of(context).primaryColor,
+          backgroundColor: const Color(0xFFE9EDF6),
+        ),
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF378CE7),
           primary: const Color(0xFF378CE7),
@@ -45,7 +61,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/write',
-          page: () => const WritePage(),
+          page: () => WritePage(),
           transition: Transition.cupertino,
         ),
         GetPage(
