@@ -20,9 +20,9 @@ class FormController extends GetxController {
   var image = ByteData(8).obs;
   // 날짜
 
-  void validateForm() {
+  bool validateForm() {
     // 간단한 유효성 검사
-    isFormValid.value = title.value.isNotEmpty;
+    return isFormValid.value = title.value.isNotEmpty;
   }
 
   void setSelectedValue(bool value) {
@@ -30,7 +30,10 @@ class FormController extends GetxController {
   }
 
   void submit() {
-    print(team1IsMyTeam.value);
+    // print(team1IsMyTeam.value);
+    // print(team2IsMyTeam.value);
+    // print(team2.value);
+    // print(team1.value);
   }
 }
 

@@ -94,7 +94,7 @@ class WritePage extends StatelessWidget {
                         ],
                       ),
 
-                      // 점수, 팀 이름, 응원팀
+                      // ✅ 점수, 팀 이름, 응원팀
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -104,7 +104,11 @@ class WritePage extends StatelessWidget {
                             fit: FlexFit.tight,
                             child: Column(
                               children: [
+                                // 팀 1 점수
                                 TextField(
+                                  onChanged: (value) {
+                                    formController.score1.value = value;
+                                  },
                                   keyboardType: TextInputType.number,
                                   textAlign: TextAlign.center,
                                   decoration:
@@ -114,10 +118,18 @@ class WritePage extends StatelessWidget {
                                         .digitsOnly // 숫자만 입력 가능하도록 설정
                                   ],
                                 ),
-                                const TextField(
+
+                                // 팀 이름
+                                TextField(
+                                  onChanged: (value) {
+                                    formController.team1.value = value;
+                                  },
                                   textAlign: TextAlign.center,
-                                  decoration: InputDecoration(hintText: '팀 이름'),
+                                  decoration:
+                                      const InputDecoration(hintText: '팀 이름'),
                                 ),
+
+                                // 1팀 응원
                                 Obx(
                                   () {
                                     return CheckboxListTile(
@@ -144,7 +156,11 @@ class WritePage extends StatelessWidget {
                             fit: FlexFit.tight,
                             child: Column(
                               children: [
+                                // 2팀 점수
                                 TextField(
+                                  onChanged: (value) {
+                                    formController.score2.value = value;
+                                  },
                                   keyboardType: TextInputType.number,
                                   textAlign: TextAlign.center,
                                   decoration:
@@ -154,10 +170,18 @@ class WritePage extends StatelessWidget {
                                         .digitsOnly // 숫자만 입력 가능하도록 설정
                                   ],
                                 ),
-                                const TextField(
+
+                                // 2팀 이름
+                                TextField(
+                                  onChanged: (value) {
+                                    formController.team2.value = value;
+                                  },
                                   textAlign: TextAlign.center,
-                                  decoration: InputDecoration(hintText: '팀 이름'),
+                                  decoration:
+                                      const InputDecoration(hintText: '팀 이름'),
                                 ),
+
+                                // 2팀 응원
                                 Obx(
                                   () {
                                     return CheckboxListTile(
@@ -182,38 +206,55 @@ class WritePage extends StatelessWidget {
                     ],
                   ),
                 ),
-                // // 2번 상자
-                // Container(
-                //   color: Colors.amber,
-                //   // * 2번 폼 (경기장, 좌석)
-                //   child: Column(
-                //     children: [
-                //       TextField(
-                //         decoration: const InputDecoration(labelText: 'Name'),
-                //         onChanged: (value) {
-                //           formController.title.value = value;
-                //           formController.validateForm();
-                //         },
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                // // 3번 상자
-                // Container(
-                //   color: Colors.blue,
-                //   // 3번 폼 (경기 제목, 한줄 코멘트)
-                //   child: Column(
-                //     children: [
-                //       TextField(
-                //         decoration: const InputDecoration(labelText: 'Name'),
-                //         onChanged: (value) {
-                //           formController.title.value = value;
-                //           formController.validateForm();
-                //         },
-                //       ),
-                //     ],
-                //   ),
-                // ),
+
+                // 2번 상자
+                Container(
+                  color: Colors.amber,
+                  // * ✅ 2번 폼 (경기장, 좌석)
+                  child: Column(
+                    children: [
+                      // 경기장
+                      TextField(
+                        decoration: const InputDecoration(labelText: '경기장'),
+                        onChanged: (value) {
+                          formController.stadium.value = value;
+                        },
+                      ),
+
+                      // 좌석
+                      TextField(
+                        decoration: const InputDecoration(labelText: '좌석'),
+                        onChanged: (value) {
+                          formController.seatLocation.value = value;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                // 3번 상자
+                Container(
+                  color: Colors.blue,
+                  // 3번 폼 (경기 제목, 한줄 코멘트)
+                  child: Column(
+                    // 경기 제목
+                    children: [
+                      TextField(
+                        decoration: const InputDecoration(labelText: '경기 제목'),
+                        onChanged: (value) {
+                          formController.title.value = value;
+                        },
+                      ),
+
+                      // 한줄 코멘트
+                      TextField(
+                        decoration: const InputDecoration(labelText: '한줄 코멘트'),
+                        onChanged: (value) {
+                          formController.comment.value = value;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
                 // // 4번 상자
                 // Container(
                 //   color: Colors.teal,
@@ -295,11 +336,11 @@ class WritePage extends StatelessWidget {
 ///     - ✅ 승패 유무
 ///     - ✅ 직관 유무
 ///     - ✅ 응원팀 체크
-///     - 경기장
-///     - 좌석
+///     - ✅ 경기장
+///     - ✅ 좌석
 ///     - 사진
-///     - 경기 제목
-///     - 한줄 코멘트
+///     - ✅ 경기 제목
+///     - ✅ 한줄 코멘트
 ///   - (😡adv) 경기장을 고를 수 있다
 ///   - (😡adv) 직관 유무에 따라 폼이 바뀌어야 한다
 ///   - 필수 폼을 작성하지 않으면 작성 완료를 할 수 없어야 한다
