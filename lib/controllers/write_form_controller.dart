@@ -1,6 +1,7 @@
+import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class FormController extends GetxController {
   var userId = 0.obs; // 유저 아이디
@@ -19,6 +20,7 @@ class FormController extends GetxController {
   var isFormValid = false.obs;
   var image = ByteData(8).obs;
   // 날짜
+  var selectedImage = Rx<File?>(null);
 
   bool validateForm() {
     // 간단한 유효성 검사
@@ -29,6 +31,19 @@ class FormController extends GetxController {
     viewingMode.value = value;
   }
 
+  Future<void> pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      selectedImage.value = File(pickedFile.path);
+    }
+  }
+
+  void deleteImage() {
+    selectedImage.value = null;
+  }
+
   void submit() {
     // print(team1IsMyTeam.value);
     // print(team2IsMyTeam.value);
@@ -36,6 +51,7 @@ class FormController extends GetxController {
     // print(team1.value);
   }
 }
+
 
 ///     - 승패 유무
 ///     - 직관 유무
