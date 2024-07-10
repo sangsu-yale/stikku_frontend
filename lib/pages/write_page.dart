@@ -3,13 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
 import 'package:stikku_frontend/controllers/write_form_controller.dart';
-import 'package:stikku_frontend/controllers/write_form_image_controller.dart';
 import 'package:stikku_frontend/utils.dart';
 
 class WritePage extends StatelessWidget {
   final CalendarController calendarController = Get.put(CalendarController());
   final FormController formController = Get.put(FormController());
-  final ImageFormController imageController = Get.put(ImageFormController());
 
   WritePage({super.key});
 
@@ -107,19 +105,27 @@ class WritePage extends StatelessWidget {
                             child: Column(
                               children: [
                                 // 팀 1 점수
-                                TextField(
-                                  onChanged: (value) {
-                                    formController.score1.value = value;
-                                  },
-                                  keyboardType: TextInputType.number,
-                                  textAlign: TextAlign.center,
-                                  decoration:
-                                      const InputDecoration(hintText: '0'),
-                                  inputFormatters: <TextInputFormatter>[
-                                    FilteringTextInputFormatter
-                                        .digitsOnly // 숫자만 입력 가능하도록 설정
-                                  ],
-                                ),
+                                Obx(() {
+                                  return TextField(
+                                    onChanged: (value) {
+                                      formController.score1.value = value;
+                                    },
+                                    keyboardType: TextInputType.number,
+                                    textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                      hintText: '0',
+                                      border: formController.score1.value == ""
+                                          ? const OutlineInputBorder(
+                                              borderSide:
+                                                  BorderSide(color: Colors.red))
+                                          : null,
+                                    ),
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter
+                                          .digitsOnly // 숫자만 입력 가능하도록 설정
+                                    ],
+                                  );
+                                }),
 
                                 // 팀 이름
                                 TextField(
@@ -127,8 +133,14 @@ class WritePage extends StatelessWidget {
                                     formController.team1.value = value;
                                   },
                                   textAlign: TextAlign.center,
-                                  decoration:
-                                      const InputDecoration(hintText: '팀 이름'),
+                                  decoration: InputDecoration(
+                                    hintText: '팀 이름',
+                                    border: formController.team1.value == ""
+                                        ? const OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.red))
+                                        : null,
+                                  ),
                                 ),
 
                                 // 1팀 응원
@@ -159,19 +171,27 @@ class WritePage extends StatelessWidget {
                             child: Column(
                               children: [
                                 // 2팀 점수
-                                TextField(
-                                  onChanged: (value) {
-                                    formController.score2.value = value;
-                                  },
-                                  keyboardType: TextInputType.number,
-                                  textAlign: TextAlign.center,
-                                  decoration:
-                                      const InputDecoration(hintText: '0'),
-                                  inputFormatters: <TextInputFormatter>[
-                                    FilteringTextInputFormatter
-                                        .digitsOnly // 숫자만 입력 가능하도록 설정
-                                  ],
-                                ),
+                                Obx(() {
+                                  return TextField(
+                                    onChanged: (value) {
+                                      formController.score2.value = value;
+                                    },
+                                    keyboardType: TextInputType.number,
+                                    textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                      hintText: '0',
+                                      border: formController.score2.value == ""
+                                          ? const OutlineInputBorder(
+                                              borderSide:
+                                                  BorderSide(color: Colors.red))
+                                          : null,
+                                    ),
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter
+                                          .digitsOnly // 숫자만 입력 가능하도록 설정
+                                    ],
+                                  );
+                                }),
 
                                 // 2팀 이름
                                 TextField(
@@ -179,8 +199,14 @@ class WritePage extends StatelessWidget {
                                     formController.team2.value = value;
                                   },
                                   textAlign: TextAlign.center,
-                                  decoration:
-                                      const InputDecoration(hintText: '팀 이름'),
+                                  decoration: InputDecoration(
+                                    hintText: '팀 이름',
+                                    border: formController.team2.value == ""
+                                        ? const OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.red))
+                                        : null,
+                                  ),
                                 ),
 
                                 // 2팀 응원
@@ -205,6 +231,7 @@ class WritePage extends StatelessWidget {
                           )
                         ],
                       ),
+                      const Text("응원팀은 없어도, 둘 다 해도 상관없어요!"),
                     ],
                   ),
                 ),
@@ -217,7 +244,13 @@ class WritePage extends StatelessWidget {
                     children: [
                       // 경기장
                       TextField(
-                        decoration: const InputDecoration(labelText: '경기장'),
+                        decoration: InputDecoration(
+                          labelText: '경기장',
+                          border: formController.stadium.value == ""
+                              ? const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red))
+                              : null,
+                        ),
                         onChanged: (value) {
                           formController.stadium.value = value;
                         },
@@ -225,7 +258,13 @@ class WritePage extends StatelessWidget {
 
                       // 좌석
                       TextField(
-                        decoration: const InputDecoration(labelText: '좌석'),
+                        decoration: InputDecoration(
+                          labelText: '좌석',
+                          border: formController.seatLocation.value == ""
+                              ? const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red))
+                              : null,
+                        ),
                         onChanged: (value) {
                           formController.seatLocation.value = value;
                         },
@@ -307,11 +346,17 @@ class WritePage extends StatelessWidget {
                 children: <Widget>[
                   InkWell(
                       onTap: () {
-                        formController.submit();
-                        Get.snackbar('Success', 'Form submitted successfully!');
-                        Get.toNamed('/diary');
+                        if (formController.validate() == false) {
+                          Get.snackbar('폼을 다 작성해 주세요', '빼먹은 부분이 없는지 확인해 주세요');
+                        } else {
+                          formController.submit();
+                          calendarController.addEvent(
+                              abc, Event(arguments["result"]));
+                          Get.snackbar(
+                              'Success', 'Form submitted successfully!');
+                        }
                       },
-                      child: const Text("일기 작성",
+                      child: const Text("작성 완료",
                           style: TextStyle(color: Colors.black)))
                 ],
               ),
@@ -325,11 +370,9 @@ class WritePage extends StatelessWidget {
                 children: <Widget>[
                   InkWell(
                       onTap: () {
-                        calendarController.addEvent(
-                            abc, Event(arguments["result"]));
-                        Get.toNamed('/details');
+                        Get.toNamed('/diary');
                       },
-                      child: const Text("작성 완료",
+                      child: const Text("일기 작성하기",
                           style: TextStyle(color: Colors.white)))
                 ],
               ),
@@ -358,11 +401,10 @@ class WritePage extends StatelessWidget {
 ///     - ✅ 경기 제목
 ///     - ✅ 한줄 코멘트
 ///   - ✅ 사진을 지울 수 있다
-///   - 필수 폼을 작성하지 않으면 작성 완료를 할 수 없어야 한다
-///   - 일반 폼을 작성하지 않아도 작성 완료를 할 수 있다
+///   - ✅ 필수 폼을 작성하지 않으면 작성 완료를 할 수 없어야 한다
+///   - ✅ 일반 폼을 작성하지 않아도 작성 완료를 할 수 있다
 ///   - ✅ 이미지를 업로드할 수 있다
-///   - 폼 작성이 끝나기 전까지 버튼은 활성화되어선 안 된다
-///   - 폼 유효성을 검사할 수 있다
+///   - ✅ 폼 유효성을 검사할 수 있다
 ///   - (😡adv) 이미지 편집을 할 수 있다
 ///   - (😡adv) 경기장을 고를 수 있다
 ///   - (😡adv) 직관 유무에 따라 폼이 바뀌어야 한다
