@@ -243,32 +243,42 @@ class WritePage extends StatelessWidget {
                   child: Column(
                     children: [
                       // 경기장
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: '경기장',
-                          border: formController.stadium.value == ""
-                              ? const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.red))
-                              : null,
-                        ),
-                        onChanged: (value) {
-                          formController.stadium.value = value;
-                        },
-                      ),
+                      Obx(() {
+                        return TextFormField(
+                          readOnly:
+                              formController.viewingMode.value ? false : true,
+                          decoration: InputDecoration(
+                            hintText:
+                                formController.viewingMode.value ? "경기장" : "집관",
+                            border: formController.stadium.value == ""
+                                ? const OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.red))
+                                : null,
+                          ),
+                          onChanged: (value) {
+                            formController.stadium.value = value;
+                          },
+                        );
+                      }),
 
                       // 좌석
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: '좌석',
-                          border: formController.seatLocation.value == ""
-                              ? const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.red))
-                              : null,
-                        ),
-                        onChanged: (value) {
-                          formController.seatLocation.value = value;
-                        },
-                      ),
+                      Obx(() {
+                        return TextFormField(
+                          readOnly:
+                              formController.viewingMode.value ? false : true,
+                          decoration: InputDecoration(
+                            hintText:
+                                formController.viewingMode.value ? "좌석" : "집관",
+                            border: formController.seatLocation.value == ""
+                                ? const OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.red))
+                                : null,
+                          ),
+                          onChanged: (value) {
+                            formController.seatLocation.value = value;
+                          },
+                        );
+                      }),
                     ],
                   ),
                 ),
@@ -387,8 +397,8 @@ class WritePage extends StatelessWidget {
 /// 핵심 기능
 /// - 내비게이터
 ///   - ✅ 일기 작성 페이지로 이동하여 일기를 작성할 수 있다
-///   - 일기 작성 페이지로 이동할 때 경기 기록 작성이 사라지지 않는다
-///   - 일기 작성을 하지 않아도 작성 완료가 되어야 한다
+///   - ✅ 일기 작성 페이지로 이동할 때 경기 기록 작성이 사라지지 않는다
+///   - ✅ 일기 작성을 하지 않아도 작성 완료가 되어야 한다
 ///
 /// - 폼
 ///   - ✅ 모든 폼이 들어가야 한다
@@ -407,7 +417,7 @@ class WritePage extends StatelessWidget {
 ///   - ✅ 폼 유효성을 검사할 수 있다
 ///   - (😡adv) 이미지 편집을 할 수 있다
 ///   - (😡adv) 경기장을 고를 수 있다
-///   - (😡adv) 직관 유무에 따라 폼이 바뀌어야 한다
+///   - (😡adv) ✅ 직관 유무에 따라 폼이 바뀌어야 한다
 ///   - (😡adv) 사진을 다시 고를 수 있다
 /// 
 /// - 서버 API
