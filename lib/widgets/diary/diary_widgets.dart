@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:stikku_frontend/controllers/calendar_controller.dart';
-import 'package:stikku_frontend/controllers/diary_dialog_controller.dart';
-import 'package:stikku_frontend/controllers/write_form_controller.dart';
 
 // ✅ 경기 리뷰 string
 class Review extends StatelessWidget {
