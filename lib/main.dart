@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/diary',
-          page: () => const DiaryPage(),
+          page: () => DiaryPage(),
           transition: Transition.cupertino,
         ),
         GetPage(

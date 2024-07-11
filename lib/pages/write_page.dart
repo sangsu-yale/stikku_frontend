@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
+import 'package:stikku_frontend/controllers/diary_dialog_controller.dart';
 import 'package:stikku_frontend/controllers/write_form_controller.dart';
 import 'package:stikku_frontend/utils.dart';
 
 class WritePage extends StatelessWidget {
   final CalendarController calendarController = Get.put(CalendarController());
   final FormController formController = Get.put(FormController());
+  final DiaryDialogController diaryDialogController =
+      Get.put(DiaryDialogController());
 
   WritePage({super.key});
-
-  final itemCount = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -349,42 +350,45 @@ class WritePage extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: Container(
-              color: Colors.blue[100],
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  InkWell(
-                      onTap: () {
-                        if (formController.validate() == false) {
-                          Get.snackbar('폼을 다 작성해 주세요', '빼먹은 부분이 없는지 확인해 주세요');
-                        } else {
-                          formController.submit();
-                          calendarController.addEvent(
-                              abc, Event(arguments["result"]));
-                          Get.snackbar(
-                              'Success', 'Form submitted successfully!');
-                        }
-                      },
-                      child: const Text("작성 완료",
-                          style: TextStyle(color: Colors.black)))
-                ],
+            child: GestureDetector(
+              onTap: () {
+                if (formController.validate() == false) {
+                  Get.snackbar('폼을 다 작성해 주세요', '빼먹은 부분이 없는지 확인해 주세요');
+                } else {
+                  formController.submit();
+                  calendarController.addEvent(abc, Event(arguments["result"]));
+                  Get.snackbar('Success', 'Form submitted successfully!');
+                }
+              },
+              child: Container(
+                color: Colors.blue[100],
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("작성 완료", style: TextStyle(color: Colors.black))
+                  ],
+                ),
               ),
             ),
           ),
           Expanded(
-            child: Container(
-              color: const Color.fromARGB(255, 80, 80, 80),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  InkWell(
-                      onTap: () {
-                        Get.toNamed('/diary');
-                      },
-                      child: const Text("일기 작성하기",
-                          style: TextStyle(color: Colors.white)))
-                ],
+            child: GestureDetector(
+              onTap: () {
+                // Get.toNamed('/diary');
+                // if (formController.validate() == false) {
+                //   Get.snackbar('폼을 다 작성해 주세요', '빼먹은 부분이 없는지 확인해 주세요');
+                // } else {
+                Get.toNamed('/diary');
+                // }
+              },
+              child: Container(
+                color: const Color.fromARGB(255, 80, 80, 80),
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("일기 작성하기 >", style: TextStyle(color: Colors.white))
+                  ],
+                ),
               ),
             ),
           ),
