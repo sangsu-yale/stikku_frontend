@@ -23,6 +23,12 @@ class FormController extends GetxController {
   // 날짜
   var selectedImage = Rx<File?>(null);
 
+  RxInt rating = 0.obs;
+
+  void setRating(int index) {
+    rating.value = index + 1; // 선택된 별의 개수로 점수를 설정 (인덱스는 0부터 시작하므로 +1)
+  }
+
   // 유효성 검사 (필수)
   bool validate() {
     // 필요한 유효성 검사 : 점수 2, 팀 이름 2, 경기장, 좌석
