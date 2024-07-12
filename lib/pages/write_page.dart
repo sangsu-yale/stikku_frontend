@@ -30,9 +30,9 @@ class WritePage extends StatelessWidget {
         body: Container(
           padding: const EdgeInsets.all(15),
 
-          // 스크롤 뷰
+          // <------------- 스크롤뷰 ------------->
           child: SingleChildScrollView(
-            // 폼 시작
+            // <------------- 폼 시작 ------------->
             child: Column(
               children: [
                 // 1번 상자
@@ -341,14 +341,17 @@ class WritePage extends StatelessWidget {
             ),
           ),
         ),
+        // 확인 버튼 2개 (일기 작성 / 작성 완료)
         bottomNavigationBar: bottomButtons(abc, arguments));
   }
 
+// 확인 버튼 2개 (일기 작성 / 작성 완료)
   SizedBox bottomButtons(DateTime abc, Map<String, dynamic> arguments) {
     return SizedBox(
       height: 80,
       child: Row(
         children: <Widget>[
+          // <------------- 작성 완료 버튼 ------------->
           Expanded(
             child: GestureDetector(
               onTap: () {
@@ -371,6 +374,8 @@ class WritePage extends StatelessWidget {
               ),
             ),
           ),
+
+          // <------------- 일기 작성 버튼 ------------->
           Expanded(
             child: GestureDetector(
               onTap: () {
@@ -423,7 +428,7 @@ class WritePage extends StatelessWidget {
 ///   - (😡adv) 경기장을 고를 수 있다
 ///   - (😡adv) ✅ 직관 유무에 따라 폼이 바뀌어야 한다
 ///   - (😡adv) 사진을 다시 고를 수 있다
-/// 
+///
 /// - 서버 API
 ///   - 서버에 폼의 데이터를 보낼 수 있다
 ///   - 로컬 스토리지에 데이터를 저장할 수 있다

@@ -14,7 +14,7 @@ class MainScreen extends StatelessWidget {
   // 페이지 리스트
   final List<Widget> pages = [
     HomePage(),
-    const ListPage(),
+    ListPage(),
     const ChartsPage(),
     const SettingsPage()
   ];
