@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class ListTopSearchController extends GetxController {
   var searchText = ''.obs;
   var filteredList = <Map<String, dynamic>>[].obs;
+  var isAscending = true.obs; // 정렬 상태를 나타내는 변수
 
   var itemList = <Map<String, dynamic>>[
     {
@@ -54,5 +56,17 @@ class ListTopSearchController extends GetxController {
               item['seat'].contains(query))
           .toList();
     }
+  }
+
+  void sortByDate() {
+    isAscending.value = !isAscending.value;
+    DateFormat dateFormat = DateFormat('yyyy.MM.dd');
+    filteredList.sort((a, b) {
+      DateTime dateA = dateFormat.parse(a['date']);
+      DateTime dateB = dateFormat.parse(b['date']);
+      return isAscending.value
+          ? dateA.compareTo(dateB)
+          : dateB.compareTo(dateA);
+    });
   }
 }

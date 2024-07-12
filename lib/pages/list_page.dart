@@ -22,23 +22,60 @@ class ListPage extends StatelessWidget {
               hintText: '검색',
             ),
             onChanged: (value) {
-              print(value);
               listTopSearchController.updateSearchText(value);
             },
           ),
 
           // <------------- 필터 ZONE ------------->
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
+              const Row(
                 children: [
                   Text("필터"),
                   Text("즐겨찾기"),
                 ],
               ),
-              Text("정렬순")
+              Obx(() {
+                return ElevatedButton(
+                  onPressed: () {
+                    listTopSearchController.sortByDate();
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        listTopSearchController.isAscending.value
+                            ? Icons.arrow_drop_up_outlined
+                            : Icons.arrow_drop_down_outlined,
+                      ),
+                      const Text("최근순")
+                    ],
+                  ),
+                );
+              }),
+
+              // GestureDetector(
+              //   onTap: () {
+              //     if (listTopSearchController.isNew.value) {
+              //       listTopSearchController.sortByDate(ascending: false);
+              //       listTopSearchController.isNew.value = false;
+              //     } else {
+              //       listTopSearchController.sortByDate(ascending: true);
+              //       listTopSearchController.isNew.value = true;
+              //     }
+              //   },
+              //   child: Row(
+              //     children: [
+              //       Obx(() {
+              //         return Icon(listTopSearchController.isNew.value
+              //             ? Icons.arrow_drop_up_outlined
+              //             : Icons.arrow_drop_down_outlined);
+              //       }),
+              //       const Text("정렬순"),
+              //     ],
+              //   ),
+              // )
             ],
           ),
 
@@ -88,29 +125,29 @@ class ListPage extends StatelessWidget {
                                   Row(
                                     children: [
                                       Text(item['awayTeam']),
-                                      const Text("3"),
+                                      Text(item['awayScore']),
                                     ],
                                   ),
                                 ],
                               ),
 
                               // 승패 유무
-                              const Row(
+                              Row(
                                 children: [
-                                  Text("WIN"),
-                                  Icon(Icons.heart_broken),
+                                  Text(item['result']),
+                                  const Icon(Icons.heart_broken),
                                 ],
                               ),
                             ],
                           ),
 
                           // 경기 내용
-                          const Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Text("2024.05.30"),
-                              Text("한화 이글스파크"),
-                              Text("버건디 112구역 12번")
+                              Text(item['date']),
+                              const Text("한화 이글스파크"),
+                              const Text("버건디 112구역 12번")
                             ],
                           ),
                         ],
@@ -126,3 +163,13 @@ class ListPage extends StatelessWidget {
     );
   }
 }
+
+
+// ADV : 즐겨찾기 버튼
+// ADV : 필터 기능
+// ADV : View 설정
+
+/// 기능
+/// 
+/// ✅ 검색 기능
+/// ✅ 최근/오래된순 설정
