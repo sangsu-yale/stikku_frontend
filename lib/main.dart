@@ -2,20 +2,22 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:stikku_frontend/bindings/initial_bindings.dart';
 import 'package:stikku_frontend/main_screen.dart';
 import 'package:stikku_frontend/pages/details_page.dart';
 import 'package:stikku_frontend/pages/diary_page.dart';
 import 'package:stikku_frontend/pages/notfound_page.dart';
 import 'package:stikku_frontend/pages/write_page.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
-  // 한국어 지원
+  // Binding 시스템 초기화
+  WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting();
 
   runApp(DevicePreview(
     enabled: !kReleaseMode,
-    builder: (context) => const MyApp(), // Wrap your app
+    builder: (context) => const MyApp(),
   ));
 }
 
@@ -25,6 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      initialBinding: InitialBindings(), // isar 바인딩
       useInheritedMediaQuery: true,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
