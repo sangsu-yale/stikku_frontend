@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
-import 'package:stikku_frontend/utils.dart';
+import 'package:stikku_frontend/models/event_model.dart';
 import 'package:stikku_frontend/widgets/calendar/calendar_body_style.dart';
 import 'package:stikku_frontend/widgets/calendar/calendar_daysofweek_style.dart';
 import 'package:stikku_frontend/widgets/calendar/calendar_header_style.dart';
@@ -86,8 +86,12 @@ class HomePage extends StatelessWidget {
           markerBuilder: (context, day, events) {
             if (events.isNotEmpty) {
               Event event = events.first as Event;
+
+              String eventDetail =
+                  event.eventDetails.isNotEmpty ? event.eventDetails.first : '';
+
               Color color;
-              switch (event.title) {
+              switch (eventDetail) {
                 case 'cancel':
                   color = Colors.red;
                   break;
@@ -103,6 +107,7 @@ class HomePage extends StatelessWidget {
                 default:
                   color = Colors.grey;
               }
+
               return Container(
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               );

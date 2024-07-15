@@ -9,19 +9,19 @@ class GameResult {
   Id id = Isar.autoIncrement;
 
   late String result;
-  late String viewingMode;
+  late bool viewingMode = false;
   late String gameTitle;
   late DateTime date;
-  String? stadium;
-  String? seatLocation;
+  late String stadium;
+  late String seatLocation;
   late String team1;
   late String team2;
-  late int score1;
-  late int score2;
-  bool team1IsMyteam = false;
-  bool team2IsMyteam = false;
-  String? comment;
-  String? pictureUrl;
+  late String score1;
+  late String score2;
+  bool team1IsMyTeam = false;
+  bool team2IsMyTeam = false;
+  late String comment;
+  late String pictureUrl;
 
   @Index()
   late DateTime createdAt;

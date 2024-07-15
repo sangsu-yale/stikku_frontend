@@ -1,64 +1,41 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:stikku_frontend/models/event_model.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/models/game_review_model.dart';
 import 'package:stikku_frontend/models/settings_model.dart';
 import 'package:stikku_frontend/models/user_model.dart';
 
+// 싱글톤 패턴 방식
+// DB 연결을 관리하는 역할
 class IsarService {
-  late Isar isar;
+  // IsarService._internal() 생성자를 통해 내부적으로 생성된 인스턴스를 저장
+  static final IsarService _instance = IsarService._internal();
+  late Isar _isar;
 
+  // IsarService()는 항상 _instance만 반환하도록 함
+  factory IsarService() {
+    return _instance;
+  }
+
+  IsarService._internal();
+
+  // DB 초기화 메서드
   Future<void> init() async {
     final dir = await getApplicationDocumentsDirectory();
-    isar = await Isar.open(
-      [UserSchema, GameResultSchema, GameReviewSchema, SettingsSchema],
+    _isar = await Isar.open(
+      [
+        UserSchema,
+        GameResultSchema,
+        GameReviewSchema,
+        SettingsSchema,
+        EventSchema
+      ],
       directory: dir.path,
     );
-    // await _deleteDefaultUser();
-    await _addDefaultUser();
   }
 
-  // 임시 게스트용 isar user 생성
-  Future<void> _addDefaultUser() async {
-    final existingUser = isar.users.getSync(1);
-
-    if (existingUser == null) {
-      final defaultUser = User()
-        ..username = 'GUEST'
-        ..password = ''
-        ..email = ''
-        ..profileImage = ''
-        ..createdAt = DateTime.now()
-        ..updatedAt = DateTime.now();
-
-      await isar.writeTxn(() async {
-        await isar.users.put(defaultUser);
-      });
-    }
-  }
-
-  Future<void> _deleteDefaultUser() async {
-    await isar.writeTxn(() async {
-      await isar.users.delete(1);
-      // final success = await isar.users.delete(1);
-      // print('Recipe deleted: $success');
-    });
-  }
-
-  Future<User?> getUser() async {
-    return await isar.users.where().findFirst();
-  }
-
-  // 유저 다 보여 줍니다
-  Future<List<User>> getAllUsers() async {
-    final users = await isar.users.where().findAll();
-    return users;
-  }
-
-  Future<void> printAllUsers() async {
-    final users = await getAllUsers();
-    for (var user in users) {
-      print('User: ${user.username}, 님 반갑습니다. ${user.id}번 id입니다.');
-    }
-  }
+  // _isar 변수에 저장된 DB 인스턴스를 반환
+  // 클래스 외부에서 DB 인스턴스에 접근 가능
+  Isar get isar => _isar;
 }

@@ -93,6 +93,12 @@ const UserSchema = CollectionSchema(
       name: r'settings',
       target: r'Settings',
       single: true,
+    ),
+    r'events': LinkSchema(
+      id: -6551973321257325549,
+      name: r'events',
+      target: r'Event',
+      single: false,
     )
   },
   embeddedSchemas: {},
@@ -180,7 +186,7 @@ Id _userGetId(User object) {
 }
 
 List<IsarLinkBase<dynamic>> _userGetLinks(User object) {
-  return [object.gameResults, object.settings];
+  return [object.gameResults, object.settings, object.events];
 }
 
 void _userAttach(IsarCollection<dynamic> col, Id id, User object) {
@@ -188,6 +194,7 @@ void _userAttach(IsarCollection<dynamic> col, Id id, User object) {
   object.gameResults
       .attach(col, col.isar.collection<GameResult>(), r'gameResults', id);
   object.settings.attach(col, col.isar.collection<Settings>(), r'settings', id);
+  object.events.attach(col, col.isar.collection<Event>(), r'events', id);
 }
 
 extension UserQueryWhereSort on QueryBuilder<User, User, QWhere> {
@@ -1222,6 +1229,61 @@ extension UserQueryLinks on QueryBuilder<User, User, QFilterCondition> {
   QueryBuilder<User, User, QAfterFilterCondition> settingsIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'settings', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> events(FilterQuery<Event> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'events');
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> eventsLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'events', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> eventsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'events', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> eventsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'events', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> eventsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'events', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> eventsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'events', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> eventsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'events', lower, includeLower, upper, includeUpper);
     });
   }
 }

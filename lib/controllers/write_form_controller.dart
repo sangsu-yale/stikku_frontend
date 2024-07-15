@@ -2,8 +2,19 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:isar/isar.dart';
+import 'package:stikku_frontend/controllers/calendar_controller.dart';
+import 'package:stikku_frontend/models/event_model.dart';
+import 'package:stikku_frontend/models/game_result_model.dart';
+import 'package:stikku_frontend/models/user_model.dart';
+import 'package:stikku_frontend/services/isar_service.dart';
 
 class FormController extends GetxController {
+  final CalendarController calendarController = Get.find();
+
+  final Isar _isar;
+  FormController() : _isar = Get.find<IsarService>().isar;
+
   var userId = 0.obs; // 유저 아이디
   var title = ''.obs; // 경기 제목
   var stadium = ''.obs; // 경기장
@@ -20,7 +31,6 @@ class FormController extends GetxController {
   var isFormValid = false.obs;
   var image = ByteData(8).obs;
   var emailError = ''.obs;
-  // 날짜
   var selectedImage = Rx<File?>(null);
 
   RxInt rating = 0.obs;
@@ -77,7 +87,82 @@ class FormController extends GetxController {
     selectedImage.value = null;
   }
 
-  void submit() {
+  void submit(Map<String, dynamic> arguments) async {
+    final user =
+        await _isar.users.where().findFirst(); // 임시로 1, 로컬 스토리지 참조하여 구함
+    // GameResult 객체 생성 및 저장
+
+    print(user!.username);
+    print(user.id);
+    print(user.gameResults);
+
+    final gameResult = GameResult()
+      ..stadium = stadium.value
+      ..seatLocation = seatLocation.value
+      ..result = arguments["result"]
+      ..viewingMode = viewingMode.value
+      ..team1 = team1.value
+      ..team2 = team2.value
+      ..score1 = score1.value
+      ..score2 = score2.value
+      ..team1IsMyTeam = team1IsMyTeam.value
+      ..team2IsMyTeam = team2IsMyTeam.value
+      ..gameTitle = title.value
+      ..comment = comment.value
+      ..pictureUrl = ''
+      ..date = arguments["day"].toUtc()
+      ..createdAt = DateTime.now()
+      ..updatedAt = DateTime.now()
+      ..user.value = user;
+
+    print('이게 왜 집관? ${gameResult.team1IsMyTeam}');
+
+    // Event 객체 생성 및 필요한 필드를 설정합니다.
+    final event = Event()
+      ..eventDate = arguments["day"].toUtc()
+      ..eventDetails = [arguments["result"]]; // 경기 결과를 이벤트 디테일로 저장
+
+    // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에 저장하고, User와의 관계를 설정합니다.
+    await _isar.writeTxn(() async {
+      // GameResult 저장
+      await _isar.gameResults.put(gameResult);
+      user.gameResults.add(gameResult);
+
+      // Event 저장
+      await _isar.events.put(event);
+      user.events.add(event);
+
+      // 관계 저장
+      await user.gameResults.save();
+      await user.events.save();
+    });
+
+    // 모든 GameResult를 로드하고 출력합니다.
+    await user.gameResults.load();
+    await user.events.load();
+
+    for (var result in user.events) {
+      print('이벤트 데이트: ${result.eventDate}');
+      print('이벤트 디테일: ${result.eventDetails}');
+      print('-----------------------------');
+    }
+
+    for (var result in user.gameResults) {
+      print(
+          'Game Title: ${result.gameTitle}, Score: ${result.score1} - ${result.score2}');
+      print('Stadium: ${result.stadium}, Seat: ${result.seatLocation}');
+      print('Teams: ${result.team1} vs ${result.team2}');
+      print('Result: ${result.result}, Viewing Mode: ${result.viewingMode}');
+      print('Comment: ${result.comment}');
+      print('Date: ${result.date}');
+      print('Picture URL: ${result.pictureUrl}');
+      print('Created At: ${result.createdAt}, Updated At: ${result.updatedAt}');
+      print('-----------------------------');
+    }
+
+    print(user.username);
+    print(user.id);
+
     Get.toNamed('/details');
   }
 }

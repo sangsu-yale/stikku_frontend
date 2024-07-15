@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
 import 'package:stikku_frontend/controllers/diary_dialog_controller.dart';
 import 'package:stikku_frontend/controllers/write_form_controller.dart';
-import 'package:stikku_frontend/utils.dart';
 
 class WritePage extends StatelessWidget {
   final CalendarController calendarController = Get.put(CalendarController());
@@ -17,9 +16,10 @@ class WritePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> arguments =
-        Get.arguments ?? {"result": "", "day": DateTime.now()};
+        Get.arguments ?? {"result": "", "day": DateTime.now().toUtc()};
+    print(arguments['result']);
 
-    DateTime abc = arguments["day"];
+    DateTime day = arguments["day"];
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: true,
@@ -342,11 +342,11 @@ class WritePage extends StatelessWidget {
           ),
         ),
         // 확인 버튼 2개 (일기 작성 / 작성 완료)
-        bottomNavigationBar: bottomButtons(abc, arguments));
+        bottomNavigationBar: bottomButtons(day, arguments));
   }
 
 // 확인 버튼 2개 (일기 작성 / 작성 완료)
-  SizedBox bottomButtons(DateTime abc, Map<String, dynamic> arguments) {
+  SizedBox bottomButtons(DateTime day, Map<String, dynamic> arguments) {
     return SizedBox(
       height: 80,
       child: Row(
@@ -358,8 +358,7 @@ class WritePage extends StatelessWidget {
                 if (formController.validate() == false) {
                   Get.snackbar('폼을 다 작성해 주세요', '빼먹은 부분이 없는지 확인해 주세요');
                 } else {
-                  formController.submit();
-                  calendarController.addEvent(abc, Event(arguments["result"]));
+                  formController.submit(arguments);
                   Get.snackbar('Success', 'Form submitted successfully!');
                 }
               },
