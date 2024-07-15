@@ -12,9 +12,11 @@ import 'package:stikku_frontend/services/isar_service.dart';
 class FormController extends GetxController {
   final CalendarController calendarController = Get.find();
 
+  // 로컬 DB 연동
   final Isar _isar;
   FormController() : _isar = Get.find<IsarService>().isar;
 
+  // 폼 리스트
   var userId = 0.obs; // 유저 아이디
   var title = ''.obs; // 경기 제목
   var stadium = ''.obs; // 경기장
@@ -33,10 +35,24 @@ class FormController extends GetxController {
   var emailError = ''.obs;
   var selectedImage = Rx<File?>(null);
 
-  RxInt rating = 0.obs;
+  // 뷰잉 모드 집/직관
+  void setSelectedValue(bool value) {
+    viewingMode.value = value;
+  }
 
-  void setRating(int index) {
-    rating.value = index + 1; // 선택된 별의 개수로 점수를 설정 (인덱스는 0부터 시작하므로 +1)
+  // 이미지 픽
+  Future<void> pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      selectedImage.value = File(pickedFile.path);
+    }
+  }
+
+  // 이미지 삭제
+  void deleteImage() {
+    selectedImage.value = null;
   }
 
   // 유효성 검사 (필수)
@@ -63,30 +79,14 @@ class FormController extends GetxController {
           score1.value.isNotEmpty ||
           score2.value.isNotEmpty) {
         isValid = true;
-        stadium.value = '집관입니다';
-        seatLocation.value = '집관입니다';
+        stadium.value = '집관';
+        seatLocation.value = '집관';
       }
     }
     return isValid;
   }
 
-  void setSelectedValue(bool value) {
-    viewingMode.value = value;
-  }
-
-  Future<void> pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      selectedImage.value = File(pickedFile.path);
-    }
-  }
-
-  void deleteImage() {
-    selectedImage.value = null;
-  }
-
+  // 폼 전송 함수
   void submit(Map<String, dynamic> arguments) async {
     final user =
         await _isar.users.where().findFirst(); // 임시로 1, 로컬 스토리지 참조하여 구함
@@ -114,8 +114,6 @@ class FormController extends GetxController {
       ..createdAt = DateTime.now()
       ..updatedAt = DateTime.now()
       ..user.value = user;
-
-    print('이게 왜 집관? ${gameResult.team1IsMyTeam}');
 
     // Event 객체 생성 및 필요한 필드를 설정합니다.
     final event = Event()

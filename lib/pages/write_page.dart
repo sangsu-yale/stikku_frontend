@@ -15,11 +15,8 @@ class WritePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> arguments =
-        Get.arguments ?? {"result": "", "day": DateTime.now().toUtc()};
-    print(arguments['result']);
+    final Map<String, dynamic> daynResult = Get.arguments;
 
-    DateTime day = arguments["day"];
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: true,
@@ -283,6 +280,7 @@ class WritePage extends StatelessWidget {
                     ],
                   ),
                 ),
+
                 // 3번 상자
                 Container(
                   color: Colors.blue,
@@ -307,6 +305,7 @@ class WritePage extends StatelessWidget {
                     ],
                   ),
                 ),
+
                 // 4번 상자
                 Container(
                   color: Colors.teal,
@@ -342,11 +341,11 @@ class WritePage extends StatelessWidget {
           ),
         ),
         // 확인 버튼 2개 (일기 작성 / 작성 완료)
-        bottomNavigationBar: bottomButtons(day, arguments));
+        bottomNavigationBar: bottomButtons(daynResult));
   }
 
 // 확인 버튼 2개 (일기 작성 / 작성 완료)
-  SizedBox bottomButtons(DateTime day, Map<String, dynamic> arguments) {
+  SizedBox bottomButtons(Map<String, dynamic> daynResult) {
     return SizedBox(
       height: 80,
       child: Row(
@@ -358,7 +357,7 @@ class WritePage extends StatelessWidget {
                 if (formController.validate() == false) {
                   Get.snackbar('폼을 다 작성해 주세요', '빼먹은 부분이 없는지 확인해 주세요');
                 } else {
-                  formController.submit(arguments);
+                  formController.submit(daynResult);
                   Get.snackbar('Success', 'Form submitted successfully!');
                 }
               },

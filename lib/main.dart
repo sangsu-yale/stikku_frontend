@@ -15,7 +15,8 @@ void main() async {
   // Binding 시스템 초기화
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting();
-  await IsarService().init(); // IsarService 초기화
+
+  await IsarService().init(); // IsarService (로컬 DB) 초기화
   Get.put(IsarService()); // IsarService를 GetX 종속성으로 등록
 
   runApp(DevicePreview(

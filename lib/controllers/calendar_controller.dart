@@ -19,24 +19,6 @@ class CalendarController extends GetxController {
     DateTime.now().day,
   ).obs;
 
-  var events = <DateTime, List<Event>>{
-    DateTime.utc(2024, 7, 8): [Event()],
-  }.obs;
-
-  void addEvent(DateTime date, Event event) {
-    if (events[date] != null) {
-      events[date]!.add(event);
-    } else {
-      events[date] = [event];
-    }
-    selectedDay = DateTime.now().toUtc().obs;
-    events.refresh(); // UI를 갱신하기 위해 refresh 호출
-  }
-
-  // List<Event> getEventsForDay(DateTime date) {
-  //   return events[date] ?? [];
-  // }
-
   // 날짜별 이벤트를 가져오는 함수
   List<Event> getEventsForDay(DateTime day) {
     return _isar.events.filter().eventDateEqualTo(day).findAllSync();
