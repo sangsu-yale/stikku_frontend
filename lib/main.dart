@@ -7,6 +7,7 @@ import 'package:stikku_frontend/controllers/isar_controller.dart';
 import 'package:stikku_frontend/main_screen.dart';
 import 'package:stikku_frontend/pages/details_page.dart';
 import 'package:stikku_frontend/pages/diary_page.dart';
+import 'package:stikku_frontend/pages/login_page.dart';
 import 'package:stikku_frontend/pages/notfound_page.dart';
 import 'package:stikku_frontend/pages/write_page.dart';
 import 'package:stikku_frontend/services/isar_service.dart';
@@ -80,6 +81,11 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/details',
           page: () => DetailsPage(),
+          transition: Transition.native,
+        ),
+        GetPage(
+          name: '/login',
+          page: () => const LoginPage(),
           transition: Transition.native,
         ),
       ],

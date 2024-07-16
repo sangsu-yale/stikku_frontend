@@ -46,7 +46,7 @@ class IsarController extends GetxController {
   }
 
   // 게스트 삭제
-  Future<void> _deleteDefaultUser() async {
+  Future<void> deleteDefaultUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await _isar.writeTxn(() async {
       // 모든 User 데이터를 삭제합니다.
@@ -90,8 +90,6 @@ class IsarController extends GetxController {
       print('User: ${user.username}, 님 반갑습니다. ${user.uuid}번 id입니다.');
     }
   }
-
-  // gameDetails 가지고 오기 (우선 임시로 이곳에 코드 작성)
 
   // gameDetails 가지고 오기 (우선 임시로 이곳에 코드 작성)
   Future<GameResult> getDetails(DateTime date) async {

@@ -16,7 +16,7 @@ class MainScreen extends StatelessWidget {
     HomePage(),
     ListPage(),
     const ChartsPage(),
-    const SettingsPage()
+    SettingsPage()
   ];
 
   MainScreen({super.key});
