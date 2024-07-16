@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
+import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 import 'package:stikku_frontend/models/event_model.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/models/user_model.dart';
@@ -11,6 +12,7 @@ import 'package:stikku_frontend/services/isar_service.dart';
 
 class FormController extends GetxController {
   final CalendarController calendarController = Get.find();
+  final ListTopSearchController listTopSearchController = Get.find();
 
   // 로컬 DB 연동
   final Isar _isar;
@@ -149,6 +151,8 @@ class FormController extends GetxController {
       await user.gameResults.load();
       await user.events.load();
 
+      // 리스트 업데이트
+      listTopSearchController.loadGameResults();
       Get.toNamed('/details', arguments: gameResult);
     }
   }

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
-
-// aqua33y확인할것
 
 class ListPage extends StatelessWidget {
   final ListTopSearchController listTopSearchController =
@@ -54,28 +53,6 @@ class ListPage extends StatelessWidget {
                   ),
                 );
               }),
-
-              // GestureDetector(
-              //   onTap: () {
-              //     if (listTopSearchController.isNew.value) {
-              //       listTopSearchController.sortByDate(ascending: false);
-              //       listTopSearchController.isNew.value = false;
-              //     } else {
-              //       listTopSearchController.sortByDate(ascending: true);
-              //       listTopSearchController.isNew.value = true;
-              //     }
-              //   },
-              //   child: Row(
-              //     children: [
-              //       Obx(() {
-              //         return Icon(listTopSearchController.isNew.value
-              //             ? Icons.arrow_drop_up_outlined
-              //             : Icons.arrow_drop_down_outlined);
-              //       }),
-              //       const Text("정렬순"),
-              //     ],
-              //   ),
-              // )
             ],
           ),
 
@@ -91,7 +68,6 @@ class ListPage extends StatelessWidget {
           // <------------- 카드 리스트 ZONE ------------->
           Expanded(
             child: Obx(() {
-              // searchController.searchText;
               final filterList = listTopSearchController.filteredList;
               return ListView.builder(
                 itemCount: filterList.length,
@@ -116,16 +92,16 @@ class ListPage extends StatelessWidget {
                                   // 우리팀
                                   Row(
                                     children: [
-                                      Text(item['homeTeam']),
-                                      Text(item['homeScore'].toString()),
+                                      Text(item.team1),
+                                      Text(item.score1),
                                     ],
                                   ),
 
                                   // 상대팀
                                   Row(
                                     children: [
-                                      Text(item['awayTeam']),
-                                      Text(item['awayScore']),
+                                      Text(item.team2),
+                                      Text(item.score2),
                                     ],
                                   ),
                                 ],
@@ -134,7 +110,7 @@ class ListPage extends StatelessWidget {
                               // 승패 유무
                               Row(
                                 children: [
-                                  Text(item['result']),
+                                  Text(item.result),
                                   const Icon(Icons.heart_broken),
                                 ],
                               ),
@@ -145,9 +121,9 @@ class ListPage extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Text(item['date']),
-                              const Text("한화 이글스파크"),
-                              const Text("버건디 112구역 12번")
+                              Text(DateFormat('yyyy.MM.dd').format(item.date)),
+                              Text(item.stadium),
+                              Text(item.seatLocation)
                             ],
                           ),
                         ],
@@ -163,13 +139,3 @@ class ListPage extends StatelessWidget {
     );
   }
 }
-
-
-// ADV : 즐겨찾기 버튼
-// ADV : 필터 기능
-// ADV : View 설정
-
-/// 기능
-/// 
-/// ✅ 검색 기능
-/// ✅ 최근/오래된순 설정

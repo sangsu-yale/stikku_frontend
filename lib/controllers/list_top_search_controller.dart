@@ -1,42 +1,31 @@
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:stikku_frontend/models/game_result_model.dart';
+import 'package:isar/isar.dart';
+import 'package:stikku_frontend/services/isar_service.dart';
 
 class ListTopSearchController extends GetxController {
   var searchText = ''.obs;
-  var filteredList = <Map<String, dynamic>>[].obs;
+  var filteredList = <GameResult>[].obs;
   var isAscending = true.obs; // 정렬 상태를 나타내는 변수
 
-  var itemList = <Map<String, dynamic>>[
-    {
-      'homeTeam': '삼성 라이온즈',
-      'homeScore': "3",
-      'awayTeam': '한화 이글스',
-      'awayScore': "3",
-      'result': 'WIN',
-      'date': '2024.05.30',
-      'stadium': '한화 이글스파크',
-      'seat': '버건디 112구역 12번',
-    },
-    {
-      'homeTeam': 'LG 트윈스',
-      'homeScore': "4",
-      'awayTeam': '기아 타이거즈',
-      'awayScore': "2",
-      'result': 'LOSE',
-      'date': '2024.06.01',
-      'stadium': '잠실 야구장',
-      'seat': '블루 203구역 10번',
-    },
-    // ... 다른 아이템들 추가
-  ].obs;
+  final Isar _isar; // Assuming you have Isar instance
+  ListTopSearchController() : _isar = Get.find<IsarService>().isar;
 
   @override
   void onInit() {
     super.onInit();
-    filteredList.value = itemList;
+    loadGameResults();
     searchText.listen((value) {
       filterList(value);
     });
+  }
+
+  void loadGameResults() async {
+    final results = await _isar.gameResults.where().findAll();
+    results.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    filteredList.assignAll(results);
   }
 
   void updateSearchText(String text) {
@@ -45,28 +34,25 @@ class ListTopSearchController extends GetxController {
 
   void filterList(String query) {
     if (query.isEmpty) {
-      filteredList.value = itemList;
+      loadGameResults();
     } else {
-      filteredList.value = itemList
-          .where((item) =>
-              item['homeTeam'].contains(query) ||
-              item['awayTeam'].contains(query) ||
-              item['date'].contains(query) ||
-              item['stadium'].contains(query) ||
-              item['seat'].contains(query))
-          .toList();
+      filteredList.value = filteredList.where((item) {
+        final queryLower = query.toLowerCase();
+        return item.team1.toLowerCase().contains(queryLower) ||
+            item.team2.toLowerCase().contains(queryLower) ||
+            DateFormat('yyyy.MM.dd').format(item.date).contains(queryLower) ||
+            item.stadium.toLowerCase().contains(queryLower) ||
+            item.seatLocation.toLowerCase().contains(queryLower);
+      }).toList();
     }
   }
 
   void sortByDate() {
     isAscending.value = !isAscending.value;
-    DateFormat dateFormat = DateFormat('yyyy.MM.dd');
     filteredList.sort((a, b) {
-      DateTime dateA = dateFormat.parse(a['date']);
-      DateTime dateB = dateFormat.parse(b['date']);
       return isAscending.value
-          ? dateA.compareTo(dateB)
-          : dateB.compareTo(dateA);
+          ? a.date.compareTo(b.date)
+          : b.date.compareTo(a.date);
     });
   }
 }
