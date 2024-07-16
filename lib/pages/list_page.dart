@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:stikku_frontend/controllers/isar_controller.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
-import 'package:stikku_frontend/models/game_result_model.dart';
 
 class ListPage extends StatelessWidget {
   final ListTopSearchController listTopSearchController =
