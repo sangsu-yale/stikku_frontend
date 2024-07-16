@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:stikku_frontend/controllers/isar_controller.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
+import 'package:stikku_frontend/models/game_result_model.dart';
 
 class ListPage extends StatelessWidget {
   final ListTopSearchController listTopSearchController =
       Get.put(ListTopSearchController());
+  final IsarController isarController = Get.put(IsarController());
 
   ListPage({super.key});
 
@@ -74,8 +77,12 @@ class ListPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final item = filterList[index];
                   // 아이템 빌드 로직
-                  return InkWell(
-                    onTap: () => Get.toNamed('/details'),
+                  return GestureDetector(
+                    onTap: () async {
+                      final gameResult =
+                          await isarController.getDetails(item.date.toLocal());
+                      Get.toNamed('/details', arguments: gameResult);
+                    },
                     child: Container(
                       color: Colors.white,
                       margin: const EdgeInsets.all(10),
