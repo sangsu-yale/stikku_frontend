@@ -99,7 +99,7 @@ class FormController extends GetxController {
     final gameResult = GameResult()
       ..stadium = stadium.value
       ..seatLocation = seatLocation.value
-      ..result = arguments["result"]
+      ..result = result.value
       ..viewingMode = viewingMode.value
       ..team1 = team1.value
       ..team2 = team2.value
@@ -118,7 +118,7 @@ class FormController extends GetxController {
     // Event 객체 생성 및 필요한 필드를 설정합니다.
     final event = Event()
       ..eventDate = arguments["day"].toUtc()
-      ..eventDetails = [arguments["result"]]; // 경기 결과를 이벤트 디테일로 저장
+      ..eventDetails = [result.value]; // 경기 결과를 이벤트 디테일로 저장
 
     // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에 저장하고, User와의 관계를 설정합니다.
     await _isar.writeTxn(() async {

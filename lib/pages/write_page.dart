@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:stikku_frontend/controllers/calendar_controller.dart';
 import 'package:stikku_frontend/controllers/diary_dialog_controller.dart';
 import 'package:stikku_frontend/controllers/write_form_controller.dart';
 
 class WritePage extends StatelessWidget {
-  final CalendarController calendarController = Get.put(CalendarController());
   final FormController formController = Get.put(FormController());
   final DiaryDialogController diaryDialogController =
       Get.put(DiaryDialogController());
 
   WritePage({super.key});
 
+  final List<String> options = ["win", "lose", "tie", "cancel"];
+  final List<IconData> icons = [
+    Icons.check,
+    Icons.close,
+    Icons.remove,
+    Icons.cancel,
+  ];
+
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> daynResult = Get.arguments;
+    daynResult["result"] != null
+        ? formController.result.value = daynResult["result"]
+        : '';
 
     return Scaffold(
         appBar: AppBar(
@@ -91,7 +100,33 @@ class WritePage extends StatelessWidget {
                           ),
                         ],
                       ),
-
+                      // ✅ 승취무패
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(options.length, (index) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Column(
+                                children: [
+                                  Icon(icons[index], size: 40),
+                                  Text(options[index],
+                                      style: const TextStyle(fontSize: 18)),
+                                  Obx(() {
+                                    return Radio<String>(
+                                      value: options[index],
+                                      groupValue: formController.result.value,
+                                      onChanged: (value) {
+                                        formController.result.value = value!;
+                                      },
+                                    );
+                                  }),
+                                ],
+                              ),
+                            ],
+                          );
+                        }),
+                      ),
                       // ✅ 점수, 팀 이름, 응원팀
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
