@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stikku_frontend/models/event_model.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/models/user_model.dart';
@@ -23,9 +24,10 @@ class IsarController extends GetxController {
 
   // 임시 게스트용 isar user 생성
   Future<void> _addDefaultUser() async {
-    final existingUser = _isar.users.getSync(1);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? uuid = prefs.getString('uuid');
 
-    if (existingUser == null) {
+    if (uuid == null) {
       final defaultUser = User()
         ..username = 'GUEST'
         ..password = ''
@@ -37,11 +39,15 @@ class IsarController extends GetxController {
       await _isar.writeTxn(() async {
         await _isar.users.put(defaultUser);
       });
+      // 로컬 스토리지 저장
+      await prefs.setString('username', defaultUser.username);
+      await prefs.setString('uuid', defaultUser.uuid);
     }
   }
 
   // 게스트 삭제
   Future<void> _deleteDefaultUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     await _isar.writeTxn(() async {
       // 모든 User 데이터를 삭제합니다.
       await _isar.users.clear();
@@ -51,10 +57,9 @@ class IsarController extends GetxController {
 
       // 모든 Event 데이터를 삭제합니다.
       await _isar.events.clear();
-
-      // 필요한 경우, 다른 컬렉션들도 위와 같은 방식으로 삭제합니다.
-      // 예: await _isar.anotherCollection.clear();
     });
+    await prefs.remove('username');
+    await prefs.remove('uuid');
   }
 
   // 모든 유저 확인
@@ -82,7 +87,7 @@ class IsarController extends GetxController {
             'Created At: ${result.createdAt}, Updated At: ${result.updatedAt}');
         print('-----------------------------');
       }
-      print('User: ${user.username}, 님 반갑습니다. ${user.id}번 id입니다.');
+      print('User: ${user.username}, 님 반갑습니다. ${user.uuid}번 id입니다.');
     }
   }
 }
