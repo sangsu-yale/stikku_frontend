@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
+import 'package:stikku_frontend/controllers/isar_controller.dart';
 import 'package:stikku_frontend/models/event_model.dart';
 import 'package:stikku_frontend/widgets/calendar/calendar_body_style.dart';
 import 'package:stikku_frontend/widgets/calendar/calendar_daysofweek_style.dart';
@@ -10,6 +11,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 class HomePage extends StatelessWidget {
   final CalendarController calendarController = Get.put(CalendarController());
+  final IsarController isarController = Get.put(IsarController());
 
   HomePage({super.key});
 
@@ -71,12 +73,26 @@ class HomePage extends StatelessWidget {
         eventLoader: calendarController.getEventsForDay,
 
         // 선택한 날짜의 onTap
-        onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
+        onDaySelected: (DateTime selectedDay, DateTime focusedDay) async {
           calendarController.onDaySelected(selectedDay, focusedDay);
-          // 만약에 해당 데이터가 있으면 details
-          // 없으면 write
-          Get.toNamed('/write',
-              arguments: {"result": "yet", "day": selectedDay});
+          // 만약에 선택한 날짜에 이벤트가 있으면 details 페이지로 이동
+          final events = calendarController.getEventsForDay(selectedDay);
+          if (events.isNotEmpty) {
+            // 이벤트가 있으면 details 페이지로 이동
+            // details 정보 얻어서 꽂아 줘야지...
+            print(selectedDay);
+            final gameResult =
+                await isarController.getDetails(selectedDay.toLocal());
+
+            Get.toNamed(
+              '/details',
+              arguments: gameResult,
+            );
+          } else {
+            // 없으면 write
+            Get.toNamed('/write',
+                arguments: {"result": "", "day": selectedDay});
+          }
         },
         selectedDayPredicate: (day) =>
             isSameDay(day, calendarController.selectedDay.value),
@@ -192,7 +208,6 @@ class HomePage extends StatelessWidget {
   }
 }
 
-
 /// 핵심 기능
 /// - 캘린더 기능
 ///   - ✅ 앱 실행시 오늘 날짜가 강조 되어야 한다
@@ -202,15 +217,15 @@ class HomePage extends StatelessWidget {
 ///   - ✅ (일기 작성시) 해당 날짜에 이벤트 마크가 붙어야 한다
 ///   - ✅ (일기 작성 완료 후) 셀렉트 마크가 오늘로 다시 고정되어야 한다
 ///   - ⛏️ 이벤트가 있는 날짜 클릭 시 detail 페이지로 이동해야 한다
-/// 
+///
 /// - 일기 작성 기능
 ///   - ✅ 날짜를 클릭하여 일기 작성이 가능해야 한다
 ///   - ✅ 작성 버튼을 클릭하여 일기 작성이 가능해야 한다
 ///   - ✅ 경기 결과에 따라서 마커가 달라져야 한다
 ///   - (😡adv) 일기를 2회 작성할 수 있다
-/// 
+///
 /// - (😡adv) 이미지 저장 기능
 ///   - ⛏️ 달력을 이미지로 저장할 수 있다
-/// 
+///
 /// - (😡adv) 로컬 드라이브
 ///   - ⛏️ 로컬 드라이브에 이벤트를 저장할 수 있다

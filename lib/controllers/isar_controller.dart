@@ -90,4 +90,34 @@ class IsarController extends GetxController {
       print('User: ${user.username}, 님 반갑습니다. ${user.uuid}번 id입니다.');
     }
   }
+
+  // gameDetails 가지고 오기 (우선 임시로 이곳에 코드 작성)
+
+  // gameDetails 가지고 오기 (우선 임시로 이곳에 코드 작성)
+  Future<GameResult> getDetails(DateTime date) async {
+    // 유저의 uuid 확인하고
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? uuid = prefs.getString('uuid');
+
+    if (uuid == null) {
+      throw Exception('User UUID not found in SharedPreferences');
+    }
+
+    // 사용자 가져오기
+    final user = await _isar.users.filter().uuidEqualTo(uuid).findFirst();
+
+    if (user == null) {
+      throw Exception('User not found in the database');
+    }
+
+    // 특정 날짜의 gameResults 가져오기
+    final gameResults =
+        await _isar.gameResults.filter().dateEqualTo(date).findAll();
+
+    if (gameResults.isNotEmpty) {
+      return gameResults[0]; // 만약 여러 개라면 첫 번째 결과를 반환
+    }
+
+    return GameResult(); // 빈 GameResult 반환
+  }
 }

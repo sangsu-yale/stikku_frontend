@@ -102,78 +102,78 @@ class FormController extends GetxController {
         await _isar.users.where().findFirst(); // 임시로 1, 로컬 스토리지 참조하여 구함
     // GameResult 객체 생성 및 저장
 
-    print(user!.username);
-    print(user.id);
-    print(user.gameResults);
+    if (user != null) {
+      final gameResult = GameResult()
+        ..stadium = stadium.value
+        ..seatLocation = seatLocation.value
+        ..result = result.value
+        ..viewingMode = viewingMode.value
+        ..team1 = team1.value
+        ..team2 = team2.value
+        ..score1 = score1.value
+        ..score2 = score2.value
+        ..team1IsMyTeam = team1IsMyTeam.value
+        ..team2IsMyTeam = team2IsMyTeam.value
+        ..gameTitle = title.value
+        ..comment = comment.value
+        ..pictureUrl = ''
+        ..date = date
+        ..createdAt = DateTime.now()
+        ..updatedAt = DateTime.now()
+        ..reviewComment = review.value
+        ..playerOfTheMatch = playerOfTheMatch.value
+        ..food = food.value
+        ..user.value = user;
 
-    final gameResult = GameResult()
-      ..stadium = stadium.value
-      ..seatLocation = seatLocation.value
-      ..result = result.value
-      ..viewingMode = viewingMode.value
-      ..team1 = team1.value
-      ..team2 = team2.value
-      ..score1 = score1.value
-      ..score2 = score2.value
-      ..team1IsMyTeam = team1IsMyTeam.value
-      ..team2IsMyTeam = team2IsMyTeam.value
-      ..gameTitle = title.value
-      ..comment = comment.value
-      ..pictureUrl = ''
-      ..date = date
-      ..createdAt = DateTime.now()
-      ..updatedAt = DateTime.now()
-      ..reviewComment = review.value
-      ..playerOfTheMatch = playerOfTheMatch.value
-      ..food = food.value
-      ..user.value = user;
+      // Event 객체 생성 및 필요한 필드를 설정합니다.
+      final event = Event()
+        ..eventDate = date
+        ..eventDetails = [result.value]; // 경기 결과를 이벤트 디테일로 저장
 
-    // Event 객체 생성 및 필요한 필드를 설정합니다.
-    final event = Event()
-      ..eventDate = date
-      ..eventDetails = [result.value]; // 경기 결과를 이벤트 디테일로 저장
+      // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에 저장하고, User와의 관계를 설정합니다.
+      await _isar.writeTxn(() async {
+        // GameResult 저장
+        await _isar.gameResults.put(gameResult);
+        user.gameResults.add(gameResult);
 
-    // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에 저장하고, User와의 관계를 설정합니다.
-    await _isar.writeTxn(() async {
-      // GameResult 저장
-      await _isar.gameResults.put(gameResult);
-      user.gameResults.add(gameResult);
+        // Event 저장
+        await _isar.events.put(event);
+        user.events.add(event);
 
-      // Event 저장
-      await _isar.events.put(event);
-      user.events.add(event);
+        // 관계 저장
+        await user.gameResults.save();
+        await user.events.save();
+      });
 
-      // 관계 저장
-      await user.gameResults.save();
-      await user.events.save();
-    });
+      // 모든 GameResult를 로드하고 출력합니다.
+      await user.gameResults.load();
+      await user.events.load();
 
-    // 모든 GameResult를 로드하고 출력합니다.
-    await user.gameResults.load();
-    await user.events.load();
-
-    for (var result in user.events) {
-      print('이벤트 데이트: ${result.eventDate}');
-      print('이벤트 디테일: ${result.eventDetails}');
-      print('-----------------------------');
+      Get.toNamed('/details', arguments: gameResult);
     }
-
-    for (var result in user.gameResults) {
-      print(
-          'Game Title: ${result.gameTitle}, Score: ${result.score1} - ${result.score2}');
-      print('Stadium: ${result.stadium}, Seat: ${result.seatLocation}');
-      print('Teams: ${result.team1} vs ${result.team2}');
-      print('Result: ${result.result}, Viewing Mode: ${result.viewingMode}');
-      print('Comment: ${result.comment}');
-      print('Date: ${result.date}');
-      print('Picture URL: ${result.pictureUrl}');
-      print('Created At: ${result.createdAt}, Updated At: ${result.updatedAt}');
-      print('-----------------------------');
-    }
-
-    print(user.username);
-    print(user.id);
-
-    Get.toNamed('/details');
   }
 }
+
+
+
+    // for (var result in user.events) {
+    //   print('이벤트 데이트: ${result.eventDate}');
+    //   print('이벤트 디테일: ${result.eventDetails}');
+    //   print('-----------------------------');
+    // }
+
+    // for (var result in user.gameResults) {
+    //   print(
+    //       'Game Title: ${result.gameTitle}, Score: ${result.score1} - ${result.score2}');
+    //   print('Stadium: ${result.stadium}, Seat: ${result.seatLocation}');
+    //   print('Teams: ${result.team1} vs ${result.team2}');
+    //   print('Result: ${result.result}, Viewing Mode: ${result.viewingMode}');
+    //   print('Comment: ${result.comment}');
+    //   print('Date: ${result.date}');
+    //   print('Picture URL: ${result.pictureUrl}');
+    //   print('Created At: ${result.createdAt}, Updated At: ${result.updatedAt}');
+    //   print('-----------------------------');
+    // }
+
+    // print(user.username);
+    // print(user.id);

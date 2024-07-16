@@ -79,7 +79,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/details',
-          page: () => const DetailsPage(),
+          page: () => DetailsPage(),
           transition: Transition.native,
         ),
       ],
