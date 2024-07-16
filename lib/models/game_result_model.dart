@@ -1,5 +1,4 @@
 import 'package:isar/isar.dart';
-import 'package:stikku_frontend/models/game_review_model.dart';
 import 'user_model.dart';
 
 part 'game_result_model.g.dart';
@@ -8,6 +7,7 @@ part 'game_result_model.g.dart';
 class GameResult {
   Id id = Isar.autoIncrement;
 
+  // game results
   late String result;
   late bool viewingMode = false;
   late String gameTitle;
@@ -23,6 +23,15 @@ class GameResult {
   late String comment;
   late String pictureUrl;
 
+  // game reviews (옵션)
+  String? reviewComment;
+  int? rating;
+  String? playerOfTheMatch;
+  String? mood;
+  List<String>? homeTeamLineup;
+  List<String>? awayTeamLineup;
+  String? food;
+
   @Index()
   late DateTime createdAt;
 
@@ -30,5 +39,4 @@ class GameResult {
   late DateTime updatedAt;
 
   final user = IsarLink<User>();
-  final reviews = IsarLinks<GameReview>();
 }

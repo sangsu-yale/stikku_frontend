@@ -21,10 +21,14 @@ class WritePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> daynResult = Get.arguments;
+    final Map<String, dynamic> daynResult = Get.arguments ?? {};
+
     daynResult["result"] != null
         ? formController.result.value = daynResult["result"]
-        : '';
+        : formController.result.value;
+    daynResult["day"] != null
+        ? formController.date = daynResult["day"].toUtc()
+        : formController.date;
 
     return Scaffold(
         appBar: AppBar(
@@ -392,7 +396,7 @@ class WritePage extends StatelessWidget {
                 if (formController.validate() == false) {
                   Get.snackbar('폼을 다 작성해 주세요', '빼먹은 부분이 없는지 확인해 주세요');
                 } else {
-                  formController.submit(daynResult);
+                  formController.submit();
                   Get.snackbar('Success', 'Form submitted successfully!');
                 }
               },
@@ -412,12 +416,11 @@ class WritePage extends StatelessWidget {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                // Get.toNamed('/diary');
-                // if (formController.validate() == false) {
-                //   Get.snackbar('폼을 다 작성해 주세요', '빼먹은 부분이 없는지 확인해 주세요');
-                // } else {
-                Get.toNamed('/diary');
-                // }
+                if (formController.validate() == false) {
+                  Get.snackbar('폼을 다 작성해 주세요', '빼먹은 부분이 없는지 확인해 주세요');
+                } else {
+                  Get.toNamed('/diary');
+                }
               },
               child: Container(
                 color: const Color.fromARGB(255, 80, 80, 80),

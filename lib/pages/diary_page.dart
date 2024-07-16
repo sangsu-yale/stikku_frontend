@@ -53,7 +53,10 @@ class DiaryPage extends StatelessWidget {
                     child: const Icon(Icons.add),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      formController.submit();
+                      Get.snackbar('Success', 'Form submitted successfully!');
+                    },
                     child: const Text("완료하기"),
                   )
                 ],

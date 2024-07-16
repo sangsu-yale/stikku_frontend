@@ -17,25 +17,21 @@ class DiaryDialogController extends GetxController {
   void onInit() {
     super.onInit();
     formWidgets.assignAll([
-      {'review': const Review(id: 'review', title: '경기 리뷰')},
-      {'rating': const Rating(id: 'rating', title: '별점')},
+      {'review': Review(id: 'review', title: '경기 리뷰')},
+      {'rating': Rating(id: 'rating', title: '별점')},
       {
         'playerOfTheMatch':
-            const PlayerOfTheMatch(id: 'playerOfTheMatch', title: '수훈 선수')
+            PlayerOfTheMatch(id: 'playerOfTheMatch', title: '수훈 선수')
       },
-      {'mood': const Mood(id: 'mood', title: '기분')},
-      {'food': const Food(id: 'food', title: '음식')},
+      {'mood': Mood(id: 'mood', title: '기분')},
+      {'food': Food(id: 'food', title: '음식')},
+      {'homeTeamLineup': HomeTeamLineup(id: 'homeTeamLineup', title: '홈 라인업')},
       {
-        'homeTeamLineup':
-            const HomeTeamLineup(id: 'homeTeamLineup', title: '홈 라인업')
-      },
-      {
-        'awayTeamLineup':
-            const AwayTeamLineup(id: 'awayTeamLineup', title: '어웨이 라인업')
+        'awayTeamLineup': AwayTeamLineup(id: 'awayTeamLineup', title: '어웨이 라인업')
       },
     ]);
     addWidget(
-      {'review': const Review(id: 'review', title: '경기 리뷰')},
+      {'review': Review(id: 'review', title: '경기 리뷰')},
     );
     confirmSelection();
   }

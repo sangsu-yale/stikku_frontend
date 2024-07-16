@@ -25,8 +25,8 @@ class FormController extends GetxController {
   var viewingMode = false.obs; // 직관, 집관
   var team1 = ''.obs;
   var team2 = ''.obs;
-  var score1 = ''.obs;
-  var score2 = ''.obs;
+  var score1 = '0'.obs;
+  var score2 = '0'.obs;
   var team1IsMyTeam = false.obs;
   var team2IsMyTeam = false.obs;
   var comment = ''.obs;
@@ -34,6 +34,16 @@ class FormController extends GetxController {
   var image = ByteData(8).obs;
   var emailError = ''.obs;
   var selectedImage = Rx<File?>(null);
+  var date = DateTime.now().toUtc();
+
+  // game reviews
+  var review = ''.obs;
+  var rating = 0.obs;
+  var playerOfTheMatch = ''.obs;
+  var mood = ''.obs;
+  var homeTeamLineup = [].obs;
+  var awayTeamLineup = [].obs;
+  var food = ''.obs;
 
   // 뷰잉 모드 집/직관
   void setSelectedValue(bool value) {
@@ -87,7 +97,7 @@ class FormController extends GetxController {
   }
 
   // 폼 전송 함수
-  void submit(Map<String, dynamic> arguments) async {
+  void submit() async {
     final user =
         await _isar.users.where().findFirst(); // 임시로 1, 로컬 스토리지 참조하여 구함
     // GameResult 객체 생성 및 저장
@@ -110,14 +120,17 @@ class FormController extends GetxController {
       ..gameTitle = title.value
       ..comment = comment.value
       ..pictureUrl = ''
-      ..date = arguments["day"].toUtc()
+      ..date = date
       ..createdAt = DateTime.now()
       ..updatedAt = DateTime.now()
+      ..reviewComment = review.value
+      ..playerOfTheMatch = playerOfTheMatch.value
+      ..food = food.value
       ..user.value = user;
 
     // Event 객체 생성 및 필요한 필드를 설정합니다.
     final event = Event()
-      ..eventDate = arguments["day"].toUtc()
+      ..eventDate = date
       ..eventDetails = [result.value]; // 경기 결과를 이벤트 디테일로 저장
 
     // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에 저장하고, User와의 관계를 설정합니다.
