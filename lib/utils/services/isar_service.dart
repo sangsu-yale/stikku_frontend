@@ -4,11 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stikku_frontend/models/event_model.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/models/user_model.dart';
-import 'package:stikku_frontend/services/isar_service.dart';
+import 'package:stikku_frontend/config/isar_db.dart';
 
-class IsarController extends GetxController {
+class IsarService extends GetxController {
   final Isar _isar;
-  IsarController() : _isar = Get.find<IsarService>().isar;
+  IsarService() : _isar = Get.find<IsarDB>().isar;
 
   @override
   void onInit() {

@@ -7,17 +7,17 @@ import 'package:stikku_frontend/models/user_model.dart';
 
 // 싱글톤 패턴 방식
 // DB 연결을 관리하는 역할
-class IsarService {
-  // IsarService._internal() 생성자를 통해 내부적으로 생성된 인스턴스를 저장
-  static final IsarService _instance = IsarService._internal();
+class IsarDB {
+  // IsarDB._internal() 생성자를 통해 내부적으로 생성된 인스턴스를 저장
+  static final IsarDB _instance = IsarDB._internal();
   late Isar _isar;
 
-  // IsarService()는 항상 _instance만 반환하도록 함
-  factory IsarService() {
+  // IsarDB()는 항상 _instance만 반환하도록 함
+  factory IsarDB() {
     return _instance;
   }
 
-  IsarService._internal();
+  IsarDB._internal();
 
   // DB 초기화 메서드
   Future<void> init() async {

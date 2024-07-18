@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:stikku_frontend/models/event_model.dart';
-import 'package:stikku_frontend/services/isar_service.dart';
+import 'package:stikku_frontend/config/isar_db.dart';
 
 class CalendarController extends GetxController {
   final Isar _isar;
-  CalendarController() : _isar = Get.find<IsarService>().isar;
+  CalendarController() : _isar = Get.find<IsarDB>().isar;
 
   var selectedDay = DateTime.utc(
     DateTime.now().year,

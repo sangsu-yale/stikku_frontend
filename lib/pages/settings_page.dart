@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stikku_frontend/controllers/isar_controller.dart';
+import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class SettingsPage extends StatelessWidget {
-  final IsarController isarController = Get.put(IsarController());
+  final isarController = Get.find<IsarService>();
   SettingsPage({super.key});
 
   Future<String> getUUID() async {

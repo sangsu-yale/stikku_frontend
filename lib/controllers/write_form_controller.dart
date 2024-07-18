@@ -8,7 +8,7 @@ import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 import 'package:stikku_frontend/models/event_model.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/models/user_model.dart';
-import 'package:stikku_frontend/services/isar_service.dart';
+import 'package:stikku_frontend/config/isar_db.dart';
 
 class FormController extends GetxController {
   final CalendarController calendarController = Get.find();
@@ -16,7 +16,7 @@ class FormController extends GetxController {
 
   // 로컬 DB 연동
   final Isar _isar;
-  FormController() : _isar = Get.find<IsarService>().isar;
+  FormController() : _isar = Get.find<IsarDB>().isar;
 
   // 폼 리스트
   var userId = 0.obs; // 유저 아이디

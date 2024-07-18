@@ -8,6 +8,7 @@ import 'package:stikku_frontend/pages/settings_page.dart';
 
 class MainScreen extends StatelessWidget {
   // 내비게이션 컨트롤러
+
   final NavigationController navigationController =
       Get.put(NavigationController());
 

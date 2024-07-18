@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:isar/isar.dart';
-import 'package:stikku_frontend/services/isar_service.dart';
+import 'package:stikku_frontend/config/isar_db.dart';
 
 class ListTopSearchController extends GetxController {
   var searchText = ''.obs;
@@ -10,7 +10,7 @@ class ListTopSearchController extends GetxController {
   var isAscending = true.obs; // 정렬 상태를 나타내는 변수
 
   final Isar _isar; // Assuming you have Isar instance
-  ListTopSearchController() : _isar = Get.find<IsarService>().isar;
+  ListTopSearchController() : _isar = Get.find<IsarDB>().isar;
 
   @override
   void onInit() {

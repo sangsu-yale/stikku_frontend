@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:stikku_frontend/controllers/isar_controller.dart';
+import 'package:stikku_frontend/utils/services/isar_service.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 
 class ListPage extends StatelessWidget {
   final ListTopSearchController listTopSearchController =
       Get.put(ListTopSearchController());
-  final IsarController isarController = Get.put(IsarController());
+  final isarController = Get.find<IsarService>();
 
   ListPage({super.key});
 
