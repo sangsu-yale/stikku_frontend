@@ -49,6 +49,7 @@ dependencies:
   image_cropper: ^7.1.0
   uuid: ^4.4.2
   shared_preferences: ^2.2.3
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:
