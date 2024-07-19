@@ -3,12 +3,10 @@ import 'dart:typed_data';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
-import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class FormController extends GetxController {
   final CalendarController calendarController = Get.find();
-  final ListTopSearchController listTopSearchController = Get.find();
   final isarController = Get.find<IsarService>();
 
   // 폼 리스트
@@ -114,30 +112,6 @@ class FormController extends GetxController {
     //
     final gameResult = await isarController.postSubmit(data);
 
-    // 리스트 업데이트
-    listTopSearchController.loadGameResults();
     Get.toNamed('/details', arguments: gameResult);
   }
 }
-
-// for (var result in user.events) {
-//   print('이벤트 데이트: ${result.eventDate}');
-//   print('이벤트 디테일: ${result.eventDetails}');
-//   print('-----------------------------');
-// }
-
-// for (var result in user.gameResults) {
-//   print(
-//       'Game Title: ${result.gameTitle}, Score: ${result.score1} - ${result.score2}');
-//   print('Stadium: ${result.stadium}, Seat: ${result.seatLocation}');
-//   print('Teams: ${result.team1} vs ${result.team2}');
-//   print('Result: ${result.result}, Viewing Mode: ${result.viewingMode}');
-//   print('Comment: ${result.comment}');
-//   print('Date: ${result.date}');
-//   print('Picture URL: ${result.pictureUrl}');
-//   print('Created At: ${result.createdAt}, Updated At: ${result.updatedAt}');
-//   print('-----------------------------');
-// }
-
-// print(user.username);
-// print(user.id);
