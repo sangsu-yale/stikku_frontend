@@ -199,14 +199,24 @@ int _gameResultEstimateSize(
       }
     }
   }
-  bytesCount += 3 + object.comment.length * 3;
+  {
+    final value = object.comment;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   {
     final value = object.food;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
   }
-  bytesCount += 3 + object.gameTitle.length * 3;
+  {
+    final value = object.gameTitle;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   {
     final list = object.homeTeamLineup;
     if (list != null) {
@@ -287,11 +297,11 @@ GameResult _gameResultDeserialize(
 ) {
   final object = GameResult();
   object.awayTeamLineup = reader.readStringList(offsets[0]);
-  object.comment = reader.readString(offsets[1]);
+  object.comment = reader.readStringOrNull(offsets[1]);
   object.createdAt = reader.readDateTime(offsets[2]);
   object.date = reader.readDateTime(offsets[3]);
   object.food = reader.readStringOrNull(offsets[4]);
-  object.gameTitle = reader.readString(offsets[5]);
+  object.gameTitle = reader.readStringOrNull(offsets[5]);
   object.homeTeamLineup = reader.readStringList(offsets[6]);
   object.id = id;
   object.mood = reader.readStringOrNull(offsets[7]);
@@ -323,7 +333,7 @@ P _gameResultDeserializeProp<P>(
     case 0:
       return (reader.readStringList(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
       return (reader.readDateTime(offset)) as P;
     case 3:
@@ -331,7 +341,7 @@ P _gameResultDeserializeProp<P>(
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 6:
       return (reader.readStringList(offset)) as P;
     case 7:
@@ -903,8 +913,25 @@ extension GameResultQueryFilter
     });
   }
 
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> commentIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'comment',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
+      commentIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'comment',
+      ));
+    });
+  }
+
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> commentEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -918,7 +945,7 @@ extension GameResultQueryFilter
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
       commentGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -933,7 +960,7 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> commentLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -948,8 +975,8 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> commentBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -1288,8 +1315,26 @@ extension GameResultQueryFilter
     });
   }
 
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
+      gameTitleIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'gameTitle',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
+      gameTitleIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'gameTitle',
+      ));
+    });
+  }
+
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> gameTitleEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1303,7 +1348,7 @@ extension GameResultQueryFilter
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
       gameTitleGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1318,7 +1363,7 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> gameTitleLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1333,8 +1378,8 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> gameTitleBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -4101,7 +4146,7 @@ extension GameResultQueryProperty
     });
   }
 
-  QueryBuilder<GameResult, String, QQueryOperations> commentProperty() {
+  QueryBuilder<GameResult, String?, QQueryOperations> commentProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'comment');
     });
@@ -4125,7 +4170,7 @@ extension GameResultQueryProperty
     });
   }
 
-  QueryBuilder<GameResult, String, QQueryOperations> gameTitleProperty() {
+  QueryBuilder<GameResult, String?, QQueryOperations> gameTitleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'gameTitle');
     });

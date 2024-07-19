@@ -23,7 +23,7 @@ class Review extends StatelessWidget {
             hintText: "경기 리뷰",
           ),
           onChanged: (value) {
-            formController.review.value = value;
+            formController.reviewComment.value = value;
           },
         ),
       ],

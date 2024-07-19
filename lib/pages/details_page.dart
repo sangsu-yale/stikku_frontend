@@ -49,7 +49,7 @@ class DetailsPage extends StatelessWidget {
                               Text(gameResult.team2),
                             ],
                           ),
-                          Text(gameResult.gameTitle),
+                          Text(gameResult.gameTitle ?? ''),
                           Row(
                             children: [
                               Text(gameResult.score1),
@@ -76,7 +76,7 @@ class DetailsPage extends StatelessWidget {
                             ],
                           ),
                           const Text("COMMENT"),
-                          Text(gameResult.comment)
+                          Text(gameResult.comment ?? '')
                         ],
                       )
                     : Column(

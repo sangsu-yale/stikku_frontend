@@ -10,7 +10,7 @@ class GameResult {
   // game results
   late String result;
   late bool viewingMode = false;
-  late String gameTitle;
+  String? gameTitle;
   late DateTime date;
   late String stadium;
   late String seatLocation;
@@ -20,7 +20,7 @@ class GameResult {
   late String score2;
   bool team1IsMyTeam = false;
   bool team2IsMyTeam = false;
-  late String comment;
+  String? comment;
   late String pictureUrl;
 
   // game reviews (옵션)

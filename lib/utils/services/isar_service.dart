@@ -118,4 +118,66 @@ class IsarService extends GetxController {
 
     return GameResult(); // 빈 GameResult 반환
   }
+
+  Future<List<Event>> getEvents(DateTime day) async {
+    return _isar.events.filter().eventDateEqualTo(day).findAllSync();
+  }
+
+  // submit 함수
+  Future<GameResult> postSubmit(Map data) async {
+    final user =
+        await _isar.users.where().findFirst(); // 임시로 1, 로컬 스토리지 참조하여 구함
+    // GameResult 객체 생성 및 저장
+
+    if (user != null) {
+      final gameResult = GameResult()
+        ..stadium = data["stadium"].value
+        ..seatLocation = data["seatLocation"].value
+        ..result = data["result"].value
+        ..viewingMode = data["viewingMode"].value
+        ..team1 = data["team1"].value
+        ..team2 = data["team2"].value
+        ..score1 = data["score1"].value
+        ..score2 = data["score2"].value
+        ..team1IsMyTeam = data["team1IsMyTeam"].value
+        ..team2IsMyTeam = data["team2IsMyTeam"].value
+        ..gameTitle = data["title"]?.value
+        ..comment = data["comment"]?.value
+        ..pictureUrl = ''
+        ..date = data["date"].toUtc()
+        ..createdAt = DateTime.now()
+        ..updatedAt = DateTime.now()
+        ..reviewComment = data["review"]?.value
+        ..playerOfTheMatch = data["playerOfTheMatch"]?.value
+        ..food = data["food"]?.value
+        ..user.value = user;
+
+      // Event 객체 생성 및 필요한 필드를 설정합니다.
+      final event = Event()
+        ..eventDate = data["date"].toUtc()
+        ..eventDetails = [data["result"].value]; // 경기 결과를 이벤트 디테일로 저장
+
+      // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에 저장하고, User와의 관계를 설정합니다.
+      await _isar.writeTxn(() async {
+        // GameResult 저장
+        await _isar.gameResults.put(gameResult);
+        user.gameResults.add(gameResult);
+
+        // Event 저장
+        await _isar.events.put(event);
+        user.events.add(event);
+
+        // 관계 저장
+        await user.gameResults.save();
+        await user.events.save();
+      });
+      return gameResult;
+    }
+    return GameResult();
+  }
+
+  // 날짜별 이벤트를 가져오는 함수
+  List<Event> getEventsForDay(DateTime day) {
+    return _isar.events.filter().eventDateEqualTo(day).findAllSync();
+  }
 }
