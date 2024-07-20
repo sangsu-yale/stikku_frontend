@@ -5,97 +5,175 @@ import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:isar/isar.dart';
 import 'package:stikku_frontend/config/isar_db.dart';
 
-class ListTopSearchController extends GetxController {
-  var searchText = ''.obs;
-  var filteredList = <GameResult>[].obs;
-  var isAscending = true.obs;
-  var isLoading = false.obs;
-  var showFavoritesOnly = false.obs; // 즐겨찾기 필터 추가
-  var favoriteIds = <int>[].obs; // 즐겨찾기 ID 목록
+// 정렬순 옵션
+enum SortOption { writtenOrder, newestFirst, oldestFirst }
 
+// 필터 옵션
+enum FilterOption { all, teamSupport, live, home, won, lost }
+
+// 뷰 상태 옵션
+enum ViewOption { list, grid }
+
+class ListTopSearchController extends GetxController {
   final Isar _isar;
-  late SharedPreferences _prefs;
 
   ListTopSearchController() : _isar = Get.find<IsarDB>().isar;
 
+  // 검색어 입력
+  var searchQuery = ''.obs;
+
+  // 필터, 정렬, 뷰 변경 옵션
+  var sortOption = SortOption.writtenOrder.obs;
+  var filterOption = FilterOption.all.obs;
+  var viewOption = ViewOption.list.obs;
+
+  var showFavoritesOnly = false.obs; // 즐겨찾기 필터 추가
+  var favoriteIds = <int>[].obs; // 즐겨찾기 ID 목록
+
+  var isLoading = false.obs;
+
+  // 티켓리스트
+  var ticketlist = <GameResult>[].obs;
+
+  // 티켓리스트 초기화
   @override
   void onInit() {
     super.onInit();
-    initPrefs().then((_) {
-      loadGameResults();
-      searchText.listen((value) {
-        filterList(value);
-      });
-    });
+    _loadPreferences();
+    loadGameResults();
   }
 
-  Future<void> initPrefs() async {
-    _prefs = await SharedPreferences.getInstance();
-    favoriteIds.value =
-        _prefs.getStringList('favorites')?.map(int.parse).toList() ?? [];
-  }
-
+  // fetch 티켓 리스트
   Future<void> loadGameResults() async {
     isLoading.value = true;
+
+    // 불러오기
     final results = await _isar.gameResults.where().findAll();
     results.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    filteredList.assignAll(results);
+
+    // ticketlist 반영
+    ticketlist.assignAll(results);
     isLoading.value = false;
-    applyFavoriteFilter();
   }
 
-  void updateSearchText(String text) {
-    searchText.value = text;
-  }
+  // 티켓 리스트 보임 방식
+  List<GameResult> get displayedTickets {
+    List<GameResult> filteredTickets = ticketlist;
 
-  void filterList(String query) {
-    if (query.isEmpty) {
-      loadGameResults();
-    } else {
-      filteredList.value = filteredList.where((item) {
-        final queryLower = query.toLowerCase();
-        return item.team1.toLowerCase().contains(queryLower) ||
-            item.team2.toLowerCase().contains(queryLower) ||
-            DateFormat('yyyy.MM.dd').format(item.date).contains(queryLower) ||
-            item.stadium.toLowerCase().contains(queryLower) ||
-            item.seatLocation.toLowerCase().contains(queryLower);
-      }).toList();
-    }
-    applyFavoriteFilter();
-  }
-
-  void sortByDate() {
-    isAscending.value = !isAscending.value;
-    filteredList.sort((a, b) {
-      return isAscending.value
-          ? a.date.compareTo(b.date)
-          : b.date.compareTo(a.date);
-    });
-  }
-
-  void toggleFavorite(int id) {
-    if (favoriteIds.contains(id)) {
-      favoriteIds.remove(id);
-    } else {
-      favoriteIds.add(id);
-    }
-    _prefs.setStringList(
-        'favorites', favoriteIds.map((e) => e.toString()).toList());
-    applyFavoriteFilter();
-  }
-
-  void toggleFavoriteFilter() {
-    showFavoritesOnly.value = !showFavoritesOnly.value;
-    applyFavoriteFilter();
-  }
-
-  void applyFavoriteFilter() {
+    // 좋아요 유무
     if (showFavoritesOnly.value) {
-      filteredList.value =
-          filteredList.where((item) => favoriteIds.contains(item.id)).toList();
-    } else {
-      // 여기가 없는 거 같거든? 채워줄래? ㅠㅠ
-      // 나는 전체 목록이 보여지기를 원해
+      filteredTickets =
+          filteredTickets.where((gameresult) => gameresult.isFavorite).toList();
     }
+
+    // 검색
+    if (searchQuery.value.isNotEmpty) {
+      final queryLower = searchQuery.toLowerCase();
+      filteredTickets = filteredTickets
+          .where((ticket) =>
+              ticket.team1.toLowerCase().contains(queryLower) ||
+              ticket.team2.toLowerCase().contains(queryLower) ||
+              DateFormat('yyyy.MM.dd')
+                  .format(ticket.date)
+                  .contains(queryLower) ||
+              ticket.score1.toLowerCase().contains(queryLower) ||
+              ticket.score2.toLowerCase().contains(queryLower) ||
+              ticket.seatLocation.toLowerCase().contains(queryLower) ||
+              ticket.stadium.toLowerCase().contains(queryLower))
+          .toList();
+    }
+
+    // 정렬순
+    switch (sortOption.value) {
+      case SortOption.writtenOrder:
+        break; // 기본 정렬
+      case SortOption.newestFirst:
+        filteredTickets.sort((a, b) => b.date.compareTo(a.date));
+        break;
+      case SortOption.oldestFirst:
+        filteredTickets.sort((a, b) => a.date.compareTo(b.date));
+        break;
+    }
+
+    // 필터링
+    switch (filterOption.value) {
+      case FilterOption.all:
+        break;
+      case FilterOption.teamSupport:
+        filteredTickets = filteredTickets
+            .where((ticket) => ticket.team1IsMyTeam || ticket.team2IsMyTeam)
+            .toList();
+        break;
+      case FilterOption.live:
+        filteredTickets =
+            filteredTickets.where((ticket) => ticket.stadium != '집관').toList();
+        break;
+      case FilterOption.home:
+        filteredTickets =
+            filteredTickets.where((ticket) => ticket.stadium == '집관').toList();
+        break;
+      case FilterOption.won:
+        filteredTickets =
+            filteredTickets.where((ticket) => ticket.result == 'win').toList();
+        break;
+      case FilterOption.lost:
+        filteredTickets =
+            filteredTickets.where((ticket) => ticket.result == 'lose').toList();
+        break;
+    }
+
+    return filteredTickets;
+  }
+
+// <!------------------ 뷰 변환 기능  -------------------->
+  void setViewOption(ViewOption option) {
+    viewOption.value = option;
+  }
+
+// <!------------------ 필터 기능  -------------------->
+  void setFilterOption(FilterOption option) {
+    filterOption.value = option;
+    _savePreferences();
+  }
+
+// <!------------------ 최근순 오래된순 기능  -------------------->
+  void setSortOption(SortOption option) {
+    sortOption.value = option;
+    _savePreferences();
+  }
+
+// <!------------------ 즐겨찾기 기능  -------------------->
+  // 즐겨찾기만 보이게 할까요?
+  void toggleShowFavoritesOnly() {
+    showFavoritesOnly.value = !showFavoritesOnly.value;
+    _savePreferences();
+  }
+
+  // 즐겨찾기 버튼 누르기
+  void toggleFavorite(int id) async {
+    await _isar.writeTxn(() async {
+      final gameResult = await _isar.gameResults.get(id);
+      if (gameResult != null) {
+        gameResult.isFavorite = !gameResult.isFavorite;
+        await _isar.gameResults.put(gameResult);
+      }
+    });
+    // 누른 후 반영
+    loadGameResults();
+  }
+
+//
+  void _savePreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('showFavoritesOnly', showFavoritesOnly.value);
+    prefs.setInt('sortOption', sortOption.value.index);
+    prefs.setInt('filterOption', filterOption.value.index);
+  }
+
+  void _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    showFavoritesOnly.value = prefs.getBool('showFavoritesOnly') ?? false;
+    sortOption.value = SortOption.values[prefs.getInt('sortOption') ?? 0];
+    filterOption.value = FilterOption.values[prefs.getInt('filterOption') ?? 0];
   }
 }

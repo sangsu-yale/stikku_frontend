@@ -17,7 +17,7 @@ class IsarService extends GetxController {
   }
 
   Future<void> _initialize() async {
-    // await _deleteDefaultUser();
+    // await deleteDefaultUser();
     await _addDefaultUser();
     await printAllUsers();
   }
@@ -150,6 +150,7 @@ class IsarService extends GetxController {
         ..reviewComment = data["review"]?.value
         ..playerOfTheMatch = data["playerOfTheMatch"]?.value
         ..food = data["food"]?.value
+        ..isFavorite = data["isFavorite"]
         ..user.value = user;
 
       // Event 객체 생성 및 필요한 필드를 설정합니다.
@@ -179,5 +180,42 @@ class IsarService extends GetxController {
   // 날짜별 이벤트를 가져오는 함수
   List<Event> getEventsForDay(DateTime day) {
     return _isar.events.filter().eventDateEqualTo(day).findAllSync();
+  }
+
+  Future<void> deleteDetails(DateTime date) async {
+    // 유저의 uuid 확인하고
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? uuid = prefs.getString('uuid');
+
+    if (uuid == null) {
+      throw Exception('User UUID not found in SharedPreferences');
+    }
+
+    // 사용자 가져오기
+    final user = await _isar.users.filter().uuidEqualTo(uuid).findFirst();
+
+    if (user == null) {
+      throw Exception('User not found in the database');
+    }
+
+    // 특정 날짜의 gameResults 가져오기
+    final gameResults =
+        await _isar.gameResults.filter().dateEqualTo(date).findAll();
+
+    // 특정 날짜의 events 가져오기
+    final events = await _isar.events.filter().eventDateEqualTo(date).findAll();
+
+    // gameResults 및 events 삭제
+    await _isar.writeTxn(() async {
+      for (var result in gameResults) {
+        await _isar.gameResults.delete(result.id);
+      }
+
+      for (var event in events) {
+        await _isar.events.delete(event.id);
+      }
+    });
+
+    print('GameResults and Events for date $date deleted successfully');
   }
 }

@@ -3,11 +3,13 @@ import 'dart:typed_data';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
+import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class FormController extends GetxController {
   final CalendarController calendarController = Get.find();
   final isarController = Get.find<IsarService>();
+  final ListTopSearchController listTopSearchController = Get.find();
 
   // 폼 리스트
   var userId = 0.obs; // 유저 아이디
@@ -107,11 +109,14 @@ class FormController extends GetxController {
       "date": date,
       "reviewComment": reviewComment,
       "playerOfTheMatch": playerOfTheMatch,
-      "food": food
+      "food": food,
+      "isFavorite": false
     };
     //
     final gameResult = await isarController.postSubmit(data);
 
+    // 리스트 업데이트
+    listTopSearchController.loadGameResults();
     Get.toNamed('/details', arguments: gameResult);
   }
 }

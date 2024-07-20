@@ -52,83 +52,88 @@ const GameResultSchema = CollectionSchema(
       name: r'homeTeamLineup',
       type: IsarType.stringList,
     ),
-    r'mood': PropertySchema(
+    r'isFavorite': PropertySchema(
       id: 7,
+      name: r'isFavorite',
+      type: IsarType.bool,
+    ),
+    r'mood': PropertySchema(
+      id: 8,
       name: r'mood',
       type: IsarType.string,
     ),
     r'pictureUrl': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'pictureUrl',
       type: IsarType.string,
     ),
     r'playerOfTheMatch': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'playerOfTheMatch',
       type: IsarType.string,
     ),
     r'rating': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'rating',
       type: IsarType.long,
     ),
     r'result': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'result',
       type: IsarType.string,
     ),
     r'reviewComment': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'reviewComment',
       type: IsarType.string,
     ),
     r'score1': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'score1',
       type: IsarType.string,
     ),
     r'score2': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'score2',
       type: IsarType.string,
     ),
     r'seatLocation': PropertySchema(
-      id: 15,
+      id: 16,
       name: r'seatLocation',
       type: IsarType.string,
     ),
     r'stadium': PropertySchema(
-      id: 16,
+      id: 17,
       name: r'stadium',
       type: IsarType.string,
     ),
     r'team1': PropertySchema(
-      id: 17,
+      id: 18,
       name: r'team1',
       type: IsarType.string,
     ),
     r'team1IsMyTeam': PropertySchema(
-      id: 18,
+      id: 19,
       name: r'team1IsMyTeam',
       type: IsarType.bool,
     ),
     r'team2': PropertySchema(
-      id: 19,
+      id: 20,
       name: r'team2',
       type: IsarType.string,
     ),
     r'team2IsMyTeam': PropertySchema(
-      id: 20,
+      id: 21,
       name: r'team2IsMyTeam',
       type: IsarType.bool,
     ),
     r'updatedAt': PropertySchema(
-      id: 21,
+      id: 22,
       name: r'updatedAt',
       type: IsarType.dateTime,
     ),
     r'viewingMode': PropertySchema(
-      id: 22,
+      id: 23,
       name: r'viewingMode',
       type: IsarType.bool,
     )
@@ -271,22 +276,23 @@ void _gameResultSerialize(
   writer.writeString(offsets[4], object.food);
   writer.writeString(offsets[5], object.gameTitle);
   writer.writeStringList(offsets[6], object.homeTeamLineup);
-  writer.writeString(offsets[7], object.mood);
-  writer.writeString(offsets[8], object.pictureUrl);
-  writer.writeString(offsets[9], object.playerOfTheMatch);
-  writer.writeLong(offsets[10], object.rating);
-  writer.writeString(offsets[11], object.result);
-  writer.writeString(offsets[12], object.reviewComment);
-  writer.writeString(offsets[13], object.score1);
-  writer.writeString(offsets[14], object.score2);
-  writer.writeString(offsets[15], object.seatLocation);
-  writer.writeString(offsets[16], object.stadium);
-  writer.writeString(offsets[17], object.team1);
-  writer.writeBool(offsets[18], object.team1IsMyTeam);
-  writer.writeString(offsets[19], object.team2);
-  writer.writeBool(offsets[20], object.team2IsMyTeam);
-  writer.writeDateTime(offsets[21], object.updatedAt);
-  writer.writeBool(offsets[22], object.viewingMode);
+  writer.writeBool(offsets[7], object.isFavorite);
+  writer.writeString(offsets[8], object.mood);
+  writer.writeString(offsets[9], object.pictureUrl);
+  writer.writeString(offsets[10], object.playerOfTheMatch);
+  writer.writeLong(offsets[11], object.rating);
+  writer.writeString(offsets[12], object.result);
+  writer.writeString(offsets[13], object.reviewComment);
+  writer.writeString(offsets[14], object.score1);
+  writer.writeString(offsets[15], object.score2);
+  writer.writeString(offsets[16], object.seatLocation);
+  writer.writeString(offsets[17], object.stadium);
+  writer.writeString(offsets[18], object.team1);
+  writer.writeBool(offsets[19], object.team1IsMyTeam);
+  writer.writeString(offsets[20], object.team2);
+  writer.writeBool(offsets[21], object.team2IsMyTeam);
+  writer.writeDateTime(offsets[22], object.updatedAt);
+  writer.writeBool(offsets[23], object.viewingMode);
 }
 
 GameResult _gameResultDeserialize(
@@ -304,22 +310,23 @@ GameResult _gameResultDeserialize(
   object.gameTitle = reader.readStringOrNull(offsets[5]);
   object.homeTeamLineup = reader.readStringList(offsets[6]);
   object.id = id;
-  object.mood = reader.readStringOrNull(offsets[7]);
-  object.pictureUrl = reader.readString(offsets[8]);
-  object.playerOfTheMatch = reader.readStringOrNull(offsets[9]);
-  object.rating = reader.readLongOrNull(offsets[10]);
-  object.result = reader.readString(offsets[11]);
-  object.reviewComment = reader.readStringOrNull(offsets[12]);
-  object.score1 = reader.readString(offsets[13]);
-  object.score2 = reader.readString(offsets[14]);
-  object.seatLocation = reader.readString(offsets[15]);
-  object.stadium = reader.readString(offsets[16]);
-  object.team1 = reader.readString(offsets[17]);
-  object.team1IsMyTeam = reader.readBool(offsets[18]);
-  object.team2 = reader.readString(offsets[19]);
-  object.team2IsMyTeam = reader.readBool(offsets[20]);
-  object.updatedAt = reader.readDateTime(offsets[21]);
-  object.viewingMode = reader.readBool(offsets[22]);
+  object.isFavorite = reader.readBool(offsets[7]);
+  object.mood = reader.readStringOrNull(offsets[8]);
+  object.pictureUrl = reader.readString(offsets[9]);
+  object.playerOfTheMatch = reader.readStringOrNull(offsets[10]);
+  object.rating = reader.readLongOrNull(offsets[11]);
+  object.result = reader.readString(offsets[12]);
+  object.reviewComment = reader.readStringOrNull(offsets[13]);
+  object.score1 = reader.readString(offsets[14]);
+  object.score2 = reader.readString(offsets[15]);
+  object.seatLocation = reader.readString(offsets[16]);
+  object.stadium = reader.readString(offsets[17]);
+  object.team1 = reader.readString(offsets[18]);
+  object.team1IsMyTeam = reader.readBool(offsets[19]);
+  object.team2 = reader.readString(offsets[20]);
+  object.team2IsMyTeam = reader.readBool(offsets[21]);
+  object.updatedAt = reader.readDateTime(offsets[22]);
+  object.viewingMode = reader.readBool(offsets[23]);
   return object;
 }
 
@@ -345,19 +352,19 @@ P _gameResultDeserializeProp<P>(
     case 6:
       return (reader.readStringList(offset)) as P;
     case 7:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 8:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 9:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 10:
-      return (reader.readLongOrNull(offset)) as P;
-    case 11:
-      return (reader.readString(offset)) as P;
-    case 12:
       return (reader.readStringOrNull(offset)) as P;
-    case 13:
+    case 11:
+      return (reader.readLongOrNull(offset)) as P;
+    case 12:
       return (reader.readString(offset)) as P;
+    case 13:
+      return (reader.readStringOrNull(offset)) as P;
     case 14:
       return (reader.readString(offset)) as P;
     case 15:
@@ -367,14 +374,16 @@ P _gameResultDeserializeProp<P>(
     case 17:
       return (reader.readString(offset)) as P;
     case 18:
-      return (reader.readBool(offset)) as P;
-    case 19:
       return (reader.readString(offset)) as P;
-    case 20:
+    case 19:
       return (reader.readBool(offset)) as P;
+    case 20:
+      return (reader.readString(offset)) as P;
     case 21:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 22:
+      return (reader.readDateTime(offset)) as P;
+    case 23:
       return (reader.readBool(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1760,6 +1769,16 @@ extension GameResultQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> isFavoriteEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isFavorite',
+        value: value,
       ));
     });
   }
@@ -3512,6 +3531,18 @@ extension GameResultQuerySortBy
     });
   }
 
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> sortByIsFavorite() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFavorite', Sort.asc);
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> sortByIsFavoriteDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFavorite', Sort.desc);
+    });
+  }
+
   QueryBuilder<GameResult, GameResult, QAfterSortBy> sortByMood() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'mood', Sort.asc);
@@ -3780,6 +3811,18 @@ extension GameResultQuerySortThenBy
     });
   }
 
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> thenByIsFavorite() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFavorite', Sort.asc);
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> thenByIsFavoriteDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFavorite', Sort.desc);
+    });
+  }
+
   QueryBuilder<GameResult, GameResult, QAfterSortBy> thenByMood() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'mood', Sort.asc);
@@ -4021,6 +4064,12 @@ extension GameResultQueryWhereDistinct
     });
   }
 
+  QueryBuilder<GameResult, GameResult, QDistinct> distinctByIsFavorite() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isFavorite');
+    });
+  }
+
   QueryBuilder<GameResult, GameResult, QDistinct> distinctByMood(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -4180,6 +4229,12 @@ extension GameResultQueryProperty
       homeTeamLineupProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'homeTeamLineup');
+    });
+  }
+
+  QueryBuilder<GameResult, bool, QQueryOperations> isFavoriteProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isFavorite');
     });
   }
 

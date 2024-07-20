@@ -27,20 +27,20 @@ class SettingsPage extends StatelessWidget {
                   color: Colors.amber,
                   child: Column(
                     children: [
-                      FutureBuilder<String>(
-                        future: getUUID(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return const Text('Error loading UUID');
-                          } else {
-                            return Text(snapshot.data?.substring(24, 36) ??
-                                'UUID not found');
-                          }
-                        },
-                      ),
+                      // FutureBuilder<String>(
+                      //   future: getUUID(),
+                      //   builder: (context, snapshot) {
+                      //     if (snapshot.connectionState ==
+                      //         ConnectionState.waiting) {
+                      //       return const CircularProgressIndicator();
+                      //     } else if (snapshot.hasError) {
+                      //       return const Text('Error loading UUID');
+                      //     } else {
+                      //       return Text(snapshot.data?.substring(24, 36) ??
+                      //           'UUID not found');
+                      //     }
+                      //   },
+                      // ),
                       TextButton(
                         onPressed: () {
                           Get.toNamed('/login');

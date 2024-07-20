@@ -32,6 +32,8 @@ class GameResult {
   List<String>? awayTeamLineup;
   String? food;
 
+  bool isFavorite = false;
+
   @Index()
   late DateTime createdAt;
 

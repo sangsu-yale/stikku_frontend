@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
+import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class DetailsPage extends StatelessWidget {
   DetailsPage({super.key});
   final GameResult gameResult = Get.arguments!;
+  final isarController = Get.find<IsarService>();
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +23,29 @@ class DetailsPage extends StatelessWidget {
                       : Get.offAllNamed('/')
                 },
             icon: const Icon(Icons.close)),
-        actions: const [
-          Icon(Icons.delete),
-          Icon(Icons.edit),
-          Icon(Icons.download)
+        actions: [
+          IconButton(
+            onPressed: () async {
+              Get.defaultDialog(
+                title: "정말 삭제하시겠습니까?",
+                middleText: "이 작업은 되돌릴 수 없습니다.",
+                textConfirm: "확인",
+                textCancel: "취소",
+                confirmTextColor: Colors.white,
+                onConfirm: () async {
+                  await isarController.deleteDetails(gameResult.date);
+                  Get.offAndToNamed('/list');
+                },
+              );
+            },
+            icon: const Icon(Icons.delete),
+          ),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
+          IconButton(
+              onPressed: () {
+                // 추가
+              },
+              icon: const Icon(Icons.download)),
         ],
       ),
       body: Center(
