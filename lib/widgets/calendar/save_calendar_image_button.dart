@@ -1,12 +1,6 @@
 part of '../../pages/home_page.dart';
 
 class _SaveCalendarImageButton extends StatelessWidget {
-  const _SaveCalendarImageButton({
-    required this.calendarController,
-  });
-
-  final CalendarController calendarController;
-
   @override
   Widget build(BuildContext context) {
     return Flexible(

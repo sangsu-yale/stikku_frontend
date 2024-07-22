@@ -68,6 +68,8 @@ class FormController extends GetxController {
     // 직관일 경우
     if (viewingMode.value) {
       // 전체 검사
+      print("낯설만큼차가우우우우우운니목소릴들어도오오오오오오");
+      print(stadium.value);
       if (team1.value.isNotEmpty &&
           team2.value.isNotEmpty &&
           score1.value.isNotEmpty &&

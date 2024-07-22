@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/controllers/write_form_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
-import 'package:stikku_frontend/pages/write_page.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class DetailsPage extends StatelessWidget {
@@ -43,12 +42,13 @@ class DetailsPage extends StatelessWidget {
             icon: const Icon(Icons.delete),
           ),
           IconButton(
-              onPressed: () {
-                Get.toNamed(
+              onPressed: () async {
+                print(gameResult.date);
+                await Get.toNamed(
                   '/write',
                   arguments: {
                     "result": gameResult.result,
-                    "day": gameResult.date,
+                    "day": gameResult.date.toUtc(),
                     "gameTitle": gameResult.gameTitle,
                     "team1": gameResult.team1,
                     "team2": gameResult.team2,

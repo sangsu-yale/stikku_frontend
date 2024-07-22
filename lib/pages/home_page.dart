@@ -26,9 +26,7 @@ class HomePage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             // 달력 저장하기 버튼
-            _SaveCalendarImageButton(
-              calendarController: calendarController,
-            ),
+            _SaveCalendarImageButton(),
 
             // 달력
             _Calendar(

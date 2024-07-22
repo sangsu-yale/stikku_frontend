@@ -95,7 +95,8 @@ Widget _buildTeamInput(int teamNumber, RxString scoreValue, RxString teamValue,
       children: [
         // 팀 점수
         Obx(() {
-          return TextField(
+          return TextFormField(
+            initialValue: scoreValue.value == '0' ? null : scoreValue.value,
             onChanged: (value) {
               scoreValue.value = value;
             },
@@ -115,7 +116,8 @@ Widget _buildTeamInput(int teamNumber, RxString scoreValue, RxString teamValue,
         }),
 
         // 팀 이름
-        TextField(
+        TextFormField(
+          initialValue: teamValue.value.isEmpty ? '' : teamValue.value,
           onChanged: (value) {
             teamValue.value = value;
           },

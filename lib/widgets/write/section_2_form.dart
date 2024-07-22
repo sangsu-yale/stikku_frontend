@@ -16,7 +16,7 @@ class _Section2Form extends StatelessWidget {
         children: [
           // 경기장
           _buildStadiumAndSeatInput(
-              "경기장", formController.viewingMode, formController.seatLocation),
+              "경기장", formController.viewingMode, formController.stadium),
 
           // 좌석
           _buildStadiumAndSeatInput(

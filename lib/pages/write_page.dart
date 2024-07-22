@@ -21,6 +21,7 @@ class WritePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> daynResult = Get.arguments ?? {};
+    print(daynResult);
 
     // 컨트롤러에 arguments 주입
     if (daynResult.isNotEmpty) {
