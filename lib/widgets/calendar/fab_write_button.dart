@@ -1,11 +1,12 @@
 part of '../../pages/home_page.dart';
 
 class _FabWriteButton extends StatelessWidget {
-  const _FabWriteButton({
+  _FabWriteButton({
     required this.calendarController,
   });
 
   final CalendarController calendarController;
+  final GameResult gameResult = GameResult();
 
   @override
   Widget build(BuildContext context) {

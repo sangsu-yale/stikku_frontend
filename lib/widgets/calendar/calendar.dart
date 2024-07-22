@@ -1,13 +1,14 @@
 part of '../../pages/home_page.dart';
 
 class _Calendar extends StatelessWidget {
-  const _Calendar({
+  _Calendar({
     required this.calendarController,
     required this.isarController,
   });
 
   final CalendarController calendarController;
   final IsarService isarController;
+  final GameResult gameResult = GameResult();
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +39,6 @@ class _Calendar extends StatelessWidget {
                 final events = isarController.getEventsForDay(selectedDay);
                 if (events.isNotEmpty) {
                   // 이벤트가 있으면 details 페이지로 이동
-                  // details 정보 얻어서 꽂아 줘야지...
-                  print(selectedDay);
                   final gameResult =
                       await isarController.getDetails(selectedDay.toLocal());
                   Get.toNamed(
@@ -48,6 +47,7 @@ class _Calendar extends StatelessWidget {
                   );
                 } else {
                   // 없으면 write
+                  gameResult.result = "";
                   Get.toNamed('/write',
                       arguments: {"result": "", "day": selectedDay});
                 }

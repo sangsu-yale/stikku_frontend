@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/controllers/write_form_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
+import 'package:stikku_frontend/pages/write_page.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class DetailsPage extends StatelessWidget {
@@ -19,7 +20,8 @@ class DetailsPage extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () => {
-                  Get.previousRoute == '/write'
+                  Get.previousRoute != '/write' ||
+                          Get.previousRoute != '/WritePage'
                       ? Get.offAllNamed('/')
                       : Get.back()
                 },
@@ -43,9 +45,8 @@ class DetailsPage extends StatelessWidget {
           ),
           IconButton(
               onPressed: () async {
-                print(gameResult.date);
-                await Get.toNamed(
-                  '/write',
+                await Get.to(
+                  () => WritePage(isEditMode: true),
                   arguments: {
                     "result": gameResult.result,
                     "day": gameResult.date.toUtc(),

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
+import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class FormController extends GetxController {
@@ -50,7 +51,6 @@ class FormController extends GetxController {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    print(pickedFile);
     if (pickedFile != null) {
       selectedImage.value = File(pickedFile.path);
     }
@@ -68,8 +68,6 @@ class FormController extends GetxController {
     // 직관일 경우
     if (viewingMode.value) {
       // 전체 검사
-      print("낯설만큼차가우우우우우운니목소릴들어도오오오오오오");
-      print(stadium.value);
       if (team1.value.isNotEmpty &&
           team2.value.isNotEmpty &&
           score1.value.isNotEmpty &&
@@ -94,7 +92,7 @@ class FormController extends GetxController {
   }
 
   // 폼 전송 함수
-  void submit() async {
+  void submit(isEditMode) async {
     Map data = {
       "stadium": stadium,
       "seatLocation": seatLocation,
@@ -115,7 +113,14 @@ class FormController extends GetxController {
       "isFavorite": false
     };
     //
-    final gameResult = await isarController.postSubmit(data);
+    final GameResult gameResult;
+    if (isEditMode) {
+      gameResult = await isarController.updateSubmit(data);
+    } else {
+      gameResult = await isarController.postSubmit(data);
+    }
+
+    //
 
     // 리스트 업데이트
     listTopSearchController.loadGameResults();

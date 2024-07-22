@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
+import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 import 'package:stikku_frontend/models/event_model.dart';
 import 'package:stikku_frontend/widgets/calendar/calendar_body_style.dart';
@@ -16,6 +17,7 @@ part '../widgets/calendar/calendar.dart';
 class HomePage extends StatelessWidget {
   final CalendarController calendarController = Get.put(CalendarController());
   final isarController = Get.find<IsarService>();
+  final GameResult gameResult = GameResult();
 
   HomePage({super.key});
 

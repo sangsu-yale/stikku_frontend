@@ -13,6 +13,8 @@ class DiaryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isEditMode = Get.arguments ?? false;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -53,7 +55,8 @@ class DiaryPage extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      formController.submit();
+                      formController.submit(isEditMode);
+
                       Get.snackbar('Success', 'Form submitted successfully!');
                     },
                     child: const Text("완료하기"),
