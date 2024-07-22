@@ -19,7 +19,7 @@ class IsarService extends GetxController {
   Future<void> _initialize() async {
     // await deleteDefaultUser();
     await _addDefaultUser();
-    await printAllUsers();
+    // await printAllUsers();
   }
 
   // 임시 게스트용 isar user 생성
@@ -60,6 +60,8 @@ class IsarService extends GetxController {
     });
     await prefs.remove('username');
     await prefs.remove('uuid');
+
+    print("유저가 삭제되었습니다.");
   }
 
   // 모든 유저 확인
@@ -70,25 +72,24 @@ class IsarService extends GetxController {
 
   // 유저 DB 확인
   Future<void> printAllUsers() async {
-    final users = await getAllUsers();
-    for (var user in users) {
-// 모든 GameResult를 로드하고 출력합니다.
-      await user.gameResults.load();
-      for (var result in user.gameResults) {
-        print(
-            'Game Title: ${result.gameTitle}, Score: ${result.score1} - ${result.score2}');
-        print('Stadium: ${result.stadium}, Seat: ${result.seatLocation}');
-        print('Teams: ${result.team1} vs ${result.team2}');
-        print('Result: ${result.result}, Viewing Mode: ${result.viewingMode}');
-        print('Comment: ${result.comment}');
-        print('Date: ${result.date}');
-        print('Picture URL: ${result.pictureUrl}');
-        print(
-            'Created At: ${result.createdAt}, Updated At: ${result.updatedAt}');
-        print('-----------------------------');
-      }
-      print('User: ${user.username}, 님 반갑습니다. ${user.uuid}번 id입니다.');
-    }
+    //final users = await getAllUsers();
+    // for (var user in users) {
+    //   await user.gameResults.load();
+    //   for (var result in user.gameResults) {
+    //     print(
+    //         'Game Title: ${result.gameTitle}, Score: ${result.score1} - ${result.score2}');
+    //     print('Stadium: ${result.stadium}, Seat: ${result.seatLocation}');
+    //     print('Teams: ${result.team1} vs ${result.team2}');
+    //     print('Result: ${result.result}, Viewing Mode: ${result.viewingMode}');
+    //     print('Comment: ${result.comment}');
+    //     print('Date: ${result.date}');
+    //     print('Picture URL: ${result.pictureUrl}');
+    //     print(
+    //         'Created At: ${result.createdAt}, Updated At: ${result.updatedAt}');
+    //     print('-----------------------------');
+    //   }
+    //   print('User: ${user.username}, 님 반갑습니다. ${user.uuid}번 id입니다.');
+    // }
   }
 
   // gameDetails 가지고 오기 (우선 임시로 이곳에 코드 작성)
