@@ -14,25 +14,37 @@ class WritePage extends StatelessWidget {
   final formController = Get.find<FormController>();
   final diaryDialogController = Get.find<DiaryDialogController>();
 
-  WritePage({super.key});
+  final bool isEditMode;
+
+  WritePage({super.key, this.isEditMode = false});
+
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> daynResult = Get.arguments ?? {};
 
-    print("수훈선수 : ${formController.playerOfTheMatch.value}");
-
     // 컨트롤러에 arguments 주입
-    daynResult["result"] != null
-        ? formController.result.value = daynResult["result"]
-        : formController.result.value;
-    daynResult["day"] != null
-        ? formController.date = daynResult["day"].toUtc()
-        : formController.date;
+    if (daynResult.isNotEmpty) {
+      formController.result.value = daynResult["result"] ?? '';
+      formController.date = daynResult["day"] ?? DateTime.now().toUtc();
+      formController.gameTitle.value = daynResult["gameTitle"] ?? '';
+      formController.team1.value = daynResult["team1"] ?? '';
+      formController.team2.value = daynResult["team2"] ?? '';
+      formController.score1.value = daynResult["score1"] ?? '0';
+      formController.score2.value = daynResult["score2"] ?? '0';
+      formController.stadium.value = daynResult["stadium"] ?? '';
+      formController.seatLocation.value = daynResult["seatLocation"] ?? '';
+      formController.comment.value = daynResult["comment"] ?? '';
+      formController.reviewComment.value = daynResult["reviewComment"] ?? '';
+      formController.playerOfTheMatch.value =
+          daynResult["playerOfTheMatch"] ?? '';
+      formController.food.value = daynResult["food"] ?? '';
+    }
+// 수정 모드 플래그 설정
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        title: const Text("경기 기록 작성 페이지"),
+        title: Text(isEditMode ? "경기 기록 수정 페이지" : "경기 기록 작성 페이지"),
       ),
 
       // body

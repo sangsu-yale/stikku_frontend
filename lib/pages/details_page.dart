@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stikku_frontend/controllers/write_form_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
+import 'package:stikku_frontend/pages/write_page.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class DetailsPage extends StatelessWidget {
   DetailsPage({super.key});
   final GameResult gameResult = Get.arguments!;
   final isarController = Get.find<IsarService>();
+  final formController = Get.find<FormController>();
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +20,9 @@ class DetailsPage extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () => {
-                  // 생성 후 입장과 리스트 클릭 구분
-                  Get.previousRoute == '/lists'
-                      ? Get.back()
-                      : Get.offAllNamed('/')
+                  Get.previousRoute == '/write'
+                      ? Get.offAllNamed('/')
+                      : Get.back()
                 },
             icon: const Icon(Icons.close)),
         actions: [
@@ -33,14 +35,35 @@ class DetailsPage extends StatelessWidget {
                 textCancel: "취소",
                 confirmTextColor: Colors.white,
                 onConfirm: () async {
-                  await isarController.deleteDetails(gameResult.date);
+                  formController.deleteDetails(gameResult.date);
                   Get.offAndToNamed('/list');
                 },
               );
             },
             icon: const Icon(Icons.delete),
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
+          IconButton(
+              onPressed: () {
+                Get.toNamed(
+                  '/write',
+                  arguments: {
+                    "result": gameResult.result,
+                    "day": gameResult.date,
+                    "gameTitle": gameResult.gameTitle,
+                    "team1": gameResult.team1,
+                    "team2": gameResult.team2,
+                    "score1": gameResult.score1,
+                    "score2": gameResult.score2,
+                    "stadium": gameResult.stadium,
+                    "seatLocation": gameResult.seatLocation,
+                    "comment": gameResult.comment,
+                    "reviewComment": gameResult.reviewComment,
+                    "playerOfTheMatch": gameResult.playerOfTheMatch,
+                    "food": gameResult.food,
+                  },
+                );
+              },
+              icon: const Icon(Icons.edit)),
           IconButton(
               onPressed: () {
                 // 추가

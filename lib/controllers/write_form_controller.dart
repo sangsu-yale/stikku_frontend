@@ -119,4 +119,9 @@ class FormController extends GetxController {
     listTopSearchController.loadGameResults();
     Get.toNamed('/details', arguments: gameResult);
   }
+
+  void deleteDetails(DateTime date) async {
+    await isarController.deleteDetails(date);
+    listTopSearchController.loadGameResults();
+  }
 }

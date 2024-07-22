@@ -11,253 +11,254 @@ class ListPage extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
 
   ListPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        // 검색 ZONE
-
-        Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: _controller,
-                decoration: const InputDecoration(
-                  hintText: '검색',
-                ),
-                onChanged: (value) {
-                  listTopSearchController.searchQuery.value = value;
-                },
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                _controller.clear();
-                listTopSearchController.searchQuery.value = '';
-              },
-              icon: const Icon(
-                Icons.cancel,
-              ),
-            )
-          ],
-        ),
-
-        // 필터 ZONE
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              children: [
-                // 필터 기능
-                Obx(
-                  () {
-                    return TextButton(
-                      child: Text(_getFilterOptionText(
-                          listTopSearchController.filterOption.value)),
-                      onPressed: () {
-                        _showFilterDialog(context);
-                      },
-                    );
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          // 검색 ZONE
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _controller,
+                  decoration: const InputDecoration(
+                    hintText: '검색',
+                  ),
+                  onChanged: (value) {
+                    listTopSearchController.searchQuery.value = value;
                   },
                 ),
-
-                // 즐겨찾기 On Off
-                IconButton(
-                  icon: Obx(() => Icon(
-                        listTopSearchController.showFavoritesOnly.value
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                      )),
-                  onPressed: () {
-                    listTopSearchController.toggleShowFavoritesOnly();
-                  },
-                ),
-              ],
-            ),
-            // 정렬 메뉴 버튼
-            Obx(
-              () => PopupMenuButton<SortOption>(
-                onSelected: (SortOption result) {
-                  listTopSearchController.setSortOption(result);
+              ),
+              IconButton(
+                onPressed: () {
+                  _controller.clear();
+                  listTopSearchController.searchQuery.value = '';
                 },
-                itemBuilder: (BuildContext context) =>
-                    <PopupMenuEntry<SortOption>>[
-                  const PopupMenuItem<SortOption>(
-                    value: SortOption.writtenOrder,
-                    child: Text('작성순'),
+                icon: const Icon(
+                  Icons.cancel,
+                ),
+              ),
+            ],
+          ),
+
+          // 필터 ZONE
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  // 필터 기능
+                  Obx(
+                    () {
+                      return TextButton(
+                        child: Text(_getFilterOptionText(
+                            listTopSearchController.filterOption.value)),
+                        onPressed: () {
+                          _showFilterDialog(context);
+                        },
+                      );
+                    },
                   ),
-                  const PopupMenuItem<SortOption>(
-                    value: SortOption.newestFirst,
-                    child: Text('최신순'),
-                  ),
-                  const PopupMenuItem<SortOption>(
-                    value: SortOption.oldestFirst,
-                    child: Text('오래된순'),
+
+                  // 즐겨찾기 On Off
+                  IconButton(
+                    icon: Obx(() => Icon(
+                          listTopSearchController.showFavoritesOnly.value
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                        )),
+                    onPressed: () {
+                      listTopSearchController.toggleShowFavoritesOnly();
+                    },
                   ),
                 ],
-                child: Row(
-                  children: [
-                    Text(_getSortOptionText(
-                        listTopSearchController.sortOption.value)),
-                    const Icon(Icons.arrow_drop_down),
+              ),
+              // 정렬 메뉴 버튼
+              Obx(
+                () => PopupMenuButton<SortOption>(
+                  onSelected: (SortOption result) {
+                    listTopSearchController.setSortOption(result);
+                  },
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<SortOption>>[
+                    const PopupMenuItem<SortOption>(
+                      value: SortOption.writtenOrder,
+                      child: Text('작성순'),
+                    ),
+                    const PopupMenuItem<SortOption>(
+                      value: SortOption.newestFirst,
+                      child: Text('최신순'),
+                    ),
+                    const PopupMenuItem<SortOption>(
+                      value: SortOption.oldestFirst,
+                      child: Text('오래된순'),
+                    ),
                   ],
+                  child: Row(
+                    children: [
+                      Text(_getSortOptionText(
+                          listTopSearchController.sortOption.value)),
+                      const Icon(Icons.arrow_drop_down),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            // 화면 설정 버튼
-            IconButton(
-              icon: Obx(() => Icon(
+              // 화면 설정 버튼
+              IconButton(
+                icon: Obx(() => Icon(
+                      listTopSearchController.viewOption.value ==
+                              ViewOption.list
+                          ? Icons.grid_view
+                          : Icons.list,
+                    )),
+                onPressed: () {
+                  listTopSearchController.setViewOption(
                     listTopSearchController.viewOption.value == ViewOption.list
-                        ? Icons.grid_view
-                        : Icons.list,
-                  )),
-              onPressed: () {
-                listTopSearchController.setViewOption(
-                  listTopSearchController.viewOption.value == ViewOption.list
-                      ? ViewOption.grid
-                      : ViewOption.list,
-                );
+                        ? ViewOption.grid
+                        : ViewOption.list,
+                  );
+                },
+              ),
+            ],
+          ),
+
+          // 카드 리스트 ZONE
+          Expanded(
+            child: Obx(
+              () {
+                if (listTopSearchController.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (listTopSearchController.ticketlist.isEmpty) {
+                  return const Center(
+                    child: Text('경기 티켓을 발급해 보세요'),
+                  );
+                }
+
+                // 리스트 시작
+                final filterList = listTopSearchController.getSortedTickets();
+                return listTopSearchController.viewOption.value ==
+                        ViewOption.list
+                    ? ListView.builder(
+                        itemCount: filterList.length,
+                        itemBuilder: (context, index) {
+                          final item = filterList[index];
+
+                          // 아이템 빌드 로직
+                          return GestureDetector(
+                            onTap: () async {
+                              final gameResult = await isarController
+                                  .getDetails(item.date.toLocal());
+                              Get.toNamed('/details', arguments: gameResult);
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              margin: const EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  // 경기 결과
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      // 팀
+                                      Column(
+                                        children: [
+                                          // 우리팀
+                                          Row(
+                                            children: [
+                                              Text(item.team1),
+                                              Text(item.score1),
+                                            ],
+                                          ),
+                                          // 상대팀
+                                          Row(
+                                            children: [
+                                              Text(item.team2),
+                                              Text(item.score2),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      // 승패 유무
+                                      Row(
+                                        children: [
+                                          Text(item.result),
+                                          // 좋아요 유무
+                                          IconButton(
+                                            icon: Icon(
+                                              item.isFavorite
+                                                  ? Icons.favorite
+                                                  : Icons.favorite_border,
+                                              color: item.isFavorite
+                                                  ? Colors.red
+                                                  : null,
+                                            ),
+                                            onPressed: () {
+                                              listTopSearchController
+                                                  .toggleFavorite(item.id);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  // 경기 내용
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Text(DateFormat('yyyy.MM.dd')
+                                          .format(item.date)),
+                                      Text(item.stadium),
+                                      Text(item.seatLocation)
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 3 / 2,
+                        ),
+                        itemCount: filterList.length,
+                        itemBuilder: (context, index) {
+                          final ticket = filterList[index];
+                          return Card(
+                            child: GridTile(
+                              footer: IconButton(
+                                icon: Icon(
+                                  ticket.isFavorite
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: ticket.isFavorite ? Colors.red : null,
+                                ),
+                                onPressed: () {
+                                  listTopSearchController
+                                      .toggleFavorite(ticket.id);
+                                },
+                              ),
+                              child: Text(ticket.result),
+                            ),
+                          );
+                        },
+                      );
               },
             ),
-          ],
-        ),
-
-        // 카드 리스트 ZONE
-        Expanded(
-          child: Obx(
-            () {
-              if (listTopSearchController.ticketlist.isEmpty) {
-                return const Center(
-                  child: Text('경기 티켓을 발급해 보세요'),
-                );
-              }
-
-              // <!------ 여기서부터 리스트 시작 ------>
-              final filterList = listTopSearchController.displayedTickets;
-              return listTopSearchController.viewOption.value == ViewOption.list
-                  ? ListView.builder(
-                      itemCount: filterList.length,
-                      itemBuilder: (context, index) {
-                        final item = filterList[index];
-
-                        // 아이템 빌드 로직
-                        return GestureDetector(
-                          onTap: () async {
-                            final gameResult = await isarController
-                                .getDetails(item.date.toLocal());
-                            Get.toNamed('/details', arguments: gameResult);
-                          },
-                          child: Container(
-                            color: Colors.white,
-                            margin: const EdgeInsets.all(10),
-                            // 내용물 시작
-                            child: Column(
-                              children: [
-                                // 경기 결과
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    // 팀
-                                    Column(
-                                      children: [
-                                        // 우리팀
-                                        Row(
-                                          children: [
-                                            Text(item.team1),
-                                            Text(item.score1),
-                                          ],
-                                        ),
-
-                                        // 상대팀
-                                        Row(
-                                          children: [
-                                            Text(item.team2),
-                                            Text(item.score2),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-
-                                    // 승패 유무
-                                    Row(
-                                      children: [
-                                        Text(item.result),
-                                        // 좋아요 유무
-                                        IconButton(
-                                          icon: Icon(
-                                            item.isFavorite
-                                                ? Icons.favorite
-                                                : Icons.favorite_border,
-                                            color: item.isFavorite
-                                                ? Colors.red
-                                                : null,
-                                          ),
-                                          onPressed: () {
-                                            listTopSearchController
-                                                .toggleFavorite(item.id);
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-
-                                // 경기 내용
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Text(DateFormat('yyyy.MM.dd')
-                                        .format(item.date)),
-                                    Text(item.stadium),
-                                    Text(item.seatLocation)
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    )
-                  : GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 3 / 2,
-                      ),
-                      itemCount:
-                          listTopSearchController.displayedTickets.length,
-                      itemBuilder: (context, index) {
-                        final ticket =
-                            listTopSearchController.displayedTickets[index];
-                        return Card(
-                          child: GridTile(
-                            footer: IconButton(
-                              icon: Icon(
-                                ticket.isFavorite
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: ticket.isFavorite ? Colors.red : null,
-                              ),
-                              onPressed: () {
-                                listTopSearchController
-                                    .toggleFavorite(ticket.id);
-                              },
-                            ),
-                            child: Text(ticket.result),
-                          ),
-                        );
-                      },
-                    );
-            },
           ),
-        ),
-      ],
-    ));
+        ],
+      ),
+    );
   }
 }
 

@@ -32,6 +32,7 @@ final List<GetPage> appRoutes = [
     name: '/details',
     page: () => DetailsPage(),
     transition: Transition.native,
+    binding: DetailsBindings(),
   ),
   GetPage(
     name: '/login',

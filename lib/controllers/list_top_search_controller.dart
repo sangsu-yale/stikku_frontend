@@ -82,45 +82,7 @@ class ListTopSearchController extends GetxController {
               ticket.stadium.toLowerCase().contains(queryLower))
           .toList();
     }
-
-    // 정렬순
-    switch (sortOption.value) {
-      case SortOption.writtenOrder:
-        break; // 기본 정렬
-      case SortOption.newestFirst:
-        filteredTickets.sort((a, b) => b.date.compareTo(a.date));
-        break;
-      case SortOption.oldestFirst:
-        filteredTickets.sort((a, b) => a.date.compareTo(b.date));
-        break;
-    }
-
-    // 필터링
-    switch (filterOption.value) {
-      case FilterOption.all:
-        break;
-      case FilterOption.teamSupport:
-        filteredTickets = filteredTickets
-            .where((ticket) => ticket.team1IsMyTeam || ticket.team2IsMyTeam)
-            .toList();
-        break;
-      case FilterOption.live:
-        filteredTickets =
-            filteredTickets.where((ticket) => ticket.stadium != '집관').toList();
-        break;
-      case FilterOption.home:
-        filteredTickets =
-            filteredTickets.where((ticket) => ticket.stadium == '집관').toList();
-        break;
-      case FilterOption.won:
-        filteredTickets =
-            filteredTickets.where((ticket) => ticket.result == 'win').toList();
-        break;
-      case FilterOption.lost:
-        filteredTickets =
-            filteredTickets.where((ticket) => ticket.result == 'lose').toList();
-        break;
-    }
+    // 여기에 상태 변경 코드를 작성하세요
 
     return filteredTickets;
   }
@@ -175,5 +137,48 @@ class ListTopSearchController extends GetxController {
     showFavoritesOnly.value = prefs.getBool('showFavoritesOnly') ?? false;
     sortOption.value = SortOption.values[prefs.getInt('sortOption') ?? 0];
     filterOption.value = FilterOption.values[prefs.getInt('filterOption') ?? 0];
+  }
+
+  List<GameResult> getSortedTickets() {
+    List<GameResult> sortedTickets = List.from(displayedTickets);
+
+    switch (sortOption.value) {
+      case SortOption.writtenOrder:
+        break; // 기본 정렬
+      case SortOption.newestFirst:
+        sortedTickets.sort((a, b) => b.date.compareTo(a.date));
+        break;
+      case SortOption.oldestFirst:
+        sortedTickets.sort((a, b) => a.date.compareTo(b.date));
+        break;
+    }
+
+    switch (filterOption.value) {
+      case FilterOption.all:
+        break;
+      case FilterOption.teamSupport:
+        sortedTickets = sortedTickets
+            .where((ticket) => ticket.team1IsMyTeam || ticket.team2IsMyTeam)
+            .toList();
+        break;
+      case FilterOption.live:
+        sortedTickets =
+            sortedTickets.where((ticket) => ticket.stadium != '집관').toList();
+        break;
+      case FilterOption.home:
+        sortedTickets =
+            sortedTickets.where((ticket) => ticket.stadium == '집관').toList();
+        break;
+      case FilterOption.won:
+        sortedTickets =
+            sortedTickets.where((ticket) => ticket.result == 'win').toList();
+        break;
+      case FilterOption.lost:
+        sortedTickets =
+            sortedTickets.where((ticket) => ticket.result == 'lose').toList();
+        break;
+    }
+
+    return sortedTickets;
   }
 }

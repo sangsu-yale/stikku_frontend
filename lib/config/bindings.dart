@@ -9,3 +9,11 @@ class WriteBindings extends Bindings {
     Get.lazyPut<DiaryDialogController>(() => DiaryDialogController());
   }
 }
+
+class DetailsBindings extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut<FormController>(() => FormController());
+    Get.lazyPut<DiaryDialogController>(() => DiaryDialogController());
+  }
+}
