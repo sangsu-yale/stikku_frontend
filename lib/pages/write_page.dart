@@ -41,6 +41,8 @@ class WritePage extends StatelessWidget {
     }
 // 수정 모드 플래그 설정
 
+// TODO: 10글자가 넘어가는 팀 이름은 작게 바뀝니다
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
