@@ -32,7 +32,7 @@ class _FabWriteButton extends StatelessWidget {
         activeBackgroundColor:
             Theme.of(context).floatingActionButtonTheme.backgroundColor,
         direction: SpeedDialDirection.left,
-        icon: Icons.edit,
+        icon: Custom.pencilsimple__1_,
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
         childPadding: const EdgeInsets.symmetric(vertical: 0),
         elevation: 0,
@@ -41,18 +41,19 @@ class _FabWriteButton extends StatelessWidget {
         visible: true,
         curve: Curves.bounceIn,
         children: [
-          dialChild("cancel", "취", Icons.cancel),
-          dialChild("tie", "무", Icons.time_to_leave),
-          dialChild("lose", "패", Icons.class_),
-          dialChild("win", "승", Icons.star),
+          dialChild("cancel", "취", Custom.umbrella__1_, Colors.grey),
+          dialChild("tie", "무", Custom.clover__1_, Colors.green),
+          dialChild("lose", "패", Custom.bookmarksimple__1_, Colors.red),
+          dialChild("win", "승", Custom.star_1, Colors.blue),
         ],
       ),
     );
   }
 
 // child 버튼 설정
-  SpeedDialChild dialChild(result, resultLabel, resultIcon) {
+  SpeedDialChild dialChild(result, resultLabel, resultIcon, color) {
     return SpeedDialChild(
+      backgroundColor: Colors.transparent,
       elevation: 0,
       onTap: () {
         Get.toNamed('/write', arguments: {
@@ -66,8 +67,21 @@ class _FabWriteButton extends StatelessWidget {
         children: [
           Icon(
             resultIcon,
+            color: color,
+            size: 30,
+            shadows: [
+              BoxShadow(
+                color: color,
+                spreadRadius: 10,
+                blurRadius: 10,
+                offset: const Offset(0, 0),
+              ),
+            ],
           ),
-          Text(resultLabel)
+          Text(
+            resultLabel,
+            style: const TextStyle(fontSize: 12),
+          )
         ],
       ),
     );

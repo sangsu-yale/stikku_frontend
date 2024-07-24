@@ -16,7 +16,7 @@ class _Calendar extends StatelessWidget {
       flex: 8,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          double textSize = 18 * constraints.maxWidth / 340;
+          double textSize = 18 * constraints.maxWidth / 400;
 
           return Obx(() {
             return TableCalendar(
@@ -28,7 +28,6 @@ class _Calendar extends StatelessWidget {
               locale: 'ko_KR',
               daysOfWeekHeight: 30,
               rowHeight: constraints.maxHeight * 0.11, // 세로 410까지 OK
-
               // 이벤트 로더 (저장한 이벤트를 보여 준다)
               eventLoader: isarController.getEventsForDay,
 
@@ -57,6 +56,38 @@ class _Calendar extends StatelessWidget {
 
               // 날짜 셀 커스터마이징
               calendarBuilders: CalendarBuilders(
+                todayBuilder: (context, date, events) {
+                  return Container(
+                    margin: const EdgeInsets.all(7.0),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor.withOpacity(0.7),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      '${date.day}',
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  );
+                },
+                selectedBuilder: (context, date, events) {
+                  return Container(
+                    margin: const EdgeInsets.all(7.0),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      '${date.day}',
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  );
+                },
                 markerBuilder: (context, day, events) {
                   if (events.isNotEmpty) {
                     Event event = events.first as Event;
@@ -65,27 +96,47 @@ class _Calendar extends StatelessWidget {
                         ? event.eventDetails.first
                         : '';
 
+                    IconData icon;
                     Color color;
                     switch (eventDetail) {
                       case 'cancel':
-                        color = Colors.red;
+                        icon = Custom.umbrella__1_;
+                        color = Colors.grey;
                         break;
                       case 'win':
-                        color = Colors.green;
-                        break;
-                      case 'lose':
+                        icon = Custom.star_1;
                         color = Colors.blue;
                         break;
+                      case 'lose':
+                        icon = Custom.bookmarksimple__1_;
+                        color = Colors.red;
+                        break;
                       case 'tie':
-                        color = Colors.yellow;
+                        icon = Custom.clover__1_;
+                        color = Colors.green;
                         break;
                       default:
-                        color = Colors.grey;
+                        icon = Custom.alien; // 기본 아이콘 설정
+                        color = Colors.black; // 기본 색상 설정
                     }
 
                     return Container(
-                      decoration:
-                          BoxDecoration(color: color, shape: BoxShape.circle),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      child: Center(
+                        child: Icon(
+                          icon,
+                          color: color,
+                          size: 40,
+                          shadows: [
+                            BoxShadow(
+                              color: color,
+                              spreadRadius: 10,
+                              blurRadius: 10,
+                              offset: const Offset(0, 0),
+                            ),
+                          ],
+                        ),
+                      ),
                     );
                   }
                   return null;

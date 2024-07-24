@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 
 class ListSearchBar extends StatelessWidget {
@@ -39,9 +40,7 @@ class ListSearchBar extends StatelessWidget {
               _controller.clear();
               listTopSearchController.searchQuery.value = '';
             },
-            icon: const Icon(
-              Icons.cancel,
-            ),
+            icon: const Icon(Custom.x, color: Colors.grey),
           ),
         ],
       ),

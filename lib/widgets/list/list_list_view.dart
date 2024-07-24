@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
@@ -156,8 +157,8 @@ class ListViewZone extends StatelessWidget {
                                   },
                                   child: Icon(
                                     item.isFavorite
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
+                                        ? Custom.heartstraight_1
+                                        : Custom.heartstraight,
                                     color: Colors.red,
                                   ),
                                 ),

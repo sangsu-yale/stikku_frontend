@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/controllers/navigation_controller.dart';
 import 'package:stikku_frontend/pages/charts_page.dart';
 import 'package:stikku_frontend/pages/home_page.dart';
@@ -27,28 +28,23 @@ class MainScreen extends StatelessWidget {
     return Scaffold(
       // 페이지 화면
       body: LayoutBuilder(builder: (context, constraints) {
-        double paddingValue = constraints.maxWidth * 0.03; // 화면 너비의 3%를 패딩으로 사용
-        return Padding(
-          padding: EdgeInsets.all(paddingValue),
-          child: Obx(() {
-            // 인덱스 스택으로 상태 유지
-            return IndexedStack(
-              index: navigationController.selectedIndex.value,
-              children: pages,
-            );
-          }),
-        );
+        return Obx(() {
+          // 인덱스 스택으로 상태 유지
+          return IndexedStack(
+            index: navigationController.selectedIndex.value,
+            children: pages,
+          );
+        });
       }),
 
       // <--- 바텀내비게이션바 --->
       bottomNavigationBar: Obx(() {
-        // 둥근 모서리 정의
-        return ClipRRect(
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(30),
+        return Container(
+          decoration: const BoxDecoration(
+            border: Border(
+              top: BorderSide(color: Color.fromARGB(28, 0, 0, 0)),
+            ),
           ),
-
-          // <--- 내비게이션바 --->
           child: NavigationBar(
             // 내비게이션바 설정
             onDestinationSelected: (int index) {
@@ -56,28 +52,56 @@ class MainScreen extends StatelessWidget {
             },
             selectedIndex: navigationController.selectedIndex.value,
             labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-            elevation: 0,
-
+            elevation: 1,
+            indicatorColor: Colors.transparent,
             // 내비게이션바 위젯 리스트
             destinations: const <Widget>[
               NavigationDestination(
-                selectedIcon: Icon(Icons.calendar_month),
-                icon: Icon(Icons.calendar_month_outlined),
+                selectedIcon: Icon(
+                  Custom.baseballhelmet_1,
+                  color: Colors.blue,
+                  size: 27,
+                ),
+                icon: Icon(
+                  Custom.baseballhelmet,
+                  size: 27,
+                ),
                 label: '메인',
               ),
               NavigationDestination(
-                selectedIcon: Icon(Icons.view_list),
-                icon: Icon(Icons.view_list_outlined),
+                selectedIcon: Icon(
+                  Custom.listheart__1_,
+                  color: Colors.blue,
+                  size: 27,
+                ),
+                icon: Icon(
+                  Custom.listheart__2_,
+                  size: 27,
+                ),
                 label: '리스트',
               ),
               NavigationDestination(
-                selectedIcon: Icon(Icons.chair),
-                icon: Icon(Icons.chair_outlined),
+                selectedIcon: Icon(
+                  Custom.lego_1,
+                  color: Colors.blue,
+                  size: 27,
+                ),
+                icon: Icon(
+                  Custom.lego,
+                  size: 27,
+                ),
                 label: '통계',
               ),
               NavigationDestination(
-                selectedIcon: Icon(Icons.settings),
-                icon: Icon(Icons.settings),
+                selectedIcon: Icon(
+                  Custom.asterisk_1,
+                  color: Colors.blue,
+                  size: 27,
+                ),
+                icon: Icon(
+                  Custom.asterisk,
+                  size: 27,
+                ),
                 label: '설정',
               ),
             ],

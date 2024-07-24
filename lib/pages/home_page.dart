@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
+import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
@@ -25,16 +26,19 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            // 달력 저장하기 버튼
-            _SaveCalendarImageButton(),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: <Widget>[
+              // 달력 저장하기 버튼
+              _SaveCalendarImageButton(),
 
-            // 달력
-            _Calendar(
-                calendarController: calendarController,
-                isarController: isarController),
-          ],
+              // 달력
+              _Calendar(
+                  calendarController: calendarController,
+                  isarController: isarController),
+            ],
+          ),
         ),
       ),
 

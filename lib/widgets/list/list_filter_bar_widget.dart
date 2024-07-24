@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 
 class FilterBar extends StatelessWidget {
@@ -52,8 +53,8 @@ class FilterBar extends StatelessWidget {
               IconButton(
                 icon: Obx(() => Icon(
                       listTopSearchController.showFavoritesOnly.value
-                          ? Icons.favorite
-                          : Icons.favorite_border,
+                          ? Custom.heartstraight_1
+                          : Custom.heartstraight,
                       color: Colors.red,
                     )),
                 onPressed: () {
@@ -69,8 +70,8 @@ class FilterBar extends StatelessWidget {
                 icon: Obx(() => Icon(
                       listTopSearchController.viewOption.value ==
                               ViewOption.list
-                          ? Icons.grid_view_rounded
-                          : Icons.list_sharp,
+                          ? Custom.hashstraight
+                          : Custom.listheart__2_,
                     )),
                 onPressed: () {
                   listTopSearchController.setViewOption(

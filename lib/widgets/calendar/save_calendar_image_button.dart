@@ -9,7 +9,7 @@ class _SaveCalendarImageButton extends StatelessWidget {
         alignment: Alignment.centerRight,
         child: IconButton(
           onPressed: () {},
-          icon: const Icon(Icons.download),
+          icon: const Icon(Custom.arrowlinedown),
         ),
       ),
     );

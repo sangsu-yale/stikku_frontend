@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
@@ -20,12 +21,12 @@ HeaderStyle calendarHeaderStyle(BuildContext context) {
     leftChevronPadding: const EdgeInsets.all(0),
     rightChevronPadding: const EdgeInsets.all(0),
     leftChevronIcon: Icon(
-      Icons.arrow_circle_left,
+      Custom.caretcircleleft,
       color: Theme.of(context).primaryColor,
       size: 30,
     ),
     rightChevronIcon: Icon(
-      Icons.arrow_circle_right,
+      Custom.caretcircleright,
       color: Theme.of(context).primaryColor,
       size: 30,
     ),
