@@ -10,7 +10,18 @@ class _Section4Form extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.teal,
+      margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: const Border(
+          bottom: BorderSide(width: 1.0, color: Colors.blue),
+          left: BorderSide(width: 1.0, color: Colors.blue),
+          right: BorderSide(width: 1.0, color: Colors.blue),
+          // 아래쪽 경계선을 설정하지 않음
+        ),
+      ),
       // 4번 폼 (사진)
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

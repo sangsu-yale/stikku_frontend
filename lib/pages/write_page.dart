@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/controllers/diary_dialog_controller.dart';
 import 'package:stikku_frontend/controllers/write_form_controller.dart';
 
@@ -8,6 +9,7 @@ part '../widgets/write/section_4_form.dart';
 part '../widgets/write/section_3_form.dart';
 part '../widgets/write/section_2_form.dart';
 part '../widgets/write/section_1_form.dart';
+part '../widgets/write/section_0_form.dart';
 part '../widgets/write/two_bottom_buttons.dart';
 
 class WritePage extends StatelessWidget {
@@ -51,12 +53,13 @@ class WritePage extends StatelessWidget {
 
       // body
       body: Container(
-        padding: const EdgeInsets.all(15),
+        color: Colors.grey[200],
         // <------------- 스크롤뷰 ------------->
         child: SingleChildScrollView(
           // <------------- 폼 시작 ------------->
           child: Column(
             children: [
+              _Section0Form(formController: formController),
               // 1번 : 직관 유무 / 게임 결과 / 팀별 점수, 이름 / 응원팀 유무
               _Section1Form(
                 formController: formController,
@@ -90,11 +93,11 @@ class WritePage extends StatelessWidget {
                   }
                 },
                 child: Container(
-                  color: Colors.blue[100],
+                  color: Colors.blue,
                   child: const Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text("작성 완료", style: TextStyle(color: Colors.black))
+                      Text("작성 완료", style: TextStyle(color: Colors.white))
                     ],
                   ),
                 ),
@@ -116,7 +119,18 @@ class WritePage extends StatelessWidget {
                   child: const Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text("일기 작성하기 >", style: TextStyle(color: Colors.white))
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("일기 작성하기",
+                              style: TextStyle(color: Colors.white)),
+                          Icon(
+                            Custom.caretright,
+                            color: Colors.white,
+                            size: 15,
+                          )
+                        ],
+                      )
                     ],
                   ),
                 ),

@@ -53,7 +53,7 @@ class _FabWriteButton extends StatelessWidget {
 // child 버튼 설정
   SpeedDialChild dialChild(result, resultLabel, resultIcon, color) {
     return SpeedDialChild(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       elevation: 0,
       onTap: () {
         Get.toNamed('/write', arguments: {
