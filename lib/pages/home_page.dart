@@ -24,6 +24,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final events =
+        isarController.getEventsForDay(calendarController.focusedDay.value);
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -43,9 +46,25 @@ class HomePage extends StatelessWidget {
       ),
 
       // 플로팅 버튼
-      floatingActionButton: _FabWriteButton(
-        calendarController: calendarController,
-      ),
+      floatingActionButton: events.isNotEmpty
+          ? TextButton(
+              style: TextButton.styleFrom(
+                // 텍스트 색상
+                backgroundColor: Colors.grey[300], // 배경색
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 10.0), // 패딩
+                textStyle: const TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.bold), // 텍스트 스타일
+              ),
+              onPressed: () async {
+                final todayTicket = await isarController
+                    .getDetails(calendarController.focusedDay.value);
+                Get.toNamed('/details', arguments: todayTicket);
+              },
+              child: const Text("오늘\n기록"))
+          : _FabWriteButton(
+              calendarController: calendarController,
+            ),
     );
   }
 }
