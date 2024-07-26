@@ -142,7 +142,7 @@ class IsarService extends GetxController {
         ..score2 = data["score2"].value
         ..team1IsMyTeam = data["team1IsMyTeam"].value
         ..team2IsMyTeam = data["team2IsMyTeam"].value
-        ..gameTitle = data["title"]?.value
+        ..gameTitle = data["gameTitle"]?.value
         ..comment = data["comment"]?.value
         ..pictureUrl = ''
         ..date = data["date"].toUtc()
@@ -253,7 +253,7 @@ class IsarService extends GetxController {
           ..score2 = data["score2"].value
           ..team1IsMyTeam = data["team1IsMyTeam"].value
           ..team2IsMyTeam = data["team2IsMyTeam"].value
-          ..gameTitle = data["title"]?.value
+          ..gameTitle = data["gameTitle"]?.value
           ..comment = data["comment"]?.value
           ..pictureUrl = ''
           ..date = data["date"].toUtc()

@@ -18,6 +18,8 @@ class DetailsPage extends StatelessWidget {
     final PageController controller =
         PageController(initialPage: 0, viewportFraction: 0.85);
 
+    print(gameResult.gameTitle);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
