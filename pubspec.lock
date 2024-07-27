@@ -33,6 +33,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  auto_size_text:
+    dependency: "direct main"
+    description:
+      name: auto_size_text
+      sha256: "3f5261cd3fb5f2a9ab4e2fc3fba84fd9fcaac8821f20a1d4e71f557521b22599"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -1042,6 +1050,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  widget_marquee:
+    dependency: "direct main"
+    description:
+      name: widget_marquee
+      sha256: "7a16d17a15adff1d0191535ffa6cf03d2b5373bbca333c7006788a712ee3f3a8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.8"
   win32:
     dependency: transitive
     description:

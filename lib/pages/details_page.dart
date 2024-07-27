@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:stikku_frontend/config/custom_icons.dart';
@@ -6,6 +8,10 @@ import 'package:stikku_frontend/controllers/write_form_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/pages/write_page.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
+import 'package:widget_marquee/widget_marquee.dart';
+
+part '../widgets/details/appbar.dart';
+part '../widgets/details/game_result_box.dart';
 
 class DetailsPage extends StatelessWidget {
   DetailsPage({super.key});
@@ -17,178 +23,209 @@ class DetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final PageController controller =
         PageController(initialPage: 0, viewportFraction: 0.85);
-
-    print(gameResult.gameTitle);
+    final smallSize = MediaQuery.of(context).size.height < 700;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        leading: IconButton(
-            onPressed: () => {
-                  Get.previousRoute != '/write' ||
-                          Get.previousRoute != '/WritePage'
-                      ? Get.offAllNamed('/')
-                      : Get.back()
-                },
-            icon: const Icon(Custom.x, color: Colors.blue)),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              Get.defaultDialog(
-                title: "정말 삭제하시겠습니까?",
-                middleText: "이 작업은 되돌릴 수 없습니다.",
-                textConfirm: "확인",
-                textCancel: "취소",
-                confirmTextColor: Colors.white,
-                onConfirm: () async {
-                  formController.deleteDetails(gameResult.date);
-                  Get.offAndToNamed('/list');
-                },
-              );
-            },
-            icon: const Icon(Custom.trash, color: Colors.blue),
-          ),
-          IconButton(
-              onPressed: () async {
-                await Get.to(
-                  () => WritePage(isEditMode: true),
-                  arguments: {
-                    "result": gameResult.result,
-                    "day": gameResult.date.toUtc(),
-                    "gameTitle": gameResult.gameTitle,
-                    "team1": gameResult.team1,
-                    "team2": gameResult.team2,
-                    "score1": gameResult.score1,
-                    "score2": gameResult.score2,
-                    "stadium": gameResult.stadium,
-                    "seatLocation": gameResult.seatLocation,
-                    "comment": gameResult.comment,
-                    "reviewComment": gameResult.reviewComment,
-                    "playerOfTheMatch": gameResult.playerOfTheMatch,
-                    "food": gameResult.food,
-                  },
-                );
-              },
-              icon: const Icon(Custom.pencilsimple__1_, color: Colors.blue)),
-          IconButton(
-              onPressed: () {
-                // 추가
-              },
-              icon: const Icon(Custom.arrowlinedown, color: Colors.blue)),
-        ],
-      ),
+      appBar: _AppBar(formController: formController, gameResult: gameResult),
       body: Center(
         child: PageView.builder(
           scrollDirection: Axis.horizontal,
           controller: controller,
           itemCount: 2,
           itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(10),
-              child: Card(
-                elevation: 2.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: index == 0
-                    ? Column(
-                        children: [
-                          const SizedBox(
-                            height: 50,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return Card(
+              margin: const EdgeInsets.symmetric(vertical: 25, horizontal: 10),
+              elevation: 4.0,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Column(
+                  children: [
+                    _Marquee(gameResult: gameResult),
+
+                    // 경기 결과
+                    _GameResultBox(
+                        gameResult: gameResult, smallSize: smallSize),
+                    // 경기 내용
+                    Flexible(
+                      flex: 3,
+                      fit: FlexFit.loose, // 최소한의 공간만 확인
+                      child: LayoutBuilder(builder: (context, constraints) {
+                        var boxHeight = constraints.maxHeight;
+
+                        return Container(
+                          padding: const EdgeInsets.all(10),
+                          width: double.maxFinite,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                gameResult.team1,
-                                style: const TextStyle(fontSize: 25),
+                              RichText(
+                                text: TextSpan(
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      const TextSpan(
+                                        text: 'DATE : ',
+                                        style: TextStyle(
+                                          fontStyle: FontStyle.italic,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 2,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: DateFormat('yyyy.MM.dd')
+                                            .format(gameResult.date),
+                                      ),
+                                    ]),
                               ),
-                              Text(
-                                gameResult.team2,
-                                style: const TextStyle(fontSize: 25),
+                              RichText(
+                                text: TextSpan(
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      const TextSpan(
+                                        text: 'GROUND : ', // 기본 스타일의 텍스트
+                                        style: TextStyle(
+                                          fontStyle: FontStyle.italic,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 2,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                          text: gameResult.stadium,
+                                          style: TextStyle(
+                                              fontSize:
+                                                  gameResult.stadium.length > 30
+                                                      ? 13
+                                                      : null)),
+                                    ]),
                               ),
-                            ],
-                          ),
-                          Container(
-                              decoration: const BoxDecoration(
-                                  color: Color.fromARGB(255, 6, 65, 113)),
-                              child: Text(
-                                gameResult.gameTitle ?? '왜 없지?',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800),
-                              )),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                gameResult.score1,
-                                style: const TextStyle(fontSize: 50),
+                              RichText(
+                                text: TextSpan(
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      const TextSpan(
+                                        text: 'SEAT : ', // 기본 스타일의 텍스트
+                                        style: TextStyle(
+                                          fontStyle: FontStyle.italic,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 2,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                          text: gameResult.seatLocation,
+                                          style: TextStyle(
+                                              fontSize: gameResult
+                                                          .seatLocation.length >
+                                                      30
+                                                  ? 12
+                                                  : null)),
+                                    ]),
                               ),
-                              const Text(
-                                ":",
-                                style: TextStyle(fontSize: 50),
+                              SizedBox(
+                                height: boxHeight / 11,
                               ),
-                              Text(
-                                gameResult.score2,
-                                style: const TextStyle(fontSize: 50),
-                              )
+                              // 코멘트
+                              gameResult.comment!.isNotEmpty
+                                  ? Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              gameResult.comment!.isNotEmpty
+                                                  ? "COMMENT"
+                                                  : '',
+                                              style: const TextStyle(
+                                                fontStyle: FontStyle.italic,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: 1,
+                                              )),
+                                          Text(gameResult.comment ?? '',
+                                              style: const TextStyle())
+                                        ],
+                                      ),
+                                    )
+                                  : const SizedBox(),
                             ],
                           ),
-                          Row(
-                            children: [
-                              const Text("DATE"),
-                              Text(DateFormat('yyyy.MM.dd')
-                                  .format(gameResult.date))
-                            ],
+                        );
+                      }),
+                    ),
+                    // 사진
+                    Flexible(
+                      flex: 3,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            top: BorderSide(
+                              color: Colors.black, // Border 색상
+                              width: 4.0, // Border 두께
+                            ),
                           ),
-                          Row(
-                            children: [
-                              const Text("GROUND"),
-                              Text(gameResult.stadium),
-                            ],
+                        ),
+                        width: double.maxFinite,
+                        child: AspectRatio(
+                          aspectRatio: 4 / 3,
+                          child: Image.asset(
+                            'assets/images/pic.png',
+                            fit: BoxFit.cover,
                           ),
-                          Row(
-                            children: [
-                              const Text("SEAT"),
-                              Text(gameResult.seatLocation),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              const Text("COMMENT"),
-                              Text(gameResult.comment ?? '')
-                            ],
-                          )
-                        ],
-                      )
-                    : Column(
-                        children: [
-                          Column(
-                            children: [
-                              const Text("관람평"),
-                              Text(gameResult.reviewComment ?? "")
-                            ],
-                          ),
-                          const Column(
-                            children: [Text("별점"), Text("별이 다슷개")],
-                          ),
-                          const Column(
-                            children: [Text("수훈선수"), Text("김도영")],
-                          ),
-                          Column(
-                            children: [
-                              const Text("직관음식"),
-                              Text(gameResult.food ?? "")
-                            ],
-                          )
-                        ],
+                        ),
                       ),
+                    ),
+                  ],
+                ),
               ),
             );
           },
         ),
       ),
     );
+  }
+
+  // TextStyle _teamNameStyle(team, cardWidth) {
+  //   var length = team.length.toDouble();
+  //   return TextStyle(
+  //       fontSize: length > 9 ? cardWidth * 0.1 / 1.5 : cardWidth * 0.1,
+  //       fontWeight: FontWeight.bold);
+  // }
+}
+
+class _Marquee extends StatelessWidget {
+  const _Marquee({
+    required this.gameResult,
+  });
+
+  final GameResult gameResult;
+
+  @override
+  Widget build(BuildContext context) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    return Marquee(
+        delay: const Duration(milliseconds: 0000),
+        disableAnimation: true,
+        gap: 0,
+        duration: const Duration(seconds: 20),
+        pause: const Duration(milliseconds: 0000),
+        child: Container(
+          decoration:
+              const BoxDecoration(color: Color.fromARGB(255, 0, 102, 185)),
+          child: FittedBox(
+            fit: BoxFit.contain,
+            child: Text(
+              "${gameResult.result.toUpperCase()} " * 20,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: screenHeight * 0.02, // 스크린 길이의 2%
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic),
+            ),
+          ),
+        ));
   }
 }

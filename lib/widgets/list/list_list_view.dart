@@ -185,9 +185,19 @@ class ListViewZone extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text(DateFormat('yyyy.MM.dd').format(item.date)),
-                      Text(item.stadium),
-                      Text(item.seatLocation)
+                      Flexible(
+                          fit: FlexFit.loose,
+                          flex: 2,
+                          child:
+                              Text(DateFormat('yyyy.MM.dd').format(item.date))),
+                      Flexible(
+                        fit: FlexFit.loose,
+                        flex: 3,
+                        child: Text(
+                          item.stadium,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                     ],
                   ),
                 ),

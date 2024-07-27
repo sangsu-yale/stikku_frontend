@@ -50,6 +50,8 @@ dependencies:
   uuid: ^4.4.2
   shared_preferences: ^2.2.3
   google_sign_in: ^6.2.1
+  widget_marquee: ^0.0.8
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +72,8 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/pic.png
   fonts:
     - family: Custom
       fonts:
