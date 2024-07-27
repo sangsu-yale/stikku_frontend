@@ -25,7 +25,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final events =
-        isarController.getEventsForDay(calendarController.focusedDay.value);
+        isarController.getEventsForDay(calendarController.today.value);
 
     return Scaffold(
       body: SafeArea(
@@ -58,7 +58,7 @@ class HomePage extends StatelessWidget {
               ),
               onPressed: () async {
                 final todayTicket = await isarController
-                    .getDetails(calendarController.focusedDay.value);
+                    .getDetails(calendarController.today.value);
                 Get.toNamed('/details', arguments: todayTicket);
               },
               child: const Text("오늘\n기록"))

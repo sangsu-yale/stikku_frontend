@@ -1,4 +1,4 @@
-part of '../../pages/details_page.dart';
+part of '../../widgets/details/front_view.dart';
 
 class _GameResultBox extends StatelessWidget {
   const _GameResultBox({required this.gameResult, required this.smallSize});

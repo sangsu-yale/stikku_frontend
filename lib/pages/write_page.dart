@@ -14,7 +14,7 @@ part '../widgets/write/two_bottom_buttons.dart';
 
 class WritePage extends StatelessWidget {
   final formController = Get.find<FormController>();
-  final diaryDialogController = Get.find<DiaryDialogController>();
+  // final diaryDialogController = Get.find<DiaryDialogController>();
 
   final bool isEditMode;
 
@@ -47,7 +47,10 @@ class WritePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Get.back(),
+        ),
         title: Text(isEditMode ? "경기 기록 수정 페이지" : "경기 기록 작성 페이지"),
       ),
 

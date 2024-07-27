@@ -7,7 +7,7 @@ import 'package:stikku_frontend/controllers/write_form_controller.dart';
 class DiaryPage extends StatelessWidget {
   final calendarController = Get.find<CalendarController>();
   final formController = Get.find<FormController>();
-  final diaryDialogController = Get.find<DiaryDialogController>();
+  final diaryDialogController = Get.put(DiaryDialogController());
 
   DiaryPage({super.key});
 

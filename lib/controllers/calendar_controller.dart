@@ -15,6 +15,12 @@ class CalendarController extends GetxController {
     DateTime.now().day,
   ).obs;
 
+  var today = DateTime.utc(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  ).obs;
+
   void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     this.selectedDay.value = selectedDay;
     this.focusedDay.value = focusedDay;
