@@ -1,53 +1,189 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:stikku_frontend/utils/ticket_clipper.dart';
+import 'package:get/get.dart';
+import 'package:stikku_frontend/controllers/charts_controller.dart';
 
 class ChartsPage extends StatelessWidget {
-  const ChartsPage({super.key});
-
+  ChartsPage({super.key});
+  final ChartsController chartsController = Get.put(ChartsController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: true,
-          title: const Text("차트 페이지"),
-        ),
-        body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ClipPath(
-                clipper: DolDurmaClipper(right: 20, holeRadius: 20),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15),
+        body: SafeArea(
+      child: FutureBuilder(
+        future: chartsController.loadGameResults(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No events found'));
+          } else {
+            final stats = snapshot.data!;
+            return Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    margin: const EdgeInsets.only(bottom: 30),
+                    alignment: Alignment.center,
+                    width: double.maxFinite,
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Colors.grey),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Text(
+                      "총 승률 ${stats["totalWinRate"]}%",
+                      style: const TextStyle(fontSize: 25),
                     ),
-                    color: Colors.blueAccent,
                   ),
-                  width: 300,
-                  height: 95,
-                  padding: const EdgeInsets.all(15),
-                  child: const Text('first example'),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ClipPath(
-                clipper: DolDurmaClipper(right: 100, holeRadius: 40),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15),
+                  Container(
+                    alignment: Alignment.center,
+                    width: double.maxFinite,
+                    decoration: const BoxDecoration(
+                      border: Border.symmetric(
+                          horizontal: BorderSide(color: Colors.grey)),
                     ),
-                    color: Colors.amber,
+                    child: RichText(
+                      text: TextSpan(
+                        style: const TextStyle(color: Colors.black),
+                        children: <TextSpan>[
+                          TextSpan(
+                            style: const TextStyle(
+                                fontSize: 25, color: Colors.black),
+                            text:
+                                "직관 승률 ${stats["liveGameWinRate"].toStringAsFixed(1)}% ",
+                          ),
+                          TextSpan(
+                            text:
+                                "(총 ${stats["liveGame"]}회 / ${stats["liveGameWinning"]}승)",
+                          )
+                        ],
+                        // style: const TextStyle(fontSize: 25),
+                      ),
+                    ),
                   ),
-                  width: 200,
-                  height: 250,
-                  padding: const EdgeInsets.all(35),
-                  child: const Text('second example'),
-                ),
+                  Container(
+                    alignment: Alignment.center,
+                    width: double.maxFinite,
+                    decoration: const BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Colors.grey)),
+                    ),
+                    child: RichText(
+                      text: TextSpan(
+                        style: const TextStyle(color: Colors.black),
+                        children: <TextSpan>[
+                          TextSpan(
+                            style: const TextStyle(fontSize: 25),
+                            text: "집관 승률 ${stats["homeGameWinRate"]}% ",
+                          ),
+                          TextSpan(
+                            text:
+                                "(총 ${stats["homeGame"]}회 / ${stats["homeGameWinning"]}승)",
+                          )
+                        ],
+                        // style: const TextStyle(fontSize: 25),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      children: [
+                        const Text(
+                          "직관 통계",
+                          style: TextStyle(fontSize: 30),
+                        ),
+                        AspectRatio(
+                          aspectRatio: 1.4,
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: PieChart(
+                              PieChartData(
+                                borderData: FlBorderData(
+                                  show: false,
+                                ),
+                                sectionsSpace: 0,
+                                centerSpaceRadius: 20,
+                                sections: showingSections(stats),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
-            ]));
+            );
+          }
+        },
+      ),
+    ));
   }
+}
+
+List<PieChartSectionData> showingSections(stats) {
+  return List.generate(4, (i) {
+    // final isTouched = i == touchedIndex;
+    const fontSize = 16.0;
+    const radius = 100.0;
+
+    switch (i) {
+      case 0:
+        return PieChartSectionData(
+          color: Colors.blue,
+          value: stats["liveGameWinRate"],
+          title: '승 ${stats["liveGameWinRate"].toStringAsFixed(0)}%',
+          radius: radius,
+          titleStyle: const TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: Color(0xffffffff),
+          ),
+        );
+      case 1:
+        return PieChartSectionData(
+          color: Colors.red,
+          value: stats["liveGamelose"],
+          title: '패 ${stats["liveGamelose"]?.toStringAsFixed(0)}%',
+          radius: radius,
+          titleStyle: const TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: Color(0xffffffff),
+          ),
+        );
+      case 2:
+        return PieChartSectionData(
+          color: Colors.green,
+          value: stats["liveGameTie"],
+          title: '무 ${stats["liveGameTie"]?.toStringAsFixed(0)}%',
+          radius: radius,
+          titleStyle: const TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: Color(0xffffffff),
+          ),
+        );
+      case 3:
+        return PieChartSectionData(
+          color: Colors.grey,
+          value: stats["liveGameCancel"],
+          title: '취 ${stats["liveGameCancel"]?.toStringAsFixed(0)}%',
+          radius: radius,
+          titleStyle: const TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: Color(0xffffffff),
+          ),
+        );
+      default:
+        throw Exception('Oh no');
+    }
+  });
 }

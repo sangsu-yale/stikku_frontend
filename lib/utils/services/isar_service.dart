@@ -299,4 +299,32 @@ class IsarService extends GetxController {
     }
     return GameResult();
   }
+
+  // 날짜별 이벤트를 가져오는 함수
+  Future<List<Event?>> getAllEvents() async {
+    final events = await _isar.events.where().findAll();
+    return events;
+  }
+
+  Future<List<GameResult>> getChartData() async {
+    // 유저의 uuid 확인하고
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? uuid = prefs.getString('uuid');
+
+    if (uuid == null) {
+      throw Exception('User UUID not found in SharedPreferences');
+    }
+
+    // 사용자 가져오기
+    final user = await _isar.users.filter().uuidEqualTo(uuid).findFirst();
+
+    if (user == null) {
+      throw Exception('User not found in the database');
+    }
+
+    // 특정 날짜의 gameResults 가져오기
+    final gameResults = await _isar.gameResults.where().findAll();
+
+    return gameResults;
+  }
 }
