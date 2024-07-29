@@ -65,31 +65,9 @@ class IsarService extends GetxController {
   }
 
   // 모든 유저 확인
-  Future<List<User>> getAllUsers() async {
-    final users = await _isar.users.where().findAll();
-    return users;
-  }
-
-  // 유저 DB 확인
-  Future<void> printAllUsers() async {
-    //final users = await getAllUsers();
-    // for (var user in users) {
-    //   await user.gameResults.load();
-    //   for (var result in user.gameResults) {
-    //     print(
-    //         'Game Title: ${result.gameTitle}, Score: ${result.score1} - ${result.score2}');
-    //     print('Stadium: ${result.stadium}, Seat: ${result.seatLocation}');
-    //     print('Teams: ${result.team1} vs ${result.team2}');
-    //     print('Result: ${result.result}, Viewing Mode: ${result.viewingMode}');
-    //     print('Comment: ${result.comment}');
-    //     print('Date: ${result.date}');
-    //     print('Picture URL: ${result.pictureUrl}');
-    //     print(
-    //         'Created At: ${result.createdAt}, Updated At: ${result.updatedAt}');
-    //     print('-----------------------------');
-    //   }
-    //   print('User: ${user.username}, 님 반갑습니다. ${user.uuid}번 id입니다.');
-    // }
+  Future<String?> getAllUsers() async {
+    final user = await _isar.users.where().findFirst();
+    return user?.uuid;
   }
 
   // gameDetails 가지고 오기 (우선 임시로 이곳에 코드 작성)

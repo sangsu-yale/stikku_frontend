@@ -94,18 +94,18 @@ class ChartsPage extends StatelessWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
                       children: [
-                        const Text(
-                          "직관 통계",
-                          style: TextStyle(fontSize: 30),
-                        ),
+                        // const Text(
+                        //   "직관 통계",
+                        //   style: TextStyle(fontSize: 30),
+                        // ),
                         AspectRatio(
-                          aspectRatio: 1.4,
+                          aspectRatio: 1.3,
                           child: AspectRatio(
                             aspectRatio: 1,
                             child: PieChart(
                               PieChartData(
                                 borderData: FlBorderData(
-                                  show: false,
+                                  show: true,
                                 ),
                                 sectionsSpace: 0,
                                 centerSpaceRadius: 20,
@@ -143,7 +143,7 @@ List<PieChartSectionData> showingSections(stats) {
           titleStyle: const TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.bold,
-            color: Color(0xffffffff),
+            color: Colors.black,
           ),
         );
       case 1:
@@ -155,7 +155,7 @@ List<PieChartSectionData> showingSections(stats) {
           titleStyle: const TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.bold,
-            color: Color(0xffffffff),
+            color: Colors.black,
           ),
         );
       case 2:
@@ -167,7 +167,7 @@ List<PieChartSectionData> showingSections(stats) {
           titleStyle: const TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.bold,
-            color: Color(0xffffffff),
+            color: Colors.black,
           ),
         );
       case 3:
@@ -179,7 +179,7 @@ List<PieChartSectionData> showingSections(stats) {
           titleStyle: const TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.bold,
-            color: Color(0xffffffff),
+            color: Colors.black,
           ),
         );
       default:

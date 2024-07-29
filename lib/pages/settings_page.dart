@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class SettingsPage extends StatelessWidget {
   final isarController = Get.find<IsarService>();
   SettingsPage({super.key});
 
-  Future<String> getUUID() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? uuid = prefs.getString('uuid');
-    return uuid ?? 'UUID not found';
+  Future<String?> getUUID() async {
+    final uuid = await isarController.getAllUsers();
+    return uuid;
   }
 
   @override
@@ -18,41 +16,28 @@ class SettingsPage extends StatelessWidget {
     return SafeArea(
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  alignment: Alignment.center,
-                  color: Colors.amber,
-                  child: Column(
-                    children: [
-                      // FutureBuilder<String>(
-                      //   future: getUUID(),
-                      //   builder: (context, snapshot) {
-                      //     if (snapshot.connectionState ==
-                      //         ConnectionState.waiting) {
-                      //       return const CircularProgressIndicator();
-                      //     } else if (snapshot.hasError) {
-                      //       return const Text('Error loading UUID');
-                      //     } else {
-                      //       return Text(snapshot.data?.substring(24, 36) ??
-                      //           'UUID not found');
-                      //     }
-                      //   },
-                      // ),
-                      TextButton(
-                        onPressed: () {
-                          Get.toNamed('/login');
-                        },
-                        child: const Text("로그인하기"),
-                      ),
-                    ],
-                  ),
+          Container(
+            padding: const EdgeInsets.all(20),
+            alignment: Alignment.center,
+            child: Column(
+              children: [
+                Container(
+                  child: const Text("uuid 님"),
                 ),
-              ),
-            ],
+                const Text(
+                  "로그인을 하면 다른 기기로 로그인시 데이터가 유지돼요!",
+                  style: TextStyle(fontSize: 13, color: Colors.grey),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Get.toNamed('/login');
+                  },
+                  child: const Text("가입/로그인하기"),
+                ),
+              ],
+            ),
           ),
+          const Divider(),
           Expanded(
             child: ListView(
               children: [
@@ -69,10 +54,10 @@ class SettingsPage extends StatelessWidget {
                   leading: Icon(Icons.question_answer),
                   title: Text("문의하기"),
                 ),
-                const ListTile(
-                  leading: Icon(Icons.import_contacts),
-                  title: Text("아이콘 변경"),
-                ),
+                // const ListTile(
+                //   leading: Icon(Icons.import_contacts),
+                //   title: Text("아이콘 변경"),
+                // ),
               ],
             ),
           ),
