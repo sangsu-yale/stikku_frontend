@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/controllers/write_form_controller.dart';
+import 'package:stikku_frontend/widgets/write/diary_form.dart';
+import 'package:stikku_frontend/widgets/write/game_result_form.dart';
 
-part '../widgets/write/section_4_form.dart';
-part '../widgets/write/section_3_form.dart';
-part '../widgets/write/section_2_form.dart';
-part '../widgets/write/section_1_form.dart';
-part '../widgets/write/section_0_form.dart';
 part '../widgets/write/two_bottom_buttons.dart';
 
 class WritePage extends StatelessWidget {
   final formController = Get.find<FormController>();
-  // final diaryDialogController = Get.find<DiaryDialogController>();
+  final formKey = GlobalKey<FormState>();
 
   final bool isEditMode;
 
@@ -27,24 +22,25 @@ class WritePage extends StatelessWidget {
     if (daynResult.isNotEmpty) {
       formController.result.value = daynResult["result"] ?? '';
       formController.date = daynResult["day"] ?? DateTime.now().toUtc();
-      formController.gameTitle.value = daynResult["gameTitle"] ?? '';
-      formController.team1.value = daynResult["team1"] ?? '';
-      formController.team2.value = daynResult["team2"] ?? '';
-      formController.score1.value = daynResult["score1"] ?? '0';
-      formController.score2.value = daynResult["score2"] ?? '0';
-      formController.stadium.value = daynResult["stadium"] ?? '';
-      formController.seatLocation.value = daynResult["seatLocation"] ?? '';
-      formController.comment.value = daynResult["comment"] ?? '';
-      formController.reviewComment.value = daynResult["reviewComment"] ?? '';
-      formController.playerOfTheMatch.value =
-          daynResult["playerOfTheMatch"] ?? '';
-      formController.food.value = daynResult["food"] ?? '';
+      // formController.gameTitle.value = daynResult["gameTitle"] ?? '';
+      // formController.team1.value = daynResult["team1"] ?? '';
+      // formController.team2.value = daynResult["team2"] ?? '';
+      // formController.score1.value = daynResult["score1"] ?? '0';
+      // formController.score2.value = daynResult["score2"] ?? '0';
+      // formController.stadium.value = daynResult["stadium"] ?? '';
+      // formController.seatLocation.value = daynResult["seatLocation"] ?? '';
+      // formController.comment.value = daynResult["comment"] ?? '';
+      // formController.reviewComment.value = daynResult["reviewComment"] ?? '';
+      //       ..mood = data["mood"]?.value
+      // ..rating = data["rating"]?.value
+      // formController.playerOfTheMatch.value =
+      //     daynResult["playerOfTheMatch"] ?? '';
+      // formController.food.value = daynResult["food"] ?? '';
     }
-// 수정 모드 플래그 설정
-
-// TODO: 10글자가 넘어가는 팀 이름은 작게 바뀝니다
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -54,89 +50,59 @@ class WritePage extends StatelessWidget {
       ),
 
       // body
-      body: Container(
-        color: Colors.grey[200],
-        // <------------- 스크롤뷰 ------------->
-        child: SingleChildScrollView(
-          // <------------- 폼 시작 ------------->
-          child: Column(
-            children: [
-              _Section0Form(formController: formController),
-              // 1번 : 직관 유무 / 게임 결과 / 팀별 점수, 이름 / 응원팀 유무
-              _Section1Form(
-                formController: formController,
-              ),
-
-              // 2번 : 경기장 / 좌석
-              _Section2Form(formController: formController),
-
-              // 3번 : 경기 제목 / 코멘트
-              _Section3Form(formController: formController),
-
-              // 4번 : 이미지
-              _Section4Form(formController: formController),
-            ],
-          ),
+      body: SafeArea(
+        child: Form(
+          key: formKey,
+          child: Obx(() {
+            return IndexedStack(
+              index: formController.currentFormIndex.value,
+              children: [GameResultForm(), DiaryForm()],
+            );
+          }),
         ),
       ),
-      // 확인 버튼 2개 (일기 작성 / 작성 완료)
-      bottomNavigationBar: SizedBox(
-        height: 80,
-        child: Row(
-          children: <Widget>[
-            // <------------- 작성 완료 버튼 ------------->
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  if (formController.validate() == false) {
-                    Get.snackbar('폼을 다 작성해 주세요', '빼먹은 부분이 없는지 확인해 주세요');
-                  } else {
-                    formController.submit(isEditMode);
-                  }
-                },
-                child: Container(
-                  color: Colors.blue,
-                  child: const Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text("작성 완료", style: TextStyle(color: Colors.white))
-                    ],
-                  ),
-                ),
-              ),
-            ),
 
-            // <------------- 일기 작성 버튼 ------------->
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  if (formController.validate() == false) {
-                    Get.snackbar('폼을 다 작성해 주세요', '빼먹은 부분이 없는지 확인해 주세요');
-                  } else {
-                    Get.toNamed('/diary', arguments: isEditMode);
-                  }
-                },
-                child: Container(
-                  color: const Color.fromARGB(255, 80, 80, 80),
-                  child: const Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("일기 작성하기",
-                              style: TextStyle(color: Colors.white)),
-                          Icon(
-                            Custom.caretright,
-                            color: Colors.white,
-                            size: 15,
-                          )
-                        ],
-                      )
-                    ],
+      // 확인 버튼 2개 (일기 작성 / 작성 완료)
+      bottomNavigationBar: BottomAppBar(
+        height: 110,
+        padding: const EdgeInsets.all(0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Obx(
+              () {
+                return BottomNavigationBar(
+                  elevation: 1,
+                  currentIndex: formController.currentFormIndex.value,
+                  onTap: (index) {
+                    formController.changeForm(index);
+                  },
+                  items: const [
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.sports_baseball), label: '게임 결과'),
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.book), label: '관람 일기'),
+                  ],
+                );
+              },
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        //submit
+                        formController.submit(isEditMode);
+                      } else {
+                        Get.snackbar(
+                            '게임 결과 폼을 다 작성해 주세요', '빼먹은 부분이 없는지 확인해 주세요');
+                      }
+                    },
+                    child: const Text("작성 완료"),
                   ),
                 ),
-              ),
+              ],
             ),
           ],
         ),
@@ -144,9 +110,3 @@ class WritePage extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
- // _TwoBottomButtons(formController: formController),

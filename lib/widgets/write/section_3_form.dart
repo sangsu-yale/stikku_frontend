@@ -1,4 +1,4 @@
-part of '../../pages/write_page.dart';
+part of '../write/game_result_form.dart';
 
 class _Section3Form extends StatelessWidget {
   const _Section3Form({
@@ -11,7 +11,7 @@ class _Section3Form extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -21,11 +21,10 @@ class _Section3Form extends StatelessWidget {
           // 아래쪽 경계선을 설정하지 않음
         ),
       ),
-      // 3번 폼 (경기 제목, 한줄 코멘트)
+      // * ✅ 2번 폼 (경기장, 좌석)
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        // 경기 제목
         children: [
           const Text(
             "경기 제목",
@@ -35,20 +34,9 @@ class _Section3Form extends StatelessWidget {
                 color: Color.fromARGB(170, 0, 0, 0)),
           ),
           const SizedBox(height: 10),
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: '예) OO리그 2차전',
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blue), // 포커스 시 보더 색상
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey), // 활성화된 상태의 보더 색상
-              ),
-            ),
-            onChanged: (value) {
-              formController.gameTitle.value = value;
-            },
-          ),
+          // 경기장
+          buildTitleAndCommentInput(
+              "예) OO리그 O차전", formController.gameTitleCon, 1, 2),
           const SizedBox(height: 25),
           const Text(
             "한줄 코멘트",
@@ -57,22 +45,10 @@ class _Section3Form extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: Color.fromARGB(170, 0, 0, 0)),
           ),
+          // 좌석
           const SizedBox(height: 10),
-          // 한줄 코멘트
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: '경기에 대한 한줄 코멘트',
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blue), // 포커스 시 보더 색상
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey), // 활성화된 상태의 보더 색상
-              ),
-            ),
-            onChanged: (value) {
-              formController.comment.value = value;
-            },
-          ),
+          buildTitleAndCommentInput(
+              "30자 이내의 코멘트", formController.commentCon, 1, 2),
         ],
       ),
     );

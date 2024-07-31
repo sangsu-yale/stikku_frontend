@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
@@ -12,107 +13,99 @@ class FormController extends GetxController {
   final isarController = Get.find<IsarService>();
   final ListTopSearchController listTopSearchController = Get.find();
 
-  // 폼 리스트
+  var currentFormIndex = 0.obs;
+  void changeForm(int index) {
+    currentFormIndex.value = index;
+  }
+
+  @override
+  void onClose() {
+    team1Con.dispose();
+    team2Con.dispose();
+    score1Con.dispose();
+    score2Con.dispose();
+    team1IsMyTeamCon.dispose();
+    team2IsMyTeamCon.dispose();
+    seatLocationCon.dispose();
+    stadiumCon.dispose();
+    gameTitleCon.dispose();
+    commentCon.dispose();
+    reviewCommentCon.dispose();
+    foodCon.dispose();
+    playerOfTheMatchCon.dispose();
+    super.onClose();
+  }
+
+  // <---------- 게임 결과 컨트롤러 ---------->
+  final team1Con = TextEditingController();
+  final team2Con = TextEditingController();
+  final score1Con = TextEditingController();
+  final score2Con = TextEditingController();
+  final team1IsMyTeamCon = TextEditingController();
+  final team2IsMyTeamCon = TextEditingController();
+  final seatLocationCon = TextEditingController();
+  final stadiumCon = TextEditingController();
+  final gameTitleCon = TextEditingController();
+  final commentCon = TextEditingController();
+
+  var result = ''.obs; // 승패유무
   var userId = 0.obs; // 유저 아이디
-  var gameTitle = ''.obs; // 경기 제목
-  var stadium = ''.obs; // 경기장
-  var seatLocation = ''.obs; // 좌석
-  var result = ''.obs; // 경기 결과
   var viewingMode = false.obs; // 직관, 집관
-  var team1 = ''.obs;
-  var team2 = ''.obs;
-  var score1 = '0'.obs;
-  var score2 = '0'.obs;
-  var team1IsMyTeam = false.obs;
-  var team2IsMyTeam = false.obs;
-  var comment = ''.obs;
+  var team1IsMyTeam = false.obs; // 응원팀
+  var team2IsMyTeam = false.obs; // 응원팀
+
+  // <---------- 게임 리뷰 컨트롤러 ---------->
+  var reviewCommentCon = TextEditingController();
+  var foodCon = TextEditingController();
+  var playerOfTheMatchCon = TextEditingController();
+  var rating = 0.obs;
+  var mood = ''.obs;
+
+  // 폼에 필요한 함수 정리
+  void setSelectedValue(bool value) => viewingMode.value = value;
+  void setRating(int value) => rating.value = value;
+  void setMood(String value) => mood.value = value;
+
+  // <!-- 유효성 시작 -->
   var isFormValid = false.obs;
-  var image = ByteData(8).obs;
-  var emailError = ''.obs;
-  var selectedImage = Rx<File?>(null);
   var date = DateTime.now().toUtc();
 
-  // game reviews
-  var reviewComment = ''.obs;
-  var rating = 0.obs;
-  var playerOfTheMatch = ''.obs;
-  var mood = ''.obs;
-  var homeTeamLineup = [].obs;
-  var awayTeamLineup = [].obs;
-  var food = ''.obs;
-
-  // 뷰잉 모드 집/직관
-  void setSelectedValue(bool value) {
-    viewingMode.value = value;
-  }
-
-  // 이미지 픽
-  Future<void> pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      selectedImage.value = File(pickedFile.path);
-    }
-  }
-
-  // 이미지 삭제
-  void deleteImage() {
-    selectedImage.value = null;
-  }
-
   // 유효성 검사 (필수)
-  bool validate() {
-    // 필요한 유효성 검사 : 점수 2, 팀 이름 2, 경기장, 좌석
-    bool isValid = false;
-    // 직관일 경우
-    if (viewingMode.value) {
-      // 전체 검사
-      if (team1.value.isNotEmpty &&
-          team2.value.isNotEmpty &&
-          score1.value.isNotEmpty &&
-          score2.value.isNotEmpty &&
-          stadium.value.isNotEmpty &&
-          seatLocation.value.isNotEmpty) {
-        isValid = true;
-      }
-    } // 집관일 경우
-    else {
-      // 경기장, 좌석은 직접 채움
-      if (team1.value.isNotEmpty &&
-          team2.value.isNotEmpty &&
-          score1.value.isNotEmpty &&
-          score2.value.isNotEmpty) {
-        isValid = true;
-        stadium.value = '집관';
-        seatLocation.value = '집관';
-      }
-    }
-    return isValid;
-  }
+  // TODO: 폼을 다 작성했는데 scoreCon의 값이 없을 경우 0으로 설정
+  // TODO: 폼을 다 작성했는데 viewingMode가 집관일 경우 stadium, seat 집관으로 설정
+  // TODO: validate 후 submit 해 주기 (gameResult에 담아서!)
 
   // 폼 전송 함수
   void submit(isEditMode) async {
+    if (score1Con.text == "") score1Con.text = "0";
+    if (score2Con.text == "") score2Con.text = "0";
+    if (!viewingMode.value) {
+      stadiumCon.text = "집관";
+      seatLocationCon.text = "집관";
+    }
+
     Map data = {
-      "stadium": stadium,
-      "seatLocation": seatLocation,
-      "result": result,
-      "viewingMode": viewingMode,
-      "team1": team1,
-      "team2": team2,
-      "score1": score1,
-      "score2": score2,
-      "team1IsMyTeam": team1IsMyTeam,
-      "team2IsMyTeam": team2IsMyTeam,
-      "gameTitle": gameTitle,
-      "comment": comment,
+      "stadium": stadiumCon.text,
+      "seatLocation": seatLocationCon.text,
+      "result": result.value,
+      "viewingMode": viewingMode.value,
+      "team1": team1Con.text,
+      "team2": team2Con.text,
+      "score1": score1Con.text,
+      "score2": score2Con.text,
+      "team1IsMyTeam": team1IsMyTeam.value,
+      "team2IsMyTeam": team2IsMyTeam.value,
+      "gameTitle": gameTitleCon.text,
+      "comment": commentCon.text,
       "date": date,
-      "reviewComment": reviewComment,
-      "playerOfTheMatch": playerOfTheMatch,
-      "food": food,
+      "reviewComment": reviewCommentCon.text,
+      "playerOfTheMatch": playerOfTheMatchCon.text,
+      "food": foodCon.text,
+      "mood": mood.value,
+      "rating": rating.value,
       "isFavorite": false
     };
-    //
+
     final GameResult gameResult;
     if (isEditMode) {
       gameResult = await isarController.updateSubmit(data);
@@ -131,4 +124,27 @@ class FormController extends GetxController {
     await isarController.deleteDetails(date);
     listTopSearchController.loadGameResults();
   }
+
+// <!-- 이미지 (어드밴스드) -->
+  // 이미지 픽
+  Future<void> pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      // selectedImage.value = File(pickedFile.path);
+    }
+  }
+
+  var image = ByteData(8).obs;
+  var selectedImage = Rx<File?>(null);
+
+  // 이미지 삭제
+  void deleteImage() {
+    // selectedImage.value = null;
+  }
 }
+
+  // 여기는 어드밴스드
+  // var homeTeamLineup = [].obs;
+  // var awayTeamLineup = [].obs;

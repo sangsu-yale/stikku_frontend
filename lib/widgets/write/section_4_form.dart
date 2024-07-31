@@ -1,4 +1,4 @@
-part of '../../pages/write_page.dart';
+part of '../write/game_result_form.dart';
 
 class _Section4Form extends StatelessWidget {
   const _Section4Form({
@@ -10,7 +10,7 @@ class _Section4Form extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+      margin: const EdgeInsets.fromLTRB(15, 0, 15, 30),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -40,12 +40,18 @@ class _Section4Form extends StatelessWidget {
                       )
                     ],
                   )
-                : IconButton(
-                    onPressed: formController.pickImage,
-                    icon: const Icon(Icons.image),
+                : SizedBox(
+                    height: 150,
+                    child: IconButton(
+                      onPressed: formController.pickImage,
+                      icon: const Icon(
+                        Custom.image_1,
+                        size: 100,
+                        color: Colors.grey,
+                      ),
+                    ),
                   );
           }),
-          const SizedBox(height: 16),
         ],
       ),
     );

@@ -1,4 +1,4 @@
-part of '../../pages/write_page.dart';
+part of '../write/game_result_form.dart';
 
 class _Section0Form extends StatelessWidget {
   const _Section0Form({

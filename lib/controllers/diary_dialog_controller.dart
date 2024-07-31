@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/widgets/diary/diary_widgets.dart';
 
 class DiaryDialogController extends GetxController {
@@ -18,17 +19,17 @@ class DiaryDialogController extends GetxController {
     super.onInit();
     formWidgets.assignAll([
       {'review': Review(id: 'review', title: '경기 리뷰')},
-      {'rating': Rating(id: 'rating', title: '별점')},
       {
         'playerOfTheMatch':
             PlayerOfTheMatch(id: 'playerOfTheMatch', title: '수훈 선수')
       },
+      {'rating': Rating(id: 'rating', title: '별점')},
       {'mood': Mood(id: 'mood', title: '기분')},
       {'food': Food(id: 'food', title: '음식')},
-      {'homeTeamLineup': HomeTeamLineup(id: 'homeTeamLineup', title: '홈 라인업')},
-      {
-        'awayTeamLineup': AwayTeamLineup(id: 'awayTeamLineup', title: '어웨이 라인업')
-      },
+      // {'homeTeamLineup': HomeTeamLineup(id: 'homeTeamLineup', title: '홈 라인업')},
+      // {
+      //   'awayTeamLineup': AwayTeamLineup(id: 'awayTeamLineup', title: '어웨이 라인업')
+      // },
     ]);
     addWidget(
       {'review': Review(id: 'review', title: '경기 리뷰')},
@@ -67,10 +68,10 @@ class DiaryDialogController extends GetxController {
     switch (widget.keys.first) {
       case 'review':
         return '경기 리뷰';
-      case 'rating':
-        return '별점';
       case 'playerOfTheMatch':
         return '수훈 선수';
+      case 'rating':
+        return '별점';
       case 'mood':
         return '기분';
       case 'food':
@@ -82,6 +83,11 @@ class DiaryDialogController extends GetxController {
       default:
         return 'Unknown Widget';
     }
+  }
+
+  bool isSelected(String widgetId) {
+    return selectedWidgets
+        .any((selectedWidget) => selectedWidget.keys.first == widgetId);
   }
 }
 
@@ -110,41 +116,73 @@ class DiaryDialogWidget extends StatelessWidget {
                       .join(', '),
                 ),
               ),
+              const SizedBox(
+                height: 10,
+              ),
               Column(
                 children: [
-                  ...diaryDialogController.formWidgets.map(
-                    (widget) => Obx(() {
-                      final widgetId = widget.keys.first;
-                      final widgetInstance = widget.values.first;
-                      return Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                  diaryDialogController.getWidgetTitle(widget)),
-                              Checkbox(
-                                checkColor: Colors.white,
-                                value: diaryDialogController.selectedWidgets
-                                    .any((selectedWidget) =>
-                                        selectedWidget.keys.first == widgetId),
-                                onChanged: (value) {
-                                  if (value == true) {
-                                    diaryDialogController.addWidget(widget);
-                                  } else {
-                                    diaryDialogController.removeWidget(widget);
-                                  }
-                                },
+                  ...diaryDialogController.formWidgets.map((widget) => Obx(() {
+                        final widgetId = widget.keys.first;
+                        final widgetInstance = widget.values.first;
+                        final isSelected =
+                            diaryDialogController.isSelected(widgetId);
+                        return GestureDetector(
+                          onTap: () {
+                            if (isSelected) {
+                              diaryDialogController.removeWidget(widget);
+                            } else {
+                              diaryDialogController.addWidget(widget);
+                            }
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 4.0),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? Colors.blue[50]
+                                  : Colors.transparent,
+                              border: Border.all(
+                                color: isSelected
+                                    ? Colors.blue
+                                    : Colors.transparent,
+                                width: 1.0,
                               ),
-                            ],
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Stack(
+                                  alignment: Alignment.topRight,
+                                  children: [
+                                    Icon(
+                                      isSelected
+                                          ? Custom.caretcircledown_1
+                                          : null,
+                                      color: Colors.blue,
+                                    ),
+                                    IgnorePointer(child: widgetInstance)
+                                  ]),
+                            ),
                           ),
-                          IgnorePointer(child: widgetInstance)
-                        ],
-                      );
-                    }),
-                  ),
+                        );
+                      })),
                 ],
               ),
+              const SizedBox(
+                height: 10,
+              ),
               ElevatedButton(
+                style: ButtonStyle(
+                  shadowColor:
+                      WidgetStateProperty.all<Color>(Colors.transparent),
+                  backgroundColor:
+                      WidgetStateProperty.all<Color>(Colors.transparent),
+                  foregroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0.0),
+                    ),
+                  ),
+                ),
                 onPressed: () {
                   diaryDialogController.confirmSelection();
                   Get.back();

@@ -110,32 +110,34 @@ class IsarService extends GetxController {
 
     if (user != null) {
       final gameResult = GameResult()
-        ..stadium = data["stadium"].value
-        ..seatLocation = data["seatLocation"].value
-        ..result = data["result"].value
-        ..viewingMode = data["viewingMode"].value
-        ..team1 = data["team1"].value
-        ..team2 = data["team2"].value
-        ..score1 = data["score1"].value
-        ..score2 = data["score2"].value
-        ..team1IsMyTeam = data["team1IsMyTeam"].value
-        ..team2IsMyTeam = data["team2IsMyTeam"].value
-        ..gameTitle = data["gameTitle"]?.value
-        ..comment = data["comment"]?.value
+        ..stadium = data["stadium"]
+        ..seatLocation = data["seatLocation"]
+        ..result = data["result"]
+        ..viewingMode = data["viewingMode"]
+        ..team1 = data["team1"]
+        ..team2 = data["team2"]
+        ..score1 = data["score1"]
+        ..score2 = data["score2"]
+        ..team1IsMyTeam = data["team1IsMyTeam"]
+        ..team2IsMyTeam = data["team2IsMyTeam"]
+        ..gameTitle = data["gameTitle"]
+        ..comment = data["comment"]
         ..pictureUrl = ''
         ..date = data["date"].toUtc()
         ..createdAt = DateTime.now()
         ..updatedAt = DateTime.now()
-        ..reviewComment = data["review"]?.value
-        ..playerOfTheMatch = data["playerOfTheMatch"]?.value
-        ..food = data["food"]?.value
+        ..reviewComment = data["review"]
+        ..playerOfTheMatch = data["playerOfTheMatch"]
+        ..food = data["food"]
+        ..mood = data["mood"]
+        ..rating = data["rating"]
         ..isFavorite = data["isFavorite"]
         ..user.value = user;
 
       // Event 객체 생성 및 필요한 필드를 설정합니다.
       final event = Event()
         ..eventDate = data["date"].toUtc()
-        ..eventDetails = [data["result"].value]; // 경기 결과를 이벤트 디테일로 저장
+        ..eventDetails = [data["result"]]; // 경기 결과를 이벤트 디테일로 저장
 
       // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에 저장하고, User와의 관계를 설정합니다.
       await _isar.writeTxn(() async {
@@ -153,6 +155,7 @@ class IsarService extends GetxController {
       });
       return gameResult;
     }
+    update();
     return GameResult();
   }
 

@@ -3,7 +3,6 @@ import 'package:stikku_frontend/config/bindings.dart';
 import 'package:stikku_frontend/pages/home_page.dart';
 import 'package:stikku_frontend/pages/main/main_screen.dart';
 import 'package:stikku_frontend/pages/details_page.dart';
-import 'package:stikku_frontend/pages/diary_page.dart';
 import 'package:stikku_frontend/pages/login_page.dart';
 import 'package:stikku_frontend/pages/write_page.dart';
 
@@ -22,11 +21,6 @@ final List<GetPage> appRoutes = [
     page: () => WritePage(),
     transition: Transition.cupertino,
     binding: WriteBindings(),
-  ),
-  GetPage(
-    name: '/diary',
-    page: () => DiaryPage(),
-    transition: Transition.cupertino,
   ),
   GetPage(
     name: '/details',
