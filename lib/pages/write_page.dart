@@ -91,12 +91,17 @@ class WritePage extends StatelessWidget {
                 Expanded(
                   child: TextButton(
                     onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        //submit
-                        formController.submit(isEditMode);
-                      } else {
+                      if (formController.result.value == '') {
                         Get.snackbar(
-                            '게임 결과 폼을 다 작성해 주세요', '빼먹은 부분이 없는지 확인해 주세요');
+                            '게임의 결과를 체크해 주세요', '상단의 승, 패, 유, 무 중 하나를 클릭하세요');
+                      } else {
+                        if (formKey.currentState!.validate()) {
+                          //submit
+                          formController.submit(isEditMode);
+                        } else {
+                          Get.snackbar(
+                              '게임 결과 폼을 다 작성해 주세요', '빼먹은 부분이 없는지 확인해 주세요');
+                        }
                       }
                     },
                     child: const Text("작성 완료"),
