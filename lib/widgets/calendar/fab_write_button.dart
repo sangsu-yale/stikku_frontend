@@ -58,7 +58,7 @@ class _FabWriteButton extends StatelessWidget {
       onTap: () {
         Get.toNamed('/write', arguments: {
           "result": result,
-          "day": calendarController.selectedDay.value
+          "day": calendarController.today.value
         });
       },
       child: Column(

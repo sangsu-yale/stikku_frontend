@@ -2,7 +2,6 @@ part of '../../pages/details_page.dart';
 
 class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   const _AppBar({
-    super.key,
     required this.formController,
     required this.gameResult,
   });
@@ -33,7 +32,6 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
               confirmTextColor: Colors.white,
               onConfirm: () async {
                 formController.deleteDetails(gameResult.date);
-                Get.offAndToNamed('/list');
               },
             );
           },

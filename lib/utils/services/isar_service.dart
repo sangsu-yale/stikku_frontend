@@ -98,10 +98,6 @@ class IsarService extends GetxController {
     return GameResult(); // 빈 GameResult 반환
   }
 
-  Future<List<Event>> getEvents(DateTime day) async {
-    return _isar.events.filter().eventDateEqualTo(day).findAllSync();
-  }
-
   // submit 함수
   Future<GameResult> postSubmit(Map data) async {
     final user =
@@ -155,7 +151,7 @@ class IsarService extends GetxController {
       });
       return gameResult;
     }
-    update();
+    // update();
     return GameResult();
   }
 
@@ -164,41 +160,43 @@ class IsarService extends GetxController {
     return _isar.events.filter().eventDateEqualTo(day).findAllSync();
   }
 
-  Future<void> deleteDetails(DateTime date) async {
-    // 유저의 uuid 확인하고
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? uuid = prefs.getString('uuid');
+  Future<void> deleteSubmit(DateTime date) async {
+    final user =
+        await _isar.users.where().findFirst(); // 임시로 1, 로컬 스토리지 참조하여 구함
 
-    if (uuid == null) {
-      throw Exception('User UUID not found in SharedPreferences');
-    }
+    if (user != null) {
+      // 기존 GameResult와 Event 찾기
+      final gameResult = await _isar.gameResults
+          .filter()
+          .dateEqualTo(date.toUtc())
+          .findFirst();
 
-    // 사용자 가져오기
-    final user = await _isar.users.filter().uuidEqualTo(uuid).findFirst();
+      final event = gameResult != null
+          ? await _isar.events
+              .where()
+              .filter()
+              .eventDateEqualTo(gameResult.date)
+              .findFirst()
+          : null;
 
-    if (user == null) {
-      throw Exception('User not found in the database');
-    }
+      if (gameResult != null && event != null) {
+        // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에서 삭제하고, User와의 관계를 갱신합니다.
+        await _isar.writeTxn(() async {
+          // GameResult 삭제
+          await _isar.gameResults.delete(gameResult.id);
 
-    // 특정 날짜의 gameResults 가져오기
-    final gameResults =
-        await _isar.gameResults.filter().dateEqualTo(date).findAll();
+          // Event 삭제
+          await _isar.events.delete(event.id);
 
-    // 특정 날짜의 events 가져오기
-    final events = await _isar.events.filter().eventDateEqualTo(date).findAll();
+          // 관계 갱신
+          user.gameResults.remove(gameResult);
+          user.events.remove(event);
 
-    // gameResults 및 events 삭제
-    await _isar.writeTxn(() async {
-      for (var result in gameResults) {
-        await _isar.gameResults.delete(result.id);
+          await user.gameResults.save();
+          await user.events.save();
+        });
       }
-
-      for (var event in events) {
-        await _isar.events.delete(event.id);
-      }
-    });
-
-    print('GameResults and Events for date $date deleted successfully');
+    }
   }
 
 // update 함수
@@ -224,31 +222,34 @@ class IsarService extends GetxController {
       if (gameResult != null && event != null) {
         // GameResult 업데이트
         gameResult
-          ..stadium = data["stadium"].value
-          ..seatLocation = data["seatLocation"].value
-          ..result = data["result"].value
-          ..viewingMode = data["viewingMode"].value
-          ..team1 = data["team1"].value
-          ..team2 = data["team2"].value
-          ..score1 = data["score1"].value
-          ..score2 = data["score2"].value
-          ..team1IsMyTeam = data["team1IsMyTeam"].value
-          ..team2IsMyTeam = data["team2IsMyTeam"].value
-          ..gameTitle = data["gameTitle"]?.value
-          ..comment = data["comment"]?.value
+          ..stadium = data["stadium"]
+          ..seatLocation = data["seatLocation"]
+          ..result = data["result"]
+          ..viewingMode = data["viewingMode"]
+          ..team1 = data["team1"]
+          ..team2 = data["team2"]
+          ..score1 = data["score1"]
+          ..score2 = data["score2"]
+          ..team1IsMyTeam = data["team1IsMyTeam"]
+          ..team2IsMyTeam = data["team2IsMyTeam"]
+          ..gameTitle = data["gameTitle"]
+          ..comment = data["comment"]
           ..pictureUrl = ''
           ..date = data["date"].toUtc()
+          ..createdAt = DateTime.now()
           ..updatedAt = DateTime.now()
-          ..reviewComment = data["review"]?.value
-          ..playerOfTheMatch = data["playerOfTheMatch"]?.value
-          ..food = data["food"]?.value
+          ..reviewComment = data["review"]
+          ..playerOfTheMatch = data["playerOfTheMatch"]
+          ..food = data["food"]
+          ..mood = data["mood"]
+          ..rating = data["rating"]
           ..isFavorite = data["isFavorite"]
           ..user.value = user;
 
         // Event 업데이트
         event
           ..eventDate = data["date"].toUtc()
-          ..eventDetails = [data["result"].value]; // 경기 결과를 이벤트 디테일로 저장
+          ..eventDetails = [data["result"]]; // 경기 결과를 이벤트 디테일로 저장
 
         // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에 업데이트하고, User와의 관계를 갱신합니다.
         await _isar.writeTxn(() async {
@@ -263,28 +264,10 @@ class IsarService extends GetxController {
           await user.events.save();
         });
 
-        // table_calendar에 이벤트 업데이트
-        final calendarEvents =
-            <DateTime, List<Event>>{}; // 기존에 생성된 이벤트 맵을 가져옵니다.
-        final eventDate = data["date"].toUtc();
-        if (calendarEvents[eventDate] != null) {
-          calendarEvents[eventDate]!
-              .removeWhere((e) => e.eventDate == event.eventDate);
-          calendarEvents[eventDate]!.add(event);
-        } else {
-          calendarEvents[eventDate] = [event];
-        }
-
         return gameResult;
       }
     }
     return GameResult();
-  }
-
-  // 날짜별 이벤트를 가져오는 함수
-  Future<List<Event?>> getAllEvents() async {
-    final events = await _isar.events.where().findAll();
-    return events;
   }
 
   Future<List<GameResult>> getChartData() async {

@@ -29,8 +29,7 @@ class _Calendar extends StatelessWidget {
               daysOfWeekHeight: 30,
               rowHeight: constraints.maxHeight * 0.11, // 세로 410까지 OK
               // 이벤트 로더 (저장한 이벤트를 보여 준다)
-              eventLoader: isarController.getEventsForDay,
-
+              eventLoader: (day) => isarController.getEventsForDay(day),
               // 선택한 날짜의 onTap
               onDaySelected: (DateTime selectedDay, DateTime focusedDay) async {
                 calendarController.onDaySelected(selectedDay, focusedDay);

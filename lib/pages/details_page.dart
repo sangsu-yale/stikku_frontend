@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/config/custom_icons.dart';
+import 'package:stikku_frontend/controllers/calendar_controller.dart';
+import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 import 'package:stikku_frontend/controllers/write_form_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/pages/write_page.dart';
@@ -15,6 +16,8 @@ class DetailsPage extends StatelessWidget {
   final GameResult gameResult = Get.arguments!;
   final isarController = Get.find<IsarService>();
   final formController = Get.find<FormController>();
+  final calendarController = Get.find<CalendarController>();
+  final ListTopSearchController listTopSearchController = Get.find();
 
   @override
   Widget build(BuildContext context) {

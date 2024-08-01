@@ -22,20 +22,20 @@ class WritePage extends StatelessWidget {
     if (daynResult.isNotEmpty) {
       formController.result.value = daynResult["result"] ?? '';
       formController.date = daynResult["day"] ?? DateTime.now().toUtc();
-      // formController.gameTitle.value = daynResult["gameTitle"] ?? '';
-      // formController.team1.value = daynResult["team1"] ?? '';
-      // formController.team2.value = daynResult["team2"] ?? '';
-      // formController.score1.value = daynResult["score1"] ?? '0';
-      // formController.score2.value = daynResult["score2"] ?? '0';
-      // formController.stadium.value = daynResult["stadium"] ?? '';
-      // formController.seatLocation.value = daynResult["seatLocation"] ?? '';
-      // formController.comment.value = daynResult["comment"] ?? '';
-      // formController.reviewComment.value = daynResult["reviewComment"] ?? '';
-      //       ..mood = data["mood"]?.value
-      // ..rating = data["rating"]?.value
-      // formController.playerOfTheMatch.value =
-      //     daynResult["playerOfTheMatch"] ?? '';
-      // formController.food.value = daynResult["food"] ?? '';
+      formController.gameTitleCon.text = daynResult["gameTitle"] ?? '';
+      formController.team1Con.text = daynResult["team1"] ?? '';
+      formController.team2Con.text = daynResult["team2"] ?? '';
+      formController.score1Con.text = daynResult["score1"] ?? '0';
+      formController.score2Con.text = daynResult["score2"] ?? '0';
+      formController.stadiumCon.text = daynResult["stadium"] ?? '';
+      formController.seatLocationCon.text = daynResult["seatLocation"] ?? '';
+      formController.commentCon.text = daynResult["comment"] ?? '';
+      formController.reviewCommentCon.text = daynResult["reviewComment"] ?? '';
+      formController.mood.value = daynResult["mood"] ?? '';
+      formController.rating.value = daynResult["rating"] ?? 0;
+      formController.playerOfTheMatchCon.text =
+          daynResult["playerOfTheMatch"] ?? '';
+      formController.foodCon.text = daynResult["food"] ?? '';
     }
 
     return Scaffold(

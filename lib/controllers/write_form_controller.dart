@@ -121,8 +121,9 @@ class FormController extends GetxController {
   }
 
   void deleteDetails(DateTime date) async {
-    await isarController.deleteDetails(date);
+    await isarController.deleteSubmit(date);
     listTopSearchController.loadGameResults();
+    Get.toNamed('/');
   }
 
 // <!-- 이미지 (어드밴스드) -->
