@@ -18,7 +18,6 @@ class ListViewZone extends StatelessWidget {
   final IsarService isarController;
   final ListTopSearchController listTopSearchController;
 
-  final List<String> resultColor = ['win', 'lose', 'tie', 'cancel'];
   final colorMap = {
     'win': Colors.blue,
     'lose': Colors.red,
