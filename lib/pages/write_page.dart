@@ -25,8 +25,8 @@ class WritePage extends StatelessWidget {
       formController.gameTitleCon.text = daynResult["gameTitle"] ?? '';
       formController.team1Con.text = daynResult["team1"] ?? '';
       formController.team2Con.text = daynResult["team2"] ?? '';
-      formController.score1Con.text = daynResult["score1"] ?? '0';
-      formController.score2Con.text = daynResult["score2"] ?? '0';
+      formController.score1Con.text = daynResult["score1"] ?? '';
+      formController.score2Con.text = daynResult["score2"] ?? '';
       formController.stadiumCon.text = daynResult["stadium"] ?? '';
       formController.seatLocationCon.text = daynResult["seatLocation"] ?? '';
       formController.commentCon.text = daynResult["comment"] ?? '';
