@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stikku_frontend/controllers/diary_dialog_controller.dart';
 import 'package:stikku_frontend/controllers/write_form_controller.dart';
 import 'package:stikku_frontend/widgets/write/diary_form.dart';
 import 'package:stikku_frontend/widgets/write/game_result_form.dart';
 
 class WritePage extends StatelessWidget {
   final formController = Get.find<FormController>();
+  final diaryDialogController = Get.put(DiaryDialogController());
+
   final formKey = GlobalKey<FormState>();
 
   final bool isEditMode;
@@ -29,15 +32,15 @@ class WritePage extends StatelessWidget {
         formController.stadiumCon.text = daynResult["stadium"] ?? '';
         formController.seatLocationCon.text = daynResult["seatLocation"] ?? '';
         formController.commentCon.text = daynResult["comment"] ?? '';
-        formController.reviewCommentCon.text =
-            daynResult["reviewComment"] ?? '';
+        formController.review.text = daynResult["reviewComment"] ?? '';
         formController.mood.value = daynResult["mood"] ?? '';
         formController.rating.value = daynResult["rating"] ?? 0;
-        formController.playerOfTheMatchCon.text =
+        formController.playerOfTheMatch.text =
             daynResult["playerOfTheMatch"] ?? '';
-        formController.foodCon.text = daynResult["food"] ?? '';
+        formController.food.text = daynResult["food"] ?? '';
       }
     });
+
     // 컨트롤러에 arguments 주입
 
     return Scaffold(
@@ -58,7 +61,7 @@ class WritePage extends StatelessWidget {
           child: Obx(() {
             return IndexedStack(
               index: formController.currentFormIndex.value,
-              children: [GameResultForm(), DiaryForm()],
+              children: [GameResultForm(), DiaryForm(isEditMode)],
             );
           }),
         ),

@@ -28,7 +28,7 @@ class Review extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         diaryBuildTitleAndCommentInput(
-            '경기 리뷰를 작성해 주세요', formController.reviewCommentCon, 2, 9)
+            '경기 리뷰를 작성해 주세요', formController.review, 2, 9)
       ],
     );
   }
@@ -58,7 +58,7 @@ class PlayerOfTheMatch extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         diaryBuildTitleAndCommentInput(
-            '오늘의 BEST 플레이어는?', formController.playerOfTheMatchCon, 1, 5)
+            '오늘의 BEST 플레이어는?', formController.playerOfTheMatch, 1, 5)
       ],
     );
   }
@@ -87,8 +87,7 @@ class Food extends StatelessWidget {
               color: Color.fromARGB(170, 0, 0, 0)),
         ),
         const SizedBox(height: 10),
-        diaryBuildTitleAndCommentInput(
-            '오늘의 직관 음식', formController.foodCon, 1, 5)
+        diaryBuildTitleAndCommentInput('오늘의 직관 음식', formController.food, 1, 5)
       ],
     );
   }

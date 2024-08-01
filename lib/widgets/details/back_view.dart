@@ -33,7 +33,7 @@ class BackView extends StatelessWidget {
               decoration: const BoxDecoration(
                   color: Colors.green,
                   border: Border.symmetric(vertical: BorderSide())),
-              child: const Text("직관음식, 수훈선수"),
+              child: Text("${gameResult.gameReview?.review}"),
             ),
           ),
           Flexible(

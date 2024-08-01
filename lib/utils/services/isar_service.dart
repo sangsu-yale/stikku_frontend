@@ -123,7 +123,7 @@ class IsarService extends GetxController {
         ..updatedAt = DateTime.now()
         ..isFavorite = data["isFavorite"] ?? false
         ..gameReview = GameReview(
-          review: data["review"],
+          review: data["reviewComment"],
           rating: data["rating"],
           playerOfTheMatch: data["playerOfTheMatch"],
           mood: data["mood"],
@@ -132,7 +132,7 @@ class IsarService extends GetxController {
           food: data["food"],
         )
         ..user.value = user;
-      print(data["rating"]);
+      print(data["review"]);
       // Event 객체 생성 및 필요한 필드를 설정합니다.
       final event = Event()
         ..eventDate = data["date"].toUtc()
@@ -244,7 +244,7 @@ class IsarService extends GetxController {
           ..updatedAt = DateTime.now()
           ..isFavorite = data["isFavorite"] ?? false
           ..gameReview = GameReview(
-            review: data["review"],
+            review: data["reviewComment"],
             rating: data["rating"],
             playerOfTheMatch: data["playerOfTheMatch"],
             mood: data["mood"],

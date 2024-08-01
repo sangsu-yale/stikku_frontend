@@ -1,18 +1,16 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:stikku_frontend/config/custom_icons.dart';
+import 'package:stikku_frontend/controllers/write_form_controller.dart';
 import 'package:stikku_frontend/widgets/diary/diary_widgets.dart';
 
 class DiaryDialogController extends GetxController {
-  // 전체는 여기
-  var formWidgets =
-      <Map<String, Widget>>[].obs; // List of widget ID and widget pairs
+  final FormController formController = Get.find();
 
-  // 선택하는 건 여기
+  var formWidgets = <Map<String, Widget>>[].obs;
   var selectedWidgets = <Map<String, Widget>>[].obs;
-
-  // 보여 주는 건 여기
   var pageWidgets = <Map<String, Widget>>[].obs;
+  // final selectedWidgetData = <Map<String, Widget>>[].obs;
 
   @override
   void onInit() {
@@ -27,13 +25,13 @@ class DiaryDialogController extends GetxController {
       {'mood': Mood(id: 'mood', title: '기분')},
       {'food': Food(id: 'food', title: '음식')},
       // {'homeTeamLineup': HomeTeamLineup(id: 'homeTeamLineup', title: '홈 라인업')},
-      // {
-      //   'awayTeamLineup': AwayTeamLineup(id: 'awayTeamLineup', title: '어웨이 라인업')
-      // },
+      // {'awayTeamLineup': AwayTeamLineup(id: 'awayTeamLineup', title: '어웨이 라인업')},
     ]);
+
     addWidget(
       {'review': Review(id: 'review', title: '경기 리뷰')},
     );
+
     confirmSelection();
   }
 
@@ -52,8 +50,10 @@ class DiaryDialogController extends GetxController {
   }
 
   void confirmSelection() {
-    pageWidgets.assignAll(selectedWidgets);
-    update(); // Notify the change
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      pageWidgets.assignAll(selectedWidgets);
+      update(); // Notify the change
+    });
   }
 
   void removePageWidget(Map<String, Widget> widget) {

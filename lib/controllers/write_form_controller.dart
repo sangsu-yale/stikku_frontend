@@ -14,6 +14,8 @@ class FormController extends GetxController {
   final ListTopSearchController listTopSearchController = Get.find();
 
   var currentFormIndex = 0.obs;
+
+  get name => null;
   void changeForm(int index) {
     currentFormIndex.value = index;
   }
@@ -30,9 +32,9 @@ class FormController extends GetxController {
     stadiumCon.dispose();
     gameTitleCon.dispose();
     commentCon.dispose();
-    reviewCommentCon.dispose();
-    foodCon.dispose();
-    playerOfTheMatchCon.dispose();
+    review.dispose();
+    food.dispose();
+    playerOfTheMatch.dispose();
     super.onClose();
   }
 
@@ -55,9 +57,9 @@ class FormController extends GetxController {
   var team2IsMyTeam = false.obs; // 응원팀
 
   // <---------- 게임 리뷰 컨트롤러 ---------->
-  var reviewCommentCon = TextEditingController();
-  var foodCon = TextEditingController();
-  var playerOfTheMatchCon = TextEditingController();
+  var review = TextEditingController();
+  var food = TextEditingController();
+  var playerOfTheMatch = TextEditingController();
   var rating = 0.obs;
   var mood = ''.obs;
 
@@ -98,9 +100,9 @@ class FormController extends GetxController {
       "gameTitle": gameTitleCon.text,
       "comment": commentCon.text,
       "date": date,
-      "reviewComment": reviewCommentCon.text,
-      "playerOfTheMatch": playerOfTheMatchCon.text,
-      "food": foodCon.text,
+      "reviewComment": review.text,
+      "playerOfTheMatch": playerOfTheMatch.text,
+      "food": food.text,
       "mood": mood.value,
       "rating": rating.value,
       "isFavorite": false
@@ -124,6 +126,23 @@ class FormController extends GetxController {
     await isarController.deleteSubmit(date);
     listTopSearchController.loadGameResults();
     Get.toNamed('/');
+  }
+
+  // 위젯 ID에 따라 적절한 TextEditingController를 반환합니다.
+  TextEditingController getTextController(String widgetId) {
+    switch (widgetId) {
+      case 'review':
+        return review;
+      case 'playerOfTheMatch':
+        return playerOfTheMatch;
+      case 'mood':
+        // mood는 TextEditingController가 아닌 RxString으로 관리됩니다.
+        throw Exception('Mood is not managed with TextEditingController.');
+      case 'food':
+        return food;
+      default:
+        throw Exception('Unknown widget ID: $widgetId');
+    }
   }
 
 // <!-- 이미지 (어드밴스드) -->
