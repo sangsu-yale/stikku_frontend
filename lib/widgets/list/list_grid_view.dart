@@ -14,7 +14,6 @@ class GridViewZone extends StatelessWidget {
   final List<GameResult> filterList;
   final ListTopSearchController listTopSearchController;
 
-  final List<String> resultColor = ['win', 'lose', 'tie', 'cancel'];
   final colorMap = {
     'win': Colors.blue,
     'lose': Colors.red,

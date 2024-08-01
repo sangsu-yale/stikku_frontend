@@ -1,11 +1,17 @@
 part of '../../widgets/details/front_view.dart';
 
 class _Marquee extends StatelessWidget {
-  const _Marquee({
+  _Marquee({
     required this.gameResult,
   });
 
   final GameResult gameResult;
+  final colorMap = {
+    'win': Colors.blue,
+    'lose': Colors.red,
+    'tie': Colors.grey,
+    'cancel': Colors.orange,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +23,7 @@ class _Marquee extends StatelessWidget {
         duration: const Duration(seconds: 20),
         pause: const Duration(milliseconds: 0000),
         child: Container(
-          decoration:
-              const BoxDecoration(color: Color.fromARGB(255, 0, 102, 185)),
+          decoration: BoxDecoration(color: colorMap[gameResult.result]),
           child: FittedBox(
             fit: BoxFit.contain,
             child: Text(
