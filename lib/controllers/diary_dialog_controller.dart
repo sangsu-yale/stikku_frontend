@@ -103,7 +103,7 @@ class DiaryDialogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       child: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(12),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,

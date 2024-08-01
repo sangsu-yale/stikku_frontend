@@ -102,7 +102,6 @@ class IsarService extends GetxController {
   Future<GameResult> postSubmit(Map data) async {
     final user =
         await _isar.users.where().findFirst(); // 임시로 1, 로컬 스토리지 참조하여 구함
-    // GameResult 객체 생성 및 저장
 
     if (user != null) {
       final gameResult = GameResult()
@@ -114,22 +113,26 @@ class IsarService extends GetxController {
         ..team2 = data["team2"]
         ..score1 = data["score1"]
         ..score2 = data["score2"]
-        ..team1IsMyTeam = data["team1IsMyTeam"]
-        ..team2IsMyTeam = data["team2IsMyTeam"]
+        ..team1IsMyTeam = data["team1IsMyTeam"] ?? false
+        ..team2IsMyTeam = data["team2IsMyTeam"] ?? false
         ..gameTitle = data["gameTitle"]
         ..comment = data["comment"]
         ..pictureUrl = ''
         ..date = data["date"].toUtc()
         ..createdAt = DateTime.now()
         ..updatedAt = DateTime.now()
-        ..reviewComment = data["review"]
-        ..playerOfTheMatch = data["playerOfTheMatch"]
-        ..food = data["food"]
-        ..mood = data["mood"]
-        ..rating = data["rating"]
-        ..isFavorite = data["isFavorite"]
+        ..isFavorite = data["isFavorite"] ?? false
+        ..gameReview = GameReview(
+          review: data["review"],
+          rating: data["rating"],
+          playerOfTheMatch: data["playerOfTheMatch"],
+          mood: data["mood"],
+          homeTeamLineup: data["homeTeamLineup"]?.cast<String>(),
+          awayTeamLineup: data["awayTeamLineup"]?.cast<String>(),
+          food: data["food"],
+        )
         ..user.value = user;
-
+      print(data["rating"]);
       // Event 객체 생성 및 필요한 필드를 설정합니다.
       final event = Event()
         ..eventDate = data["date"].toUtc()
@@ -149,10 +152,11 @@ class IsarService extends GetxController {
         await user.gameResults.save();
         await user.events.save();
       });
+
       return gameResult;
     }
-    // update();
-    return GameResult();
+
+    return GameResult(); // 유저를 찾을 수 없는 경우 빈 GameResult 반환
   }
 
   // 날짜별 이벤트를 가져오는 함수
@@ -238,12 +242,16 @@ class IsarService extends GetxController {
           ..date = data["date"].toUtc()
           ..createdAt = DateTime.now()
           ..updatedAt = DateTime.now()
-          ..reviewComment = data["review"]
-          ..playerOfTheMatch = data["playerOfTheMatch"]
-          ..food = data["food"]
-          ..mood = data["mood"]
-          ..rating = data["rating"]
-          ..isFavorite = data["isFavorite"]
+          ..isFavorite = data["isFavorite"] ?? false
+          ..gameReview = GameReview(
+            review: data["review"],
+            rating: data["rating"],
+            playerOfTheMatch: data["playerOfTheMatch"],
+            mood: data["mood"],
+            homeTeamLineup: data["homeTeamLineup"]?.cast<String>(),
+            awayTeamLineup: data["awayTeamLineup"]?.cast<String>(),
+            food: data["food"],
+          )
           ..user.value = user;
 
         // Event 업데이트

@@ -4,8 +4,6 @@ import 'package:stikku_frontend/controllers/write_form_controller.dart';
 import 'package:stikku_frontend/widgets/write/diary_form.dart';
 import 'package:stikku_frontend/widgets/write/game_result_form.dart';
 
-part '../widgets/write/two_bottom_buttons.dart';
-
 class WritePage extends StatelessWidget {
   final formController = Get.find<FormController>();
   final formKey = GlobalKey<FormState>();
@@ -18,25 +16,29 @@ class WritePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final Map<String, dynamic> daynResult = Get.arguments ?? {};
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // 여기에 setState 또는 초기화 코드를 작성하세요.
+      if (daynResult.isNotEmpty) {
+        formController.result.value = daynResult["result"] ?? '';
+        formController.date = daynResult["day"] ?? DateTime.now().toUtc();
+        formController.gameTitleCon.text = daynResult["gameTitle"] ?? '';
+        formController.team1Con.text = daynResult["team1"] ?? '';
+        formController.team2Con.text = daynResult["team2"] ?? '';
+        formController.score1Con.text = daynResult["score1"] ?? '';
+        formController.score2Con.text = daynResult["score2"] ?? '';
+        formController.stadiumCon.text = daynResult["stadium"] ?? '';
+        formController.seatLocationCon.text = daynResult["seatLocation"] ?? '';
+        formController.commentCon.text = daynResult["comment"] ?? '';
+        formController.reviewCommentCon.text =
+            daynResult["reviewComment"] ?? '';
+        formController.mood.value = daynResult["mood"] ?? '';
+        formController.rating.value = daynResult["rating"] ?? 0;
+        formController.playerOfTheMatchCon.text =
+            daynResult["playerOfTheMatch"] ?? '';
+        formController.foodCon.text = daynResult["food"] ?? '';
+      }
+    });
     // 컨트롤러에 arguments 주입
-    if (daynResult.isNotEmpty) {
-      formController.result.value = daynResult["result"] ?? '';
-      formController.date = daynResult["day"] ?? DateTime.now().toUtc();
-      formController.gameTitleCon.text = daynResult["gameTitle"] ?? '';
-      formController.team1Con.text = daynResult["team1"] ?? '';
-      formController.team2Con.text = daynResult["team2"] ?? '';
-      formController.score1Con.text = daynResult["score1"] ?? '';
-      formController.score2Con.text = daynResult["score2"] ?? '';
-      formController.stadiumCon.text = daynResult["stadium"] ?? '';
-      formController.seatLocationCon.text = daynResult["seatLocation"] ?? '';
-      formController.commentCon.text = daynResult["comment"] ?? '';
-      formController.reviewCommentCon.text = daynResult["reviewComment"] ?? '';
-      formController.mood.value = daynResult["mood"] ?? '';
-      formController.rating.value = daynResult["rating"] ?? 0;
-      formController.playerOfTheMatchCon.text =
-          daynResult["playerOfTheMatch"] ?? '';
-      formController.foodCon.text = daynResult["food"] ?? '';
-    }
 
     return Scaffold(
       resizeToAvoidBottomInset: false,

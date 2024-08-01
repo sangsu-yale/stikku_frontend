@@ -39,6 +39,9 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         IconButton(
             onPressed: () async {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                // Do everything you want here...
+              });
               await Get.to(
                 () => WritePage(isEditMode: true),
                 arguments: {
@@ -52,9 +55,11 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
                   "stadium": gameResult.stadium,
                   "seatLocation": gameResult.seatLocation,
                   "comment": gameResult.comment,
-                  "reviewComment": gameResult.reviewComment,
-                  "playerOfTheMatch": gameResult.playerOfTheMatch,
-                  "food": gameResult.food,
+                  "reviewComment": gameResult.gameReview?.review,
+                  "playerOfTheMatch": gameResult.gameReview?.playerOfTheMatch,
+                  "food": gameResult.gameReview?.food,
+                  "mood": gameResult.gameReview?.mood,
+                  "rating": gameResult.gameReview?.rating,
                 },
               );
             },

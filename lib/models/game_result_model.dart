@@ -3,6 +3,27 @@ import 'user_model.dart';
 
 part 'game_result_model.g.dart';
 
+@embedded
+class GameReview {
+  String? review;
+  int? rating;
+  String? playerOfTheMatch;
+  String? mood;
+  List<String>? homeTeamLineup;
+  List<String>? awayTeamLineup;
+  String? food;
+
+  GameReview({
+    this.review,
+    this.rating,
+    this.playerOfTheMatch,
+    this.mood,
+    this.homeTeamLineup,
+    this.awayTeamLineup,
+    this.food,
+  });
+}
+
 @Collection()
 class GameResult {
   Id id = Isar.autoIncrement;
@@ -24,13 +45,7 @@ class GameResult {
   late String pictureUrl;
 
   // game reviews (옵션)
-  String? reviewComment;
-  int? rating;
-  String? playerOfTheMatch;
-  String? mood;
-  List<String>? homeTeamLineup;
-  List<String>? awayTeamLineup;
-  String? food;
+  GameReview? gameReview;
 
   bool isFavorite = false;
 

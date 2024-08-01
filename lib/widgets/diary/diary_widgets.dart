@@ -120,15 +120,15 @@ class Rating extends StatelessWidget {
         Obx(() {
           return Row(
             children: List.generate(5, (index) {
-              return IconButton(
-                icon: Icon(
+              return GestureDetector(
+                child: Icon(
                   size: 30,
                   index < formController.rating.value
                       ? Custom.star_1
                       : Custom.star,
                   color: Colors.blue,
                 ),
-                onPressed: () {
+                onTap: () {
                   formController.setRating(index + 1);
                 },
               );
@@ -145,8 +145,8 @@ class Mood extends StatelessWidget {
   final FormController formController = Get.find();
   final List<Map<String, dynamic>> moods = [
     {'icon': Custom.smiley, 'label': 'HAPPY'},
-    {'icon': Custom.smileyangry, 'label': 'SURPRISED'},
-    {'icon': Custom.smileyblank, 'label': 'ASTONISHED'},
+    {'icon': Custom.smileyxeyes, 'label': 'SURPRISED'},
+    {'icon': Custom.smileyangry, 'label': 'MAD'},
     {'icon': Custom.smileyblank, 'label': 'BORED'},
     {'icon': Custom.smileywink, 'label': 'FUN'},
   ];
@@ -174,15 +174,15 @@ class Mood extends StatelessWidget {
         Obx(() {
           return Row(
             children: moods.map((mood) {
-              return IconButton(
-                icon: Icon(
+              return GestureDetector(
+                child: Icon(
                   size: 30,
                   mood['icon'],
                   color: formController.mood.value == mood['label']
                       ? Colors.blue
                       : Colors.grey,
                 ),
-                onPressed: () {
+                onTap: () {
                   formController.setMood(mood['label']);
                 },
               );
