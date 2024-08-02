@@ -75,7 +75,7 @@ class ListViewZone extends StatelessWidget {
                                   item.team1,
                                   style: TextStyle(
                                       fontSize:
-                                          item.team1.length > 9 ? 10 : null,
+                                          item.team1.length > 9 ? 11 : null,
                                       fontWeight: item.team1IsMyTeam
                                           ? FontWeight.w900
                                           : null),
@@ -101,7 +101,7 @@ class ListViewZone extends StatelessWidget {
                                   item.team2,
                                   style: TextStyle(
                                       fontSize:
-                                          item.team1.length > 9 ? 10 : null,
+                                          item.team1.length > 9 ? 11 : null,
                                       fontWeight: item.team2IsMyTeam
                                           ? FontWeight.w900
                                           : null),
@@ -140,8 +140,8 @@ class ListViewZone extends StatelessWidget {
                             children: [
                               Text(
                                 item.result.toUpperCase(),
-                                style: const TextStyle(
-                                    color: Colors.black12,
+                                style: TextStyle(
+                                    color: colorMap[item.result] ?? Colors.grey,
                                     fontSize: 23,
                                     fontWeight: FontWeight.w300),
                               ),
