@@ -47,21 +47,18 @@ class HomePage extends StatelessWidget {
 
       // 플로팅 버튼
       floatingActionButton: events.isNotEmpty
-          ? TextButton(
-              style: TextButton.styleFrom(
-                // 텍스트 색상
-                backgroundColor: Colors.grey[300], // 배경색
+          ? IconButton(
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.blue[50],
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 10.0), // 패딩
-                textStyle: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.bold), // 텍스트 스타일
+                    horizontal: 20.0, vertical: 20.0),
               ),
               onPressed: () async {
                 final todayTicket = await isarController
                     .getDetails(calendarController.today.value);
                 Get.toNamed('/details', arguments: todayTicket);
               },
-              child: const Text("오늘\n기록"))
+              icon: const Icon(Custom.noteblank, size: 30, color: Colors.blue))
           : _FabWriteButton(
               calendarController: calendarController,
             ),
