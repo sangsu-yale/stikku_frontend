@@ -12,6 +12,7 @@ class FormController extends GetxController {
   final CalendarController calendarController = Get.find();
   final isarController = Get.find<IsarService>();
   final ListTopSearchController listTopSearchController = Get.find();
+  final focusScopeNode = FocusScopeNode();
 
   var currentFormIndex = 0.obs;
 
@@ -35,7 +36,12 @@ class FormController extends GetxController {
     review.dispose();
     food.dispose();
     playerOfTheMatch.dispose();
+    focusScopeNode.unfocus();
     super.onClose();
+  }
+
+  void unfocus() {
+    focusScopeNode.unfocus();
   }
 
   // <---------- 게임 결과 컨트롤러 ---------->

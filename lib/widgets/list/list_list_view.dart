@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
+import 'package:stikku_frontend/utils/dotted_separator.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class ListViewZone extends StatelessWidget {
@@ -169,16 +170,12 @@ class ListViewZone extends StatelessWidget {
                     ),
                   ],
                 ),
+                const DottedSeparator(color: Colors.grey),
                 // 경기 내용
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: const BoxDecoration(
-                    border: BorderDirectional(
-                      top: BorderSide(
-                        color: Color.fromARGB(255, 224, 224, 224), // 경계 색상
-                        width: 0.5, // 경계 두께
-                      ),
-                    ),
+                    border: BorderDirectional(),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,

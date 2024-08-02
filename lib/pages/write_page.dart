@@ -63,14 +63,24 @@ class WritePage extends StatelessWidget {
 
       // body
       body: SafeArea(
-        child: Form(
-          key: formKey,
-          child: Obx(() {
-            return IndexedStack(
-              index: formController.currentFormIndex.value,
-              children: [GameResultForm(), DiaryForm(isEditMode)],
-            );
-          }),
+        child: GestureDetector(
+          onTap: formController.unfocus,
+          child: Form(
+            key: formKey,
+            child: Obx(() {
+              return IndexedStack(
+                index: formController.currentFormIndex.value,
+                children: [
+                  FocusScope(
+                      node: formController.focusScopeNode,
+                      child: GameResultForm()),
+                  FocusScope(
+                      node: formController.focusScopeNode,
+                      child: DiaryForm(isEditMode))
+                ],
+              );
+            }),
+          ),
         ),
       ),
 
