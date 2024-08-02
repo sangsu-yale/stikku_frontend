@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/controllers/diary_dialog_controller.dart';
 import 'package:stikku_frontend/controllers/write_form_controller.dart';
 import 'package:stikku_frontend/widgets/write/diary_form.dart';
@@ -48,10 +49,16 @@ class WritePage extends StatelessWidget {
 
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(
+            Custom.caretleft,
+            color: Colors.white,
+          ),
           onPressed: () => Get.back(),
         ),
-        title: Text(isEditMode ? "경기 기록 수정 페이지" : "경기 기록 작성 페이지"),
+        title: Text(
+          isEditMode ? "경기 기록 수정 페이지" : "경기 기록 작성 페이지",
+          style: const TextStyle(color: Colors.white),
+        ),
       ),
 
       // body
