@@ -1,2 +1,4 @@
 	<key>NSPhotoLibraryUsageDescription</key>
     <key>NSCameraUsageDescription</key>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>사진 라이브러리에 접근하여 이미지를 저장합니다.</string>

@@ -20,17 +20,20 @@ class FrontView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _Marquee(gameResult: gameResult),
+    return Container(
+      color: Colors.white,
+      child: Column(
+        children: [
+          _Marquee(gameResult: gameResult),
 
-        // 경기 결과
-        _GameResultBox(gameResult: gameResult, smallSize: smallSize),
-        // 경기 내용
-        _GameDataBox(gameResult: gameResult),
-        // 사진
-        const _GamePicBox(),
-      ],
+          // 경기 결과
+          _GameResultBox(gameResult: gameResult, smallSize: smallSize),
+          // 경기 내용
+          _GameDataBox(gameResult: gameResult),
+          // 사진
+          const _GamePicBox(),
+        ],
+      ),
     );
   }
 }

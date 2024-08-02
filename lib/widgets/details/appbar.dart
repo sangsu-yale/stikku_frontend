@@ -4,23 +4,25 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   const _AppBar({
     required this.formController,
     required this.gameResult,
+    required this.onScreenshot,
   });
 
   final FormController formController;
   final GameResult gameResult;
+  final VoidCallback onScreenshot;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       leading: IconButton(
-          onPressed: () => {
-                Get.previousRoute != '/write' ||
-                        Get.previousRoute != '/WritePage'
-                    ? Get.offAllNamed('/')
-                    : Get.back()
-              },
-          icon: const Icon(Custom.x, color: Colors.blue)),
+        onPressed: () => {
+          Get.previousRoute != '/write' || Get.previousRoute != '/WritePage'
+              ? Get.offAllNamed('/')
+              : Get.back()
+        },
+        icon: const Icon(Custom.x, color: Colors.blue),
+      ),
       actions: [
         IconButton(
           onPressed: () async {
@@ -38,37 +40,37 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
           icon: const Icon(Custom.trash, color: Colors.blue),
         ),
         IconButton(
-            onPressed: () async {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                // Do everything you want here...
-              });
-              await Get.to(
-                () => WritePage(isEditMode: true),
-                arguments: {
-                  "result": gameResult.result,
-                  "day": gameResult.date.toUtc(),
-                  "gameTitle": gameResult.gameTitle,
-                  "team1": gameResult.team1,
-                  "team2": gameResult.team2,
-                  "score1": gameResult.score1,
-                  "score2": gameResult.score2,
-                  "stadium": gameResult.stadium,
-                  "seatLocation": gameResult.seatLocation,
-                  "comment": gameResult.comment,
-                  "reviewComment": gameResult.gameReview?.review,
-                  "playerOfTheMatch": gameResult.gameReview?.playerOfTheMatch,
-                  "food": gameResult.gameReview?.food,
-                  "mood": gameResult.gameReview?.mood,
-                  "rating": gameResult.gameReview?.rating,
-                },
-              );
-            },
-            icon: const Icon(Custom.pencilsimple__1_, color: Colors.blue)),
+          onPressed: () async {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              // Do everything you want here...
+            });
+            await Get.to(
+              () => WritePage(isEditMode: true),
+              arguments: {
+                "result": gameResult.result,
+                "day": gameResult.date.toUtc(),
+                "gameTitle": gameResult.gameTitle,
+                "team1": gameResult.team1,
+                "team2": gameResult.team2,
+                "score1": gameResult.score1,
+                "score2": gameResult.score2,
+                "stadium": gameResult.stadium,
+                "seatLocation": gameResult.seatLocation,
+                "comment": gameResult.comment,
+                "reviewComment": gameResult.gameReview?.review,
+                "playerOfTheMatch": gameResult.gameReview?.playerOfTheMatch,
+                "food": gameResult.gameReview?.food,
+                "mood": gameResult.gameReview?.mood,
+                "rating": gameResult.gameReview?.rating,
+              },
+            );
+          },
+          icon: const Icon(Custom.pencilsimple__1_, color: Colors.blue),
+        ),
         IconButton(
-            onPressed: () {
-              // 추가
-            },
-            icon: const Icon(Custom.arrowlinedown, color: Colors.blue)),
+          onPressed: onScreenshot,
+          icon: const Icon(Custom.arrowlinedown, color: Colors.blue),
+        ),
       ],
     );
   }
