@@ -22,24 +22,27 @@ class _GameResultBox extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Column(
-                  children: [
-                    Text(gameResult.team1,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: gameResult.team1.length > 9
-                                ? cardWidth * 0.1 / 1.5
-                                : cardWidth * 0.1,
-                            fontWeight: FontWeight.bold)),
-                    Text("vs", style: TextStyle(fontSize: cardWidth * 0.1)),
-                    Text(gameResult.team2,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: gameResult.team2.length > 9
-                                ? cardWidth * 0.1 / 1.5
-                                : cardWidth * 0.1,
-                            fontWeight: FontWeight.bold)),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: Column(
+                    children: [
+                      Text(gameResult.team1,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: gameResult.team1.length > 9
+                                  ? cardWidth * 0.1 / 1.5
+                                  : cardWidth * 0.1,
+                              fontWeight: FontWeight.bold)),
+                      Text("vs", style: TextStyle(fontSize: cardWidth * 0.1)),
+                      Text(gameResult.team2,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: gameResult.team2.length > 9
+                                  ? cardWidth * 0.1 / 1.5
+                                  : cardWidth * 0.1,
+                              fontWeight: FontWeight.bold)),
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: cardHeight * 0.05, // 5퍼센트
