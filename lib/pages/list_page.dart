@@ -41,7 +41,10 @@ class ListPage extends StatelessWidget {
 
                   if (listTopSearchController.ticketlist.isEmpty) {
                     return const Center(
-                      child: Text('경기 티켓을 발급해 보세요'),
+                      child: Text(
+                        '아직 관람한 경기가 업습니다',
+                        style: TextStyle(color: Colors.black38),
+                      ),
                     );
                   }
 
