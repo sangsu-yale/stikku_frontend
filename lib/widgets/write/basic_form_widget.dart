@@ -27,7 +27,6 @@ Widget buildTitleAndCommentInput(String hintTextInput,
 Widget diaryBuildTitleAndCommentInput(String hintTextInput,
     TextEditingController controller, int minLines, int maxLines) {
   return TextFormField(
-    maxLength: 60,
     minLines: minLines,
     maxLines: maxLines,
     controller: controller,

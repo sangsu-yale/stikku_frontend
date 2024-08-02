@@ -28,7 +28,7 @@ class Review extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         diaryBuildTitleAndCommentInput(
-            '경기 리뷰를 작성해 주세요', formController.review, 2, 9)
+            '경기 리뷰를 작성해 주세요', formController.review, 2, 99)
       ],
     );
   }
