@@ -58,6 +58,7 @@ class ListPage extends StatelessWidget {
                           listTopSearchController: listTopSearchController)
                       : GridViewZone(
                           filterList: filterList,
+                          isarController: isarController,
                           listTopSearchController: listTopSearchController);
                 },
               ),
