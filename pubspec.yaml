@@ -37,7 +37,6 @@ dependencies:
   get: ^4.6.6 # 상태관리 및 라우팅
   flutter_dotenv: ^5.1.0 # 보안
   table_calendar: ^3.1.2 # 달력
-  dio: ^5.5.0 # http
   isar: ^3.1.0+1 # 로컬드라이브
   isar_flutter_libs: ^3.1.0+1
   path_provider: ^2.1.3
@@ -56,6 +55,7 @@ dependencies:
   screenshot: ^3.0.0
   image_gallery_saver: ^2.0.3
   permission_handler: ^11.3.1
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
