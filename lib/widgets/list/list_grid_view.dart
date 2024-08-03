@@ -25,45 +25,50 @@ class GridViewZone extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 3 / 2,
+        crossAxisCount: 3,
+        childAspectRatio: 3 / 3,
       ),
       itemCount: filterList.length,
       itemBuilder: (context, index) {
         final ticket = filterList[index];
-        return Card(
-          color: Colors.white,
-          child: GridTile(
-            footer: IconButton(
-              alignment: Alignment.bottomRight,
-              icon: Icon(
-                  ticket.isFavorite
-                      ? Custom.heartstraight_1
-                      : Custom.heartstraight,
-                  color: Colors.red,
-                  size: 17),
-              onPressed: () {
-                listTopSearchController.toggleFavorite(ticket.id);
-              },
+        return ClipOval(
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.circular(100), // 큰 값으로 설정하여 원형에 가까운 모양으로
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    DateFormat('yyyy.MM.dd').format(ticket.date),
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(ticket.result.toUpperCase(),
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: colorMap[ticket.result] ?? Colors.grey,
-                      )),
-                ],
+            color: colorMap[ticket.result] ?? Colors.grey,
+            child: GridTile(
+              footer: IconButton(
+                alignment: Alignment.bottomCenter,
+                icon: Icon(
+                    ticket.isFavorite
+                        ? Custom.heartstraight_1
+                        : Custom.heartstraight,
+                    color: Colors.red,
+                    size: 17),
+                onPressed: () {
+                  listTopSearchController.toggleFavorite(ticket.id);
+                },
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      DateFormat('yyyy.MM.dd').format(ticket.date),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    Text(ticket.result.toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        )),
+                  ],
+                ),
               ),
             ),
           ),
