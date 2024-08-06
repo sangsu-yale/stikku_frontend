@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/config/custom_icons.dart';
+import 'package:stikku_frontend/utils/services/api_service.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -48,8 +47,18 @@ class LoginPage extends StatelessWidget {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10)),
                         child: GestureDetector(
-                          onTap: () {
-                            print("구글 연동 api 받아오기");
+                          onTap: () async {
+                            try {
+                              print("1번");
+                              login();
+                              // Handle the result as necessary, such as navigating
+                              // to another page or showing a message.
+                              // print("결과 $result");
+                            } catch (e) {
+                              // Handle the error accordingly
+                              print("에러 $e");
+                            }
+                            // print("구글 연동 api 받아오기");
                           },
                           child: const Row(
                             children: [
