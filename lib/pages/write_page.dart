@@ -101,9 +101,9 @@ class WritePage extends StatelessWidget {
                   },
                   items: const [
                     BottomNavigationBarItem(
-                        icon: Icon(Icons.sports_baseball), label: '게임 결과'),
+                        icon: SizedBox.shrink(), label: '게임 결과'),
                     BottomNavigationBarItem(
-                        icon: Icon(Icons.book), label: '관람 일기'),
+                        icon: SizedBox.shrink(), label: '관람 일기'),
                   ],
                 );
               },

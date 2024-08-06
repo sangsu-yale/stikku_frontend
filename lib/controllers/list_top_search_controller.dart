@@ -118,10 +118,14 @@ class ListTopSearchController extends GetxController {
       if (gameResult != null) {
         gameResult.isFavorite = !gameResult.isFavorite;
         await _isar.gameResults.put(gameResult);
+        // 티켓 리스트에서 해당 게임 결과 업데이트
+        int index = ticketlist.indexWhere((ticket) => ticket.id == id);
+        if (index != -1) {
+          ticketlist[index] = gameResult;
+          ticketlist.refresh(); // 리스트 갱신
+        }
       }
     });
-    // 누른 후 반영
-    loadGameResults();
   }
 
 //

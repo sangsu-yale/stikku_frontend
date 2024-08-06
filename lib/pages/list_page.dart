@@ -42,7 +42,7 @@ class ListPage extends StatelessWidget {
                   if (listTopSearchController.ticketlist.isEmpty) {
                     return const Center(
                       child: Text(
-                        '아직 관람한 경기가 업습니다',
+                        '아직 관람한 경기가 없습니다',
                         style: TextStyle(color: Colors.black38),
                       ),
                     );

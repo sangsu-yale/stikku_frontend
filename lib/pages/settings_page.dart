@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class SettingsPage extends StatelessWidget {
   final isarController = Get.find<IsarService>();
   SettingsPage({super.key});
-
-  Future<String?> getUUID() async {
-    final uuid = await isarController.getAllUsers();
-    return uuid;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,22 +13,37 @@ class SettingsPage extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(20),
+            margin: const EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.all(30),
             alignment: Alignment.center,
-            child: Column(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  child: const Text("uuid 님"),
-                ),
-                const Text(
-                  "로그인을 하면 다른 기기로 로그인시 데이터가 유지돼요!",
-                  style: TextStyle(fontSize: 13, color: Colors.grey),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Get.toNamed('/login');
-                  },
-                  child: const Text("가입/로그인하기"),
+                const Icon(Icons.person_4_rounded,
+                    size: 50, color: Colors.blue),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "게스트-${isarController.uuid} 님",
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const Text(
+                      "로그인하면 다른 기기 연동이 가능해요!",
+                      style: TextStyle(fontSize: 13, color: Colors.grey),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Get.toNamed(
+                          '/login',
+                        );
+                      },
+                      child: const Text("가입/로그인하기"),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -41,23 +52,37 @@ class SettingsPage extends StatelessWidget {
           Expanded(
             child: ListView(
               children: [
-                GestureDetector(
-                  onTap: () async {
-                    await isarController.deleteDefaultUser();
-                  },
-                  child: const ListTile(
-                    leading: Icon(Icons.heart_broken),
-                    title: Text("모든 데이터 삭제하기"),
+                const Padding(
+                  padding: EdgeInsets.all(13.0),
+                  child: Text(
+                    "설정",
+                    style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
-                const ListTile(
-                  leading: Icon(Icons.question_answer),
-                  title: Text("문의하기"),
-                ),
-                // const ListTile(
-                //   leading: Icon(Icons.import_contacts),
-                //   title: Text("아이콘 변경"),
+                // GestureDetector(
+                //   onTap: () async {
+                //     await isarController.deleteDefaultUser();
+                //   },
+                //   child: const ListTile(
+                //     leading: Icon(Icons.heart_broken),
+                //     title: Text("모든 데이터 삭제하기"),
+                //   ),
                 // ),
+                GestureDetector(
+                  child: const ListTile(
+                    leading: Icon(Custom.target, color: Colors.blue),
+                    title: Text("문의하기"),
+                  ),
+                ),
+                GestureDetector(
+                  child: const ListTile(
+                    leading: Icon(Custom.checkerboard_1, color: Colors.blue),
+                    title: Text("메뉴 아이콘 변경하기"),
+                  ),
+                ),
               ],
             ),
           ),

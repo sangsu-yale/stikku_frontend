@@ -4,11 +4,12 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:stikku_frontend/app.dart';
 import 'package:stikku_frontend/config/isar_db.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // 앱 초기화만 집중
 void main() async {
   await _initializeApp();
-
+  await dotenv.load();
   runApp(const MyApp());
 }
 
