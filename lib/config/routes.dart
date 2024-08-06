@@ -30,7 +30,7 @@ final List<GetPage> appRoutes = [
   ),
   GetPage(
     name: '/login',
-    page: () => const LoginPage(),
+    page: () => LoginPage(),
     transition: Transition.rightToLeft,
   ),
 ];

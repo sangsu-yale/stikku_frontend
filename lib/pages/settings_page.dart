@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -50,7 +51,17 @@ class SettingsPage extends StatelessWidget {
           const Divider(),
           Expanded(
             child: ListView(
-              children: const [
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(13.0),
+                  child: Text(
+                    "설정",
+                    style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
                 // GestureDetector(
                 //   onTap: () async {
                 //     await isarController.deleteDefaultUser();
@@ -60,14 +71,18 @@ class SettingsPage extends StatelessWidget {
                 //     title: Text("모든 데이터 삭제하기"),
                 //   ),
                 // ),
-                // const ListTile(
-                //   leading: Icon(Icons.question_answer),
-                //   title: Text("문의하기"),
-                // ),
-                // const ListTile(
-                //   leading: Icon(Icons.import_contacts),
-                //   title: Text("아이콘 변경"),
-                // ),
+                GestureDetector(
+                  child: const ListTile(
+                    leading: Icon(Custom.target, color: Colors.blue),
+                    title: Text("문의하기"),
+                  ),
+                ),
+                GestureDetector(
+                  child: const ListTile(
+                    leading: Icon(Custom.checkerboard_1, color: Colors.blue),
+                    title: Text("메뉴 아이콘 변경하기"),
+                  ),
+                ),
               ],
             ),
           ),
