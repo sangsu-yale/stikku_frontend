@@ -79,10 +79,6 @@ class FormController extends GetxController {
   var date = DateTime.now().toUtc();
 
   // 유효성 검사 (필수)
-  // TODO: 폼을 다 작성했는데 scoreCon의 값이 없을 경우 0으로 설정
-  // TODO: 폼을 다 작성했는데 viewingMode가 집관일 경우 stadium, seat 집관으로 설정
-  // TODO: validate 후 submit 해 주기 (gameResult에 담아서!)
-
   // 폼 전송 함수
   void submit(isEditMode) async {
     if (score1Con.text == "") score1Con.text = "0";
@@ -93,25 +89,33 @@ class FormController extends GetxController {
     }
 
     Map data = {
-      "stadium": stadiumCon.text,
-      "seatLocation": seatLocationCon.text,
-      "result": result.value,
-      "viewingMode": viewingMode.value,
-      "team1": team1Con.text,
-      "team2": team2Con.text,
-      "score1": score1Con.text,
-      "score2": score2Con.text,
-      "team1IsMyTeam": team1IsMyTeam.value,
-      "team2IsMyTeam": team2IsMyTeam.value,
-      "gameTitle": gameTitleCon.text,
-      "comment": commentCon.text,
-      "date": date,
-      "reviewComment": review.text,
-      "playerOfTheMatch": playerOfTheMatch.text,
-      "food": food.text,
-      "mood": mood.value,
-      "rating": rating.value,
-      "isFavorite": false
+      "gameResult": {
+        "userId": 0,
+        "result": result.value,
+        "isLiveView": viewingMode.value,
+        "title": gameTitleCon.text,
+        "date": date,
+        "stadium": stadiumCon.text,
+        "seatLocation": seatLocationCon.text,
+        "team1": team1Con.text,
+        "team2": team2Con.text,
+        "score1": score1Con.text,
+        "score2": score2Con.text,
+        "team1IsMyTeam": team1IsMyTeam.value,
+        "team2IsMyTeam": team2IsMyTeam.value,
+        "comment": commentCon.text,
+        "picture": '',
+        "isFavorite": false
+      },
+      "gameReview": {
+        "review": review.text,
+        "rating": rating.value,
+        "playerOfTheMatch": playerOfTheMatch.text,
+        "mood": mood.value,
+        "homeTeamLineup": [''],
+        "awayTeamLineup": [''],
+        "food": food.text
+      }
     };
 
     final GameResult gameResult;

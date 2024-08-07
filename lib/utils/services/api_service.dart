@@ -22,8 +22,6 @@ void login() async {
   if (user != null) {
     final GoogleSignInAuthentication auth = await user.authentication;
     final String? authorizationCode = auth.accessToken;
-    print("토큰 반환");
-    print(authorizationCode);
     if (authorizationCode != null) {
       // 서버와 통신
 
@@ -45,12 +43,12 @@ void login() async {
         final body = jsonDecode(response.body) as Map<String, dynamic>;
 
         final String serverAccessToken = body["accessToken"];
+        print("서버에서 받아온 토큰이에요 : $serverAccessToken");
 
         await prefs.setString('accessToken', serverAccessToken);
 
         // 유저 정보 받아오기(serverID)
         final userInfo = await fetchUser(serverAccessToken);
-        final userInfo2 = await fetchUserID(4, serverAccessToken);
 
         // user 업데이트 (유저 업데이트 및 유저 생성은 똑같다)
         isarController.updateUser(userInfo["id"], userInfo["username"],
@@ -89,7 +87,6 @@ Future<Map<String, dynamic>> fetchUser(String accessToken) async {
 Future<Map<String, dynamic>> fetchUserID(
     int serverId, String serverAccessToken) async {
   final url = Uri.parse('${dotenv.env['SERVER_URL']}/users/$serverId');
-  print(url);
   final response = await http
       .get(url, headers: {'Authorization': "Bearer $serverAccessToken"});
   print(response.statusCode);
@@ -102,23 +99,45 @@ Future<Map<String, dynamic>> fetchUserID(
   }
 }
 
-// {
-//   "id": int,
-// 	"username": "string",
-// 	"email": "email",
-// 	"profile_image": "프로필 이미지 URL"
-// }
+// 게임Result 포스트
+void postGameResult(Map data) async {
+  final url = Uri.parse('${dotenv.env['SERVER_URL']}/games');
+  print(url);
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String? accessToken = prefs.getString('accessToken');
 
-Future<Map<String, dynamic>> getGameResult() async {
-  final url = Uri.parse(
-      'https://ecd9b3e1-ec73-4c3e-99fb-121908179e18.mock.pstmn.io/questions/2');
-  // final url = Uri.parse('${dotenv.env['SERVER_URL']}/game/$gameResultId');
-  final response = await http.get(url);
+  print("서버에게 요청할 토큰이에요 : $accessToken");
 
-  if (response.statusCode == 200) {
+  // 액세스 토큰 있으면
+  if (accessToken != null) {
+    // 액세스 토큰 헤더에 넣어 줘야 해
+    final Map<String, String> headers = {
+      "content-type": "application/json; charset=utf-8",
+      "Authorization": "Bearer $accessToken"
+    };
+    //"content-type": "application/json; charset=utf-8",
+
+    // 바디값 넣어 줘야 함
+    final String json = jsonEncode(<dynamic, dynamic>{
+      'gameResult': data["gameResult"],
+      'gameReview': data["gameReview"]
+    });
+
+    // 요청
+    final response = await http.post(url, headers: headers, body: json);
+    print("뭐지?");
+    print(response.statusCode);
+    print(response.headers);
     print(response.body);
-    return jsonDecode(response.body) as Map<String, dynamic>;
+
+    // 만약에 됐으면?
+    if (response.statusCode == 201) {
+      print("진짜됐다!");
+      print(response.body);
+    } else {
+      throw Exception('게임 결과를 저장하지 못했습니다');
+    }
   } else {
-    throw Exception('티켓 정보 없음');
+    throw Exception('유저 정보를 불러오지 못했습니다');
   }
 }

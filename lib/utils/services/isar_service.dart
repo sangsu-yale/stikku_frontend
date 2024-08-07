@@ -5,6 +5,7 @@ import 'package:stikku_frontend/models/event_model.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/models/user_model.dart';
 import 'package:stikku_frontend/config/isar_db.dart';
+import 'package:stikku_frontend/utils/services/api_service.dart';
 import 'package:uuid/uuid.dart';
 
 class IsarService extends GetxController {
@@ -28,13 +29,6 @@ class IsarService extends GetxController {
       await prefs.setBool('isUserCreated', true);
     } else {
       uuid.value = prefs.getString('uuid')!.substring(0, 8).toUpperCase();
-    }
-
-    final Set<String> keys = prefs.getKeys();
-
-    for (String key in keys) {
-      final value = prefs.get(key);
-      print('Key: $key, Value: $value');
     }
 
     // TODO: 나중에 삭제 🚧 모든 사용자 정보를 콘솔에 출력 🚧
@@ -174,39 +168,42 @@ class IsarService extends GetxController {
     // 유저 GET
     final user = await getUser();
 
+    final gameResultObj = data["gameResult"];
+    final gameReviewObj = data["gameReview"];
+
     final gameResult = GameResult()
-      ..stadium = data["stadium"]
-      ..seatLocation = data["seatLocation"]
-      ..result = data["result"]
-      ..viewingMode = data["viewingMode"]
-      ..team1 = data["team1"]
-      ..team2 = data["team2"]
-      ..score1 = data["score1"]
-      ..score2 = data["score2"]
-      ..team1IsMyTeam = data["team1IsMyTeam"] ?? false
-      ..team2IsMyTeam = data["team2IsMyTeam"] ?? false
-      ..gameTitle = data["gameTitle"]
-      ..comment = data["comment"]
+      ..stadium = gameResultObj["stadium"]
+      ..seatLocation = gameResultObj["seatLocation"]
+      ..result = gameResultObj["result"]
+      ..viewingMode = gameResultObj["isLiveView"]
+      ..team1 = gameResultObj["team1"]
+      ..team2 = gameResultObj["team2"]
+      ..score1 = gameResultObj["score1"]
+      ..score2 = gameResultObj["score2"]
+      ..team1IsMyTeam = gameResultObj["team1IsMyTeam"] ?? false
+      ..team2IsMyTeam = gameResultObj["team2IsMyTeam"] ?? false
+      ..gameTitle = gameResultObj["title"]
+      ..comment = gameResultObj["comment"]
       ..pictureUrl = ''
-      ..date = data["date"].toUtc()
+      ..date = gameResultObj["date"].toUtc()
       ..createdAt = DateTime.now()
       ..updatedAt = DateTime.now()
-      ..isFavorite = data["isFavorite"] ?? false
+      ..isFavorite = gameResultObj["isFavorite"] ?? false
       ..gameReview = GameReview(
-        review: data["reviewComment"],
-        rating: data["rating"],
-        playerOfTheMatch: data["playerOfTheMatch"],
-        mood: data["mood"],
-        homeTeamLineup: data["homeTeamLineup"]?.cast<String>(),
-        awayTeamLineup: data["awayTeamLineup"]?.cast<String>(),
-        food: data["food"],
+        review: gameReviewObj["review"],
+        rating: gameReviewObj["rating"],
+        playerOfTheMatch: gameReviewObj["playerOfTheMatch"],
+        mood: gameReviewObj["mood"],
+        homeTeamLineup: gameReviewObj["homeTeamLineup"],
+        awayTeamLineup: gameReviewObj["awayTeamLineup"],
+        food: gameReviewObj["food"],
       )
       ..user.value = user;
 
     // Event 객체 생성 및 필요한 필드를 설정합니다.
     final event = Event()
-      ..eventDate = data["date"].toUtc()
-      ..eventDetails = [data["result"]]; // 경기 결과를 이벤트 디테일로 저장
+      ..eventDate = gameResultObj["date"].toUtc()
+      ..eventDetails = [gameResultObj["result"]]; // 경기 결과를 이벤트 디테일로 저장
 
     // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에 저장하고, User와의 관계를 설정합니다.
     await _isar.writeTxn(() async {
@@ -222,6 +219,17 @@ class IsarService extends GetxController {
       await user.gameResults.save();
       await user.events.save();
     });
+
+    // 만약에 서버가 연결되어 있으면?
+    if (user.serverId != 0) {
+      // 서버 연결
+      print("서버 연결된 유저예요");
+      gameResultObj["userId"] = user.serverId;
+      gameResultObj["result"] = gameResultObj["result"].toUpperCase();
+      gameResultObj["date"] = gameResultObj["date"].toIso8601String();
+      gameReviewObj["mood"] = gameReviewObj["mood"].toUpperCase();
+      postGameResult(data);
+    }
 
     return gameResult;
   }
