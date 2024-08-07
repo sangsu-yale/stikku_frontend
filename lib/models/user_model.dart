@@ -9,10 +9,10 @@ part 'user_model.g.dart';
 @Collection()
 class User {
   Id id = Isar.autoIncrement;
-
   late String uuid;
+
+  late int serverId;
   late String username;
-  late String password;
   late String email;
   String? profileImage;
 

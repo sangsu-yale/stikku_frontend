@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:stikku_frontend/config/bindings.dart';
-import 'package:stikku_frontend/pages/home_page.dart';
 import 'package:stikku_frontend/pages/main/main_screen.dart';
 import 'package:stikku_frontend/pages/details_page.dart';
 import 'package:stikku_frontend/pages/login_page.dart';
@@ -11,10 +10,6 @@ final List<GetPage> appRoutes = [
   GetPage(
     name: '/',
     page: () => MainScreen(),
-  ),
-  GetPage(
-    name: '/home',
-    page: () => HomePage(),
   ),
   GetPage(
     name: '/write',

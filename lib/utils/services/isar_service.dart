@@ -30,6 +30,13 @@ class IsarService extends GetxController {
       uuid.value = prefs.getString('uuid')!.substring(0, 8).toUpperCase();
     }
 
+    final Set<String> keys = prefs.getKeys();
+
+    for (String key in keys) {
+      final value = prefs.get(key);
+      print('Key: $key, Value: $value');
+    }
+
     // TODO: 나중에 삭제 🚧 모든 사용자 정보를 콘솔에 출력 🚧
     // await deleteDefaultUser();
     await _printAllUsers();
@@ -52,8 +59,8 @@ class IsarService extends GetxController {
   Future<void> _addDefaultUser() async {
     final defaultUser = User()
       ..uuid = const Uuid().v4() // Uuid 생성
+      ..serverId = 0
       ..username = 'GUEST'
-      ..password = ''
       ..email = ''
       ..profileImage = ''
       ..createdAt = DateTime.now()
@@ -82,12 +89,30 @@ class IsarService extends GetxController {
       // 모든 Event 데이터를 삭제합니다.
       await _isar.events.clear();
     });
-    await prefs.remove('username');
-    await prefs.remove('uuid');
-    await prefs.remove('isUserCreated');
+    await prefs.clear();
+
     // 뻬이보릿도 삭제해야 해
 
     print("유저가 삭제되었습니다.");
+  }
+
+  // (서버 연동) 유저 업데이트
+  Future<void> updateUser(
+      int serverId, String username, String email, String profileImage) async {
+    final localuser = await getUser();
+    final serverUser = User()
+      ..uuid = localuser.uuid
+      ..id = localuser.id
+      ..username = username
+      ..serverId = serverId
+      ..email = email
+      ..profileImage = profileImage
+      ..createdAt = localuser.createdAt
+      ..updatedAt = DateTime.now();
+
+    await _isar.writeTxn(() async {
+      await _isar.users.put(serverUser);
+    });
   }
 
 // <------------------- 티켓 CRUD -------------------->
