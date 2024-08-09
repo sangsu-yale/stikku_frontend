@@ -45,7 +45,7 @@ class _Calendar extends StatelessWidget {
                   );
                 } else {
                   // 없으면 write
-                  gameResult.result = "";
+                  gameResult.result.isBlank;
                   Get.toNamed('/write',
                       arguments: {"result": "", "day": selectedDay});
                 }

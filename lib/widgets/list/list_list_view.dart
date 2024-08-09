@@ -177,8 +177,7 @@ class ListViewZone extends StatelessWidget {
                                                             .spaceBetween,
                                                     children: [
                                                       Text(
-                                                        item.result
-                                                            .toUpperCase(),
+                                                        "${item.result}",
                                                         style: TextStyle(
                                                             color: colorMap[item
                                                                     .result] ??

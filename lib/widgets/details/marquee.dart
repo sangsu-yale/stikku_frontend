@@ -27,7 +27,7 @@ class _Marquee extends StatelessWidget {
           child: FittedBox(
             fit: BoxFit.contain,
             child: Text(
-              "${gameResult.result.toUpperCase()} " * 20,
+              "${gameResult.result} " * 20,
               style: TextStyle(
                   color: Colors.white,
                   fontSize: screenHeight * 0.02, // 스크린 길이의 2%

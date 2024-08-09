@@ -71,7 +71,7 @@ class GridViewZone extends StatelessWidget {
                         DateFormat('yyyy.MM.dd').format(ticket.date!),
                         style: const TextStyle(color: Colors.white),
                       ),
-                      Text(ticket.result.toUpperCase(),
+                      Text("${ticket.result}",
                           style: const TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
