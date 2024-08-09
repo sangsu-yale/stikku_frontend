@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:widget_marquee/widget_marquee.dart';
 

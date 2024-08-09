@@ -51,45 +51,7 @@ class _Section0Form extends StatelessWidget {
 
 // ✅ 승패무취
   List<Widget> _buildResultOption() {
-    return List.generate(4, (index) {
-      // 승취무패 옵션
-
-      IconData icon;
-      Color color;
-      String options;
-      String viewOptions;
-
-      switch (index) {
-        case 0:
-          icon = Custom.star_1;
-          color = Colors.blue;
-          options = 'win';
-          viewOptions = '승';
-          break;
-        case 1:
-          icon = Custom.bookmarksimple__1_;
-          color = Colors.red;
-          options = 'lose';
-          viewOptions = '패';
-          break;
-        case 2:
-          icon = Custom.clover__1_;
-          color = Colors.green;
-          options = 'tie';
-          viewOptions = '무';
-          break;
-        case 3:
-          icon = Custom.umbrella__1_;
-          color = Colors.grey;
-          options = 'cancel';
-          viewOptions = '취';
-          break;
-        default:
-          icon = Custom.alien; // 기본 아이콘 설정
-          color = Colors.black; // 기본 색상 설정
-          options = 'cancel';
-          viewOptions = '취';
-      }
+    return GameResultType.values.map((type) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -99,12 +61,12 @@ class _Section0Form extends StatelessWidget {
                 alignment: AlignmentDirectional.center,
                 children: [
                   Icon(
-                    icon,
+                    type.icon,
                     size: 40,
-                    color: color.withOpacity(0.2),
+                    color: type.color.withOpacity(0.2),
                   ),
                   Text(
-                    viewOptions,
+                    type.label,
                     style: const TextStyle(
                       fontSize: 17,
                       color: Colors.black,
@@ -122,8 +84,8 @@ class _Section0Form extends StatelessWidget {
                 ],
               ),
               Obx(() {
-                return Radio<String>(
-                  value: options,
+                return Radio<GameResultType>(
+                  value: type,
                   groupValue: formController.result.value,
                   onChanged: (value) {
                     formController.result.value = value!;
@@ -134,7 +96,7 @@ class _Section0Form extends StatelessWidget {
           ),
         ],
       );
-    });
+    }).toList();
   }
 }
 

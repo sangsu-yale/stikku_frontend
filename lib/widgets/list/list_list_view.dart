@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:stikku_frontend/config/custom_icons.dart';
+import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/utils/dotted_separator.dart';
+import 'package:stikku_frontend/utils/functions.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 import 'package:stikku_frontend/utils/ticket_clipper.dart';
 
 class ListViewZone extends StatelessWidget {
-  ListViewZone({
+  const ListViewZone({
     super.key,
     required this.filterList,
     required this.isarController,
@@ -20,13 +22,6 @@ class ListViewZone extends StatelessWidget {
   final IsarService isarController;
   final ListTopSearchController listTopSearchController;
 
-  final colorMap = {
-    'win': Colors.blue,
-    'lose': Colors.red,
-    'tie': Colors.grey,
-    'cancel': Colors.orange,
-  };
-
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -36,9 +31,7 @@ class ListViewZone extends StatelessWidget {
 
         return GestureDetector(
           onTap: () async {
-            final gameResult =
-                await isarController.getDetails(item.date!.toLocal());
-            Get.toNamed('/details', arguments: gameResult);
+            await goToDetails(isarController, item.date!.toLocal());
           },
           child: Container(
             margin: const EdgeInsets.all(10),
@@ -161,9 +154,9 @@ class ListViewZone extends StatelessWidget {
                                                       255, 240, 240, 240),
                                                   border: Border(
                                                     left: BorderSide(
-                                                      color: colorMap[
-                                                              item.result] ??
-                                                          Colors.grey, // 경계 색상
+                                                      color: (item.result
+                                                              as GameResultType)
+                                                          .color, // 경계 색상
                                                       width: 3.0, // 경계 두께
                                                     ),
                                                   ),
@@ -177,11 +170,13 @@ class ListViewZone extends StatelessWidget {
                                                             .spaceBetween,
                                                     children: [
                                                       Text(
-                                                        "${item.result}",
+                                                        (item.result
+                                                                as GameResultType)
+                                                            .name,
                                                         style: TextStyle(
-                                                            color: colorMap[item
-                                                                    .result] ??
-                                                                Colors.grey,
+                                                            color: (item.result
+                                                                    as GameResultType)
+                                                                .color,
                                                             fontSize: 23,
                                                             fontWeight:
                                                                 FontWeight

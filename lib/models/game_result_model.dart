@@ -32,15 +32,14 @@ class GameResult {
   String? comment;
   String? pictureUrl;
 
-  // game reviews (옵션)
+  // game reviews와 user link (옵션)
   final gameReview = IsarLink<GameReview>();
+  final user = IsarLink<User>();
 
   @Index()
   DateTime? createdAt;
   @Index()
   DateTime? updatedAt;
-
-  final user = IsarLink<User>();
 
   GameResult({
     this.result,
@@ -102,5 +101,13 @@ class GameResult {
       pictureUrl: json['pictureUrl'],
       isFavorite: json['isFavorite'] ?? false,
     );
+  }
+
+  Future<GameReview?> loadGameReview() async {
+    // gameReview가 IsarLink로 설정되어 있는 경우, 이를 로드합니다.
+    if (!gameReview.isLoaded) {
+      await gameReview.load();
+    }
+    return gameReview.value;
   }
 }

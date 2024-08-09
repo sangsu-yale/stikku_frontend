@@ -24,9 +24,7 @@ class _FabButton extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
             ),
             onPressed: () async {
-              final todayTicket = await isarController
-                  .getDetails(calendarController.today.value);
-              Get.toNamed('/details', arguments: todayTicket);
+              await goToDetails(isarController, calendarController.today.value);
             },
             icon: const Icon(Custom.noteblank, size: 30, color: Colors.blue))
         : Container(

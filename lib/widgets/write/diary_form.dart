@@ -9,7 +9,7 @@ class DiaryForm extends StatelessWidget {
   final bool isEditMode;
   DiaryForm(this.isEditMode, {super.key});
 
-  final diaryDialogController = Get.find<DiaryDialogController>();
+  final diaryDialogController = Get.put(DiaryDialogController());
   final formController = Get.find<FormController>();
 
   @override

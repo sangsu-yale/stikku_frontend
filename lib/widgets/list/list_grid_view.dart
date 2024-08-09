@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:stikku_frontend/config/custom_icons.dart';
+import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
+import 'package:stikku_frontend/utils/functions.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class GridViewZone extends StatelessWidget {
-  GridViewZone({
+  const GridViewZone({
     super.key,
     required this.filterList,
     required this.isarController,
@@ -17,13 +19,6 @@ class GridViewZone extends StatelessWidget {
   final List<GameResult> filterList;
   final ListTopSearchController listTopSearchController;
   final IsarService isarController;
-
-  final colorMap = {
-    'win': Colors.blue,
-    'lose': Colors.red,
-    'tie': Colors.grey,
-    'cancel': Colors.orange,
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +32,7 @@ class GridViewZone extends StatelessWidget {
         final ticket = filterList[index];
         return GestureDetector(
           onTap: () async {
-            final gameResult =
-                await isarController.getDetails(ticket.date!.toLocal());
-            Get.toNamed('/details', arguments: gameResult);
+            await goToDetails(isarController, ticket.date!.toLocal());
           },
           child: ClipOval(
             child: Card(
@@ -47,7 +40,7 @@ class GridViewZone extends StatelessWidget {
                 borderRadius:
                     BorderRadius.circular(100), // 큰 값으로 설정하여 원형에 가까운 모양으로
               ),
-              color: colorMap[ticket.result] ?? Colors.grey,
+              color: (ticket.result as GameResultType).color,
               child: GridTile(
                 footer: IconButton(
                   alignment: Alignment.bottomCenter,
@@ -71,7 +64,7 @@ class GridViewZone extends StatelessWidget {
                         DateFormat('yyyy.MM.dd').format(ticket.date!),
                         style: const TextStyle(color: Colors.white),
                       ),
-                      Text("${ticket.result}",
+                      Text((ticket.result as GameResultType).name,
                           style: const TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,

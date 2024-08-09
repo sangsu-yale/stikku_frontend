@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:stikku_frontend/config/custom_icons.dart';
-import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
+part of '../../../pages/list_page.dart';
 
 class FilterBar extends StatelessWidget {
   const FilterBar({

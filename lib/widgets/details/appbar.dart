@@ -46,23 +46,7 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
             });
             await Get.to(
               () => WritePage(isEditMode: true),
-              arguments: {
-                "result": gameResult.result,
-                "day": gameResult.date!.toUtc(),
-                "gameTitle": gameResult.gameTitle,
-                "team1": gameResult.team1,
-                "team2": gameResult.team2,
-                "score1": gameResult.score1,
-                "score2": gameResult.score2,
-                "stadium": gameResult.stadium,
-                "seatLocation": gameResult.seatLocation,
-                "comment": gameResult.comment,
-                // "reviewComment": gameResult.gameReview?.review,
-                // "playerOfTheMatch": gameResult.gameReview?.playerOfTheMatch,
-                // "food": gameResult.gameReview?.food,
-                // "mood": gameResult.gameReview?.mood,
-                // "rating": gameResult.gameReview?.rating,
-              },
+              arguments: gameResult,
             );
           },
           icon: const Icon(Custom.pencilsimple__1_, color: Colors.blue),

@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:isar/isar.dart';
 import 'package:stikku_frontend/config/isar_db.dart';
@@ -176,12 +177,14 @@ class ListTopSearchController extends GetxController {
             sortedTickets.where((ticket) => ticket.stadium == '집관').toList();
         break;
       case FilterOption.won:
-        sortedTickets =
-            sortedTickets.where((ticket) => ticket.result == 'win').toList();
+        sortedTickets = sortedTickets
+            .where((ticket) => ticket.result == GameResultType.WIN)
+            .toList();
         break;
       case FilterOption.lost:
-        sortedTickets =
-            sortedTickets.where((ticket) => ticket.result == 'lose').toList();
+        sortedTickets = sortedTickets
+            .where((ticket) => ticket.result == GameResultType.LOSE)
+            .toList();
         break;
     }
 

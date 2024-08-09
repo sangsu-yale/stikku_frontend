@@ -5,9 +5,9 @@ import 'package:stikku_frontend/config/custom_icons.dart';
 
 enum GameResultType {
   WIN,
-  CANCEL,
   LOSE,
   TIE,
+  CANCEL,
 }
 
 // Extension을 사용하여 각 속성을 정의

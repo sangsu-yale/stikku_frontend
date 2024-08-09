@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
-import 'package:stikku_frontend/widgets/list/list_filter_bar_widget.dart';
 import 'package:stikku_frontend/widgets/list/list_grid_view.dart';
 import 'package:stikku_frontend/widgets/list/list_list_view.dart';
-import 'package:stikku_frontend/widgets/list/list_search_bar_widget.dart';
+
+part '../widgets/list/parts/card_list.dart';
+part '../widgets/list/parts/list_filter_bar.dart';
+part '../widgets/list/parts/list_search_bar.dart';
 
 class ListPage extends StatelessWidget {
   final ListTopSearchController listTopSearchController =
@@ -32,37 +35,9 @@ class ListPage extends StatelessWidget {
             FilterBar(listTopSearchController: listTopSearchController),
 
             // 카드 리스트 ZONE
-            Expanded(
-              child: Obx(
-                () {
-                  if (listTopSearchController.isLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (listTopSearchController.ticketlist.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        '아직 관람한 경기가 없습니다',
-                        style: TextStyle(color: Colors.black38),
-                      ),
-                    );
-                  }
-
-                  // 리스트 시작
-                  final filterList = listTopSearchController.getSortedTickets();
-                  return listTopSearchController.viewOption.value ==
-                          ViewOption.list
-                      ? ListViewZone(
-                          filterList: filterList,
-                          isarController: isarController,
-                          listTopSearchController: listTopSearchController)
-                      : GridViewZone(
-                          filterList: filterList,
-                          isarController: isarController,
-                          listTopSearchController: listTopSearchController);
-                },
-              ),
-            ),
+            CardList(
+                listTopSearchController: listTopSearchController,
+                isarController: isarController),
           ],
         ),
       ),

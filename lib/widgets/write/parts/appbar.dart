@@ -3,9 +3,11 @@ part of '../../../pages/write_page.dart';
 class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   const _AppBar({
     required this.isEditMode,
+    required this.formController,
   });
 
   final bool isEditMode;
+  final FormController formController;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -13,16 +15,17 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: isEditMode ? Colors.grey[200] : null,
       leading: IconButton(
-        icon: const Icon(
+        icon: Icon(
           Custom.caretleft,
-          color: Colors.white,
+          color: isEditMode ? Colors.blue : Colors.white,
         ),
         onPressed: () => Get.back(),
       ),
       title: Text(
-        isEditMode ? "경기 기록 수정 페이지" : "경기 기록 작성 페이지",
-        style: const TextStyle(color: Colors.white),
+        DateFormat('yyyy.MM.dd').format(formController.date),
+        style: TextStyle(color: isEditMode ? Colors.blue : Colors.white),
       ),
     );
   }

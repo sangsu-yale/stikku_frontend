@@ -1,6 +1,7 @@
 // game_review_model.dart
 
 import 'package:isar/isar.dart';
+import 'package:stikku_frontend/models/game_result_model.dart';
 
 part 'game_review_model.g.dart';
 
@@ -25,6 +26,8 @@ class GameReview {
     this.awayTeamLineup,
     this.food,
   });
+
+  final gameResult = IsarLink<GameResult>();
 
   // 필드 정보를 반환하는 메서드
   List<Map<String, dynamic>> getFieldsInfo() {

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
@@ -56,7 +57,11 @@ class FormController extends GetxController {
   final gameTitleCon = TextEditingController();
   final commentCon = TextEditingController();
 
-  var result = ''.obs; // 승패유무
+  var result = GameResultType.WIN.obs; // 승패유무
+  void updateResult(GameResultType newResult) {
+    result.value = newResult;
+  }
+
   var userId = 0.obs; // 유저 아이디
   var viewingMode = false.obs; // 직관, 집관
   var team1IsMyTeam = false.obs; // 응원팀
@@ -78,9 +83,43 @@ class FormController extends GetxController {
   var isFormValid = false.obs;
   var date = DateTime.now().toUtc();
 
+  // arguments 처리
+  void getGameResultFromArguments(
+      GameResult gameResult, bool isEditMode) async {
+    // 게임 결과가 있을 경우
+    if (gameResult.result != null) {
+      updateResult(gameResult.result!);
+    }
+    date = gameResult.date!;
+
+    if (isEditMode) {
+      team1Con.text = gameResult.team1!;
+      team2Con.text = gameResult.team2!;
+      score1Con.text = gameResult.score1!;
+      score2Con.text = gameResult.score2!;
+      stadiumCon.text = gameResult.stadium!;
+      seatLocationCon.text = gameResult.seatLocation!;
+
+      commentCon.text = gameResult.comment ?? '';
+      gameTitleCon.text = gameResult.gameTitle ?? '';
+
+      final gameReview = await gameResult.loadGameReview();
+      if (gameReview != null) {
+        // 게임 리뷰 있을 때 세팅해 놓기
+        review.text.isEmpty ? 'null' : gameReview.review;
+        rating.value == 0 ? null : gameReview.rating;
+        playerOfTheMatch.text.isEmpty ? null : gameReview.playerOfTheMatch;
+        mood.value == '' ? null : gameReview.mood;
+        food.text.isEmpty ? null : gameReview.food;
+      }
+    }
+  }
+
   // 유효성 검사 (필수)
   // 폼 전송 함수
   void submit(isEditMode) async {
+    final GameResult gameResult;
+
     if (score1Con.text == "") score1Con.text = "0";
     if (score2Con.text == "") score2Con.text = "0";
     if (!viewingMode.value) {
@@ -107,29 +146,31 @@ class FormController extends GetxController {
         "picture": '',
         "isFavorite": false
       },
+      // 옵션이기 때문에 null 처리
       "gameReview": {
-        "review": review.text,
-        "rating": rating.value,
-        "playerOfTheMatch": playerOfTheMatch.text,
-        "mood": mood.value,
-        "homeTeamLineup": [''],
-        "awayTeamLineup": [''],
-        "food": food.text
+        "review": review.text.isEmpty ? null : review.text,
+        "rating": rating.value == 0 ? null : rating.value,
+        "playerOfTheMatch":
+            playerOfTheMatch.text.isEmpty ? null : playerOfTheMatch.text,
+        "mood": mood.value == '' ? null : mood.value,
+        "homeTeamLineup": null,
+        "awayTeamLineup": null,
+        "food": food.text.isEmpty ? null : food.text
       }
     };
 
-    final GameResult gameResult;
     if (isEditMode) {
       gameResult = await isarController.updateSubmit(data);
     } else {
       gameResult = await isarController.postSubmit(data);
     }
 
-    //
+    final gameReview = await gameResult.loadGameReview();
 
     // 리스트 업데이트
     listTopSearchController.loadGameResults();
-    Get.toNamed('/details', arguments: gameResult);
+    Get.toNamed('/details',
+        arguments: {"gameResult": gameResult, "gameReview": gameReview});
   }
 
   void deleteDetails(DateTime date) async {
@@ -145,9 +186,6 @@ class FormController extends GetxController {
         return review;
       case 'playerOfTheMatch':
         return playerOfTheMatch;
-      case 'mood':
-        // mood는 TextEditingController가 아닌 RxString으로 관리됩니다.
-        throw Exception('Mood is not managed with TextEditingController.');
       case 'food':
         return food;
       default:

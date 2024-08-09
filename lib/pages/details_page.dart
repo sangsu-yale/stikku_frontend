@@ -21,7 +21,10 @@ part '../widgets/details/appbar.dart';
 
 class DetailsPage extends StatelessWidget {
   DetailsPage({super.key});
-  final GameResult gameResult = Get.arguments!;
+
+  final gameResult = Get.arguments["gameResult"];
+  final gameReview = Get.arguments["gameReview"];
+
   final isarController = Get.find<IsarService>();
   final formController = Get.find<FormController>();
   final calendarController = Get.find<CalendarController>();
@@ -48,7 +51,7 @@ class DetailsPage extends StatelessWidget {
       }
     } catch (e) {
       // 예외 처리
-      print('Error: $e'); // 디버깅을 위한 로그
+      Exception(e);
       Get.snackbar('오류 발생', '잠시 후 다시 시도해 주세요. 문제 해결을 위해 문의해 주세요.');
     }
 
@@ -118,7 +121,7 @@ class DetailsPage extends StatelessWidget {
                         ? FrontView(
                             gameResult: gameResult, smallSize: smallSize)
                         : BackView(
-                            gameResult: gameResult, smallSize: smallSize)),
+                            gameReview: gameReview, smallSize: smallSize)),
               ),
             );
           },

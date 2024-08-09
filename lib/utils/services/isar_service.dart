@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/models/event_model.dart';
 import 'package:stikku_frontend/models/game_result_id_mapping_model.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
+import 'package:stikku_frontend/models/game_review_model.dart';
 import 'package:stikku_frontend/models/user_model.dart';
 import 'package:stikku_frontend/config/isar_db.dart';
 import 'package:stikku_frontend/utils/services/api_service.dart';
@@ -80,13 +82,12 @@ class IsarService extends GetxController {
 
       // 모든 GameResult 데이터를 삭제합니다.
       await _isar.gameResults.clear();
+      await _isar.gameReviews.clear();
 
       // 모든 Event 데이터를 삭제합니다.
       await _isar.events.clear();
     });
     await prefs.clear();
-
-    // 뻬이보릿도 삭제해야 해
 
     print("유저가 삭제되었습니다.");
   }
@@ -168,11 +169,22 @@ class IsarService extends GetxController {
 
   // 티켓 생성 함수
   Future<GameResult> postSubmit(Map data) async {
-    // 유저 GET
+// 유저 GET
     final user = await getUser();
 
     final gameResultObj = data["gameResult"];
     final gameReviewObj = data["gameReview"];
+
+    print("postSubmit에서 들어온 데이터 : ${gameResultObj["date"]}");
+
+    final gameReview = GameReview()
+      ..review = gameReviewObj["review"]
+      ..rating = gameReviewObj["rating"]
+      ..playerOfTheMatch = gameReviewObj["playerOfTheMatch"]
+      ..mood = gameReviewObj["mood"]
+      ..homeTeamLineup = gameReviewObj["homeTeamLineup"]
+      ..awayTeamLineup = gameReviewObj["awayTeamLineup"]
+      ..food = gameReviewObj["food"];
 
     final gameResult = GameResult()
       ..stadium = gameResultObj["stadium"]
@@ -191,25 +203,26 @@ class IsarService extends GetxController {
       ..date = gameResultObj["date"].toUtc()
       ..createdAt = DateTime.now()
       ..updatedAt = DateTime.now()
-      ..isFavorite = gameResultObj["isFavorite"] ?? false
-      // ..gameReview = GameReview(
-      //   review: gameReviewObj["review"],
-      //   rating: gameReviewObj["rating"],
-      //   playerOfTheMatch: gameReviewObj["playerOfTheMatch"],
-      //   mood: gameReviewObj["mood"],
-      //   homeTeamLineup: gameReviewObj["homeTeamLineup"],
-      //   awayTeamLineup: gameReviewObj["awayTeamLineup"],
-      //   food: gameReviewObj["food"],
-      // )
-      ..user.value = user;
+      ..isFavorite = gameResultObj["isFavorite"] ?? false;
+
+    // 관계 설정
+    gameResult.gameReview.value = gameReview;
+    gameResult.user.value = user;
+    gameReview.gameResult.value = gameResult;
 
     // Event 객체 생성 및 필요한 필드를 설정합니다.
     final event = Event()
       ..eventDate = gameResultObj["date"].toUtc()
-      ..eventDetails = [gameResultObj["result"]]; // 경기 결과를 이벤트 디테일로 저장
+      ..eventDetails = [
+        gameResultObj["result"].toString().split('.').last
+      ]; // 경기 결과를 이벤트 디테일로 저장
 
-    // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에 저장하고, User와의 관계를 설정합니다.
+    print("gameResult에서 나온 데이터 : ${gameResult.date}");
+
     await _isar.writeTxn(() async {
+      // GameReview 저장
+      await _isar.gameReviews.put(gameReview);
+
       // GameResult 저장
       await _isar.gameResults.put(gameResult);
       user.gameResults.add(gameResult);
@@ -219,26 +232,114 @@ class IsarService extends GetxController {
       user.events.add(event);
 
       // 관계 저장
+      await gameResult.gameReview.save();
+      await gameResult.user.save();
       await user.gameResults.save();
       await user.events.save();
     });
 
     // 만약에 서버가 연결되어 있으면?
-    if (user.serverId != 0) {
-      // 서버 연결
-      gameResultObj["userId"] = user.serverId;
-      gameResultObj["result"] = gameResultObj["result"].toUpperCase();
-      gameResultObj["date"] = gameResultObj["date"].toIso8601String();
-      gameReviewObj["mood"] = gameReviewObj["mood"].toUpperCase();
-      final serverId = await postGameResult(data);
+    // if (user.serverId != 0) {
+    //   // 서버 연결
+    //   gameResultObj["userId"] = user.serverId;
+    //   gameResultObj["result"] = gameResultObj["result"].toUpperCase();
+    //   gameResultObj["date"] = gameResultObj["date"].toIso8601String();
+    //   gameReviewObj["mood"] = gameReviewObj["mood"].toUpperCase();
+    //   final serverId = await postGameResult(data);
 
-      // final mapping = GameResultIdMapping(
-      //   localGameResultId: gameResult.id,
-      //   serverGameResultId: serverId,
-      // );
-    }
+    //   // final mapping = GameResultIdMapping(
+    //   //   localGameResultId: gameResult.id,
+    //   //   serverGameResultId: serverId,
+    //   // );
+    // }
 
     return gameResult;
+  }
+
+// 티켓 업데이트 함수
+  Future<GameResult> updateSubmit(Map data) async {
+    // 유저 GET
+    final user = await getUser();
+
+    final gameResultObj = data["gameResult"];
+    final gameReviewObj = data["gameReview"];
+
+    // 기존 GameResult와 Event 찾기
+    final gameResult = await _isar.gameResults
+        .filter()
+        .dateEqualTo(gameResultObj["date"])
+        .findFirst();
+
+    print("업데이트 에서 들어온 데이터 : ${gameResultObj["date"]}");
+
+    final event = gameResult != null
+        ? await _isar.events
+            .filter()
+            .eventDateEqualTo(gameResult.date!)
+            .findFirst()
+        : null;
+
+    if (gameResult != null && event != null) {
+      // GameResult 업데이트
+      gameResult
+        ..stadium = gameResultObj["stadium"]
+        ..seatLocation = gameResultObj["seatLocation"]
+        ..result = gameResultObj["result"]
+        ..viewingMode = gameResultObj["isLiveView"]
+        ..team1 = gameResultObj["team1"]
+        ..team2 = gameResultObj["team2"]
+        ..score1 = gameResultObj["score1"]
+        ..score2 = gameResultObj["score2"]
+        ..team1IsMyTeam = gameResultObj["team1IsMyTeam"] ?? false
+        ..team2IsMyTeam = gameResultObj["team2IsMyTeam"] ?? false
+        ..gameTitle = gameResultObj["title"]
+        ..comment = gameResultObj["comment"]
+        ..pictureUrl = ''
+        ..date = gameResultObj["date"].toUtc()
+        ..createdAt = DateTime.now()
+        ..updatedAt = DateTime.now()
+        ..isFavorite = gameResultObj["isFavorite"] ?? false;
+
+      // GameReview가 연결되어 있다면 업데이트
+
+      await gameResult.gameReview.load();
+      final gameReview = gameResult.gameReview.value!;
+      gameReview
+        ..review = gameReviewObj["review"]
+        ..rating = gameReviewObj["rating"]
+        ..playerOfTheMatch = gameReviewObj["playerOfTheMatch"]
+        ..mood = gameReviewObj["mood"]
+        ..homeTeamLineup = gameReviewObj["homeTeamLineup"]
+        ..awayTeamLineup = gameReviewObj["awayTeamLineup"]
+        ..food = gameReviewObj["food"]; // GameReview 업데이트
+
+      // Event 업데이트
+      event
+        ..eventDate = gameResultObj["date"].toUtc()
+        ..eventDetails = [
+          gameResultObj["result"].toString().split('.').last
+        ]; // 문자열 변환 필요
+
+      // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에 업데이트하고, User와의 관계를 갱신합니다.
+      await _isar.writeTxn(() async {
+        // GameResult 업데이트
+        await _isar.gameResults.put(gameResult);
+        await _isar.gameReviews.put(gameReview);
+
+        // Event 업데이트
+        await _isar.events.put(event);
+
+        // 관계 저장
+        await gameResult.gameReview.save();
+        await gameResult.user.save();
+        await user.gameResults.save();
+        await user.events.save();
+      });
+
+      return gameResult;
+    } else {
+      return GameResult();
+    }
   }
 
 // 티켓 삭제 함수
@@ -252,7 +353,6 @@ class IsarService extends GetxController {
 
     final event = gameResult != null
         ? await _isar.events
-            .where()
             .filter()
             .eventDateEqualTo(gameResult.date!)
             .findFirst()
@@ -261,6 +361,12 @@ class IsarService extends GetxController {
     if (gameResult != null && event != null) {
       // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에서 삭제하고, User와의 관계를 갱신합니다.
       await _isar.writeTxn(() async {
+        // GameReview 삭제
+        if (gameResult.gameReview.isAttached) {
+          await gameResult.gameReview.load();
+          await _isar.gameReviews.delete(gameResult.gameReview.value!.id);
+        }
+
         // GameResult 삭제
         await _isar.gameResults.delete(gameResult.id);
 
@@ -277,99 +383,11 @@ class IsarService extends GetxController {
     }
   }
 
-// 티켓 업데이트 함수
-  Future<GameResult> updateSubmit(Map data) async {
-    // 유저 GET
-    final user = await getUser();
-
-    // 기존 GameResult와 Event 찾기
-    final gameResult = await _isar.gameResults
-        .filter()
-        .dateEqualTo(data["date"].toUtc())
-        .findFirst();
-
-    final event = gameResult != null
-        ? await _isar.events
-            .where()
-            .filter()
-            .eventDateEqualTo(gameResult.date!)
-            .findFirst()
-        : null;
-
-    if (gameResult != null && event != null) {
-      // GameResult 업데이트
-      gameResult
-        ..stadium = data["stadium"]
-        ..seatLocation = data["seatLocation"]
-        ..result = data["result"]
-        ..viewingMode = data["viewingMode"]
-        ..team1 = data["team1"]
-        ..team2 = data["team2"]
-        ..score1 = data["score1"]
-        ..score2 = data["score2"]
-        ..team1IsMyTeam = data["team1IsMyTeam"]
-        ..team2IsMyTeam = data["team2IsMyTeam"]
-        ..gameTitle = data["gameTitle"]
-        ..comment = data["comment"]
-        ..pictureUrl = ''
-        ..date = data["date"].toUtc()
-        ..createdAt = DateTime.now()
-        ..updatedAt = DateTime.now()
-        ..isFavorite = data["isFavorite"] ?? false
-        // ..gameReview = GameReview(
-        //   review: data["reviewComment"],
-        //   rating: data["rating"],
-        //   playerOfTheMatch: data["playerOfTheMatch"],
-        //   mood: data["mood"],
-        //   homeTeamLineup: data["homeTeamLineup"]?.cast<String>(),
-        //   awayTeamLineup: data["awayTeamLineup"]?.cast<String>(),
-        //   food: data["food"],
-        // )
-        ..user.value = user;
-
-      // Event 업데이트
-      event
-        ..eventDate = data["date"].toUtc()
-        ..eventDetails = [data["result"]]; // 경기 결과를 이벤트 디테일로 저장
-
-      // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에 업데이트하고, User와의 관계를 갱신합니다.
-      await _isar.writeTxn(() async {
-        // GameResult 업데이트
-        await _isar.gameResults.put(gameResult);
-
-        // Event 업데이트
-        await _isar.events.put(event);
-
-        // 관계 저장
-        await user.gameResults.save();
-        await user.events.save();
-      });
-
-      return gameResult;
-    }
-    return GameResult();
-  }
-
 // <------------------- 통계 GET -------------------->
 // <------------------- 통계 GET -------------------->
 // <------------------- 통계 GET -------------------->
 // GET : 통계 차트
   Future<List<GameResult>> getChartData() async {
-    // 유저의 uuid 확인하고
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? uuid = prefs.getString('uuid');
-
-    if (uuid == null) {
-      throw Exception('User UUID not found in SharedPreferences');
-    }
-
-    // 사용자 가져오기
-    final user = await _isar.users.filter().uuidEqualTo(uuid).findFirst();
-
-    if (user == null) {
-      throw Exception('User not found in the database');
-    }
-
     // 특정 날짜의 gameResults 가져오기
     final gameResults = await _isar.gameResults.where().findAll();
 

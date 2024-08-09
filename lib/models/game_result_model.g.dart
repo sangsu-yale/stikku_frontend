@@ -330,15 +330,15 @@ P _gameResultDeserializeProp<P>(
 
 const _GameResultresultEnumValueMap = {
   r'WIN': r'WIN',
-  r'CANCEL': r'CANCEL',
   r'LOSE': r'LOSE',
   r'TIE': r'TIE',
+  r'CANCEL': r'CANCEL',
 };
 const _GameResultresultValueEnumMap = {
   r'WIN': GameResultType.WIN,
-  r'CANCEL': GameResultType.CANCEL,
   r'LOSE': GameResultType.LOSE,
   r'TIE': GameResultType.TIE,
+  r'CANCEL': GameResultType.CANCEL,
 };
 
 Id _gameResultGetId(GameResult object) {

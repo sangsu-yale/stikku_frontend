@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/config/custom_icons.dart';
+import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/controllers/write_form_controller.dart';
 import 'package:stikku_frontend/widgets/write/basic_form_widget.dart';
 

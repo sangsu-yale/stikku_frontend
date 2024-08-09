@@ -23,6 +23,8 @@ void login() async {
   if (user != null) {
     final GoogleSignInAuthentication auth = await user.authentication;
     final String? authorizationCode = auth.accessToken;
+
+    print("서버에게 보낼 액세스 토큰 : $authorizationCode");
     if (authorizationCode != null) {
       // 서버와 통신
 

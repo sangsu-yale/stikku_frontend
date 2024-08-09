@@ -37,17 +37,12 @@ class _Calendar extends StatelessWidget {
                 final events = isarController.getEventsForDay(selectedDay);
                 if (events.isNotEmpty) {
                   // 이벤트가 있으면 details 페이지로 이동
-                  final gameResult =
-                      await isarController.getDetails(selectedDay.toLocal());
-                  Get.toNamed(
-                    '/details',
-                    arguments: gameResult,
-                  );
+                  await goToDetails(isarController, selectedDay.toLocal());
                 } else {
                   // 없으면 write
                   gameResult.result.isBlank;
                   Get.toNamed('/write',
-                      arguments: {"result": "", "day": selectedDay});
+                      arguments: GameResult(date: selectedDay));
                 }
               },
               selectedDayPredicate: (day) =>
@@ -95,40 +90,21 @@ class _Calendar extends StatelessWidget {
                         ? event.eventDetails.first
                         : '';
 
-                    IconData icon;
-                    Color color;
-                    switch (eventDetail) {
-                      case 'cancel':
-                        icon = Custom.umbrella__1_;
-                        color = Colors.grey;
-                        break;
-                      case 'win':
-                        icon = Custom.star_1;
-                        color = Colors.blue;
-                        break;
-                      case 'lose':
-                        icon = Custom.bookmarksimple__1_;
-                        color = Colors.red;
-                        break;
-                      case 'tie':
-                        icon = Custom.clover__1_;
-                        color = Colors.green;
-                        break;
-                      default:
-                        icon = Custom.alien; // 기본 아이콘 설정
-                        color = Colors.black; // 기본 색상 설정
-                    }
+                    GameResultType? resultType =
+                        GameResultType.values.firstWhere(
+                      (type) => type.name == eventDetail,
+                    );
 
                     return Container(
                       color: Theme.of(context).scaffoldBackgroundColor,
                       child: Center(
                         child: Icon(
-                          icon,
-                          color: color,
+                          resultType.icon,
+                          color: resultType.color,
                           size: 40,
                           shadows: [
                             BoxShadow(
-                              color: color,
+                              color: resultType.color,
                               spreadRadius: 10,
                               blurRadius: 10,
                               offset: const Offset(0, 0),

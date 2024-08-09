@@ -22,7 +22,9 @@ class _FormScreens extends StatelessWidget {
             index: formController.currentFormIndex.value,
             children: [
               FocusScope(
-                  node: formController.focusScopeNode, child: GameResultForm()),
+                node: formController.focusScopeNode,
+                child: GameResultForm(),
+              ),
               FocusScope(
                   node: formController.focusScopeNode,
                   child: DiaryForm(isEditMode))

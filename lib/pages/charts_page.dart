@@ -38,9 +38,8 @@ class ChartsPage extends StatelessWidget {
                         alignment: Alignment.center,
                         width: double.maxFinite,
                         decoration: const BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.vertical(
-                                bottom: Radius.circular(50))),
+                          color: Colors.blue,
+                        ),
                         child: Text(
                           "총 승률 ${stats["totalWinRate"]}%",
                           style: const TextStyle(

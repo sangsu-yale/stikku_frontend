@@ -5,6 +5,7 @@ import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
+import 'package:stikku_frontend/utils/functions.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 import 'package:stikku_frontend/models/event_model.dart';
 import 'package:stikku_frontend/widgets/calendar/calendar_body_style.dart';

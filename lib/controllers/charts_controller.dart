@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class ChartsController extends GetxController {
@@ -31,19 +32,20 @@ class ChartsController extends GetxController {
       if (ticketList[i].viewingMode) {
         liveGame++;
         var r = ticketList[i].result;
-        if (r == 'win') {
+
+        if (r == GameResultType.WIN) {
           liveGameWinning++;
-        } else if (r == 'lose') {
+        } else if (r == GameResultType.LOSE) {
           lose++;
-        } else if (r == 'tie') {
+        } else if (r == GameResultType.TIE) {
           tie++;
-        } else if (r == 'cancel') {
+        } else if (r == GameResultType.CANCEL) {
           cancel++;
         }
         // 만약에 집관이라면?
       } else {
         homeGame++;
-        if (ticketList[i].result == 'win') {
+        if (ticketList[i].result == GameResultType.WIN) {
           homeGameWinning++;
         }
       }

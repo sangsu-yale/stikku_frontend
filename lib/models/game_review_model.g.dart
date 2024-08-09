@@ -59,7 +59,14 @@ const GameReviewSchema = CollectionSchema(
   deserializeProp: _gameReviewDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
+  links: {
+    r'gameResult': LinkSchema(
+      id: 118184521962627919,
+      name: r'gameResult',
+      target: r'GameResult',
+      single: true,
+    )
+  },
   embeddedSchemas: {},
   getId: _gameReviewGetId,
   getLinks: _gameReviewGetLinks,
@@ -189,11 +196,13 @@ Id _gameReviewGetId(GameReview object) {
 }
 
 List<IsarLinkBase<dynamic>> _gameReviewGetLinks(GameReview object) {
-  return [];
+  return [object.gameResult];
 }
 
 void _gameReviewAttach(IsarCollection<dynamic> col, Id id, GameReview object) {
   object.id = id;
+  object.gameResult
+      .attach(col, col.isar.collection<GameResult>(), r'gameResult', id);
 }
 
 extension GameReviewQueryWhereSort
@@ -1485,7 +1494,21 @@ extension GameReviewQueryObject
     on QueryBuilder<GameReview, GameReview, QFilterCondition> {}
 
 extension GameReviewQueryLinks
-    on QueryBuilder<GameReview, GameReview, QFilterCondition> {}
+    on QueryBuilder<GameReview, GameReview, QFilterCondition> {
+  QueryBuilder<GameReview, GameReview, QAfterFilterCondition> gameResult(
+      FilterQuery<GameResult> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'gameResult');
+    });
+  }
+
+  QueryBuilder<GameReview, GameReview, QAfterFilterCondition>
+      gameResultIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'gameResult', 0, true, 0, true);
+    });
+  }
+}
 
 extension GameReviewQuerySortBy
     on QueryBuilder<GameReview, GameReview, QSortBy> {
