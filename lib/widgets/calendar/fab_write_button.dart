@@ -1,12 +1,11 @@
 part of '../../pages/home_page.dart';
 
 class _FabWriteButton extends StatelessWidget {
-  _FabWriteButton({
+  const _FabWriteButton({
     required this.calendarController,
   });
 
   final CalendarController calendarController;
-  final GameResult gameResult = GameResult();
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +40,10 @@ class _FabWriteButton extends StatelessWidget {
         visible: true,
         curve: Curves.bounceIn,
         children: [
-          dialChild("cancel", "취", Custom.umbrella__1_, Colors.grey),
-          dialChild("tie", "무", Custom.clover__1_, Colors.green),
-          dialChild("lose", "패", Custom.bookmarksimple__1_, Colors.red),
-          dialChild("win", "승", Custom.star_1, Colors.blue),
+          dialChild("CANCEL", "취", Custom.umbrella__1_, Colors.grey),
+          dialChild("TIE", "무", Custom.clover__1_, Colors.green),
+          dialChild("LOSE", "패", Custom.bookmarksimple__1_, Colors.red),
+          dialChild("WIN", "승", Custom.star_1, Colors.blue),
         ],
       ),
     );
