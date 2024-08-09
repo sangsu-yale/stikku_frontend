@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stikku_frontend/models/event_model.dart';
+import 'package:stikku_frontend/models/game_result_id_mapping_model.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/models/user_model.dart';
 import 'package:stikku_frontend/config/isar_db.dart';
@@ -121,25 +122,27 @@ class IsarService extends GetxController {
 // GET 티켓 정보
   Future<GameResult> getDetails(DateTime date) async {
     try {
+      // 1. 로컬 데이터 반환
       // 특정 날짜의 gameResults 가져오기
       final gameResults =
           await _isar.gameResults.filter().dateEqualTo(date).findAll();
 
       if (gameResults.isNotEmpty) {
         return gameResults[0]; // 만약 여러 개라면 첫 번째 결과를 반환
-      } else {
-        Get.showSnackbar(
-          const GetSnackBar(
-            title: '앗! 문제가 있나 봐요!',
-            message: '개발진에게 문의를 부탁드려요',
-            duration: Duration(seconds: 3),
-          ),
-        );
-        return GameResult();
       }
+
+      // 2. 만약에 없으면? 서버에서 데이터 가지고 오기
+      // final serverData = await getDetailsFormServer(date);
+
+      return GameResult();
     } catch (e) {
-      // 에러 발생 시 로그 기록
-      print('에러가 발생했습니다 : $e');
+      Get.showSnackbar(
+        const GetSnackBar(
+          title: '앗! 문제가 있나 봐요!',
+          message: '개발진에게 문의를 부탁드려요',
+          duration: Duration(seconds: 3),
+        ),
+      );
       // 필요시 에러 메시지를 담은 GameResult 반환 또는 예외 재발생
       throw Exception('티켓 반환 실패: $e');
     }
@@ -189,15 +192,15 @@ class IsarService extends GetxController {
       ..createdAt = DateTime.now()
       ..updatedAt = DateTime.now()
       ..isFavorite = gameResultObj["isFavorite"] ?? false
-      ..gameReview = GameReview(
-        review: gameReviewObj["review"],
-        rating: gameReviewObj["rating"],
-        playerOfTheMatch: gameReviewObj["playerOfTheMatch"],
-        mood: gameReviewObj["mood"],
-        homeTeamLineup: gameReviewObj["homeTeamLineup"],
-        awayTeamLineup: gameReviewObj["awayTeamLineup"],
-        food: gameReviewObj["food"],
-      )
+      // ..gameReview = GameReview(
+      //   review: gameReviewObj["review"],
+      //   rating: gameReviewObj["rating"],
+      //   playerOfTheMatch: gameReviewObj["playerOfTheMatch"],
+      //   mood: gameReviewObj["mood"],
+      //   homeTeamLineup: gameReviewObj["homeTeamLineup"],
+      //   awayTeamLineup: gameReviewObj["awayTeamLineup"],
+      //   food: gameReviewObj["food"],
+      // )
       ..user.value = user;
 
     // Event 객체 생성 및 필요한 필드를 설정합니다.
@@ -223,12 +226,16 @@ class IsarService extends GetxController {
     // 만약에 서버가 연결되어 있으면?
     if (user.serverId != 0) {
       // 서버 연결
-      print("서버 연결된 유저예요");
       gameResultObj["userId"] = user.serverId;
       gameResultObj["result"] = gameResultObj["result"].toUpperCase();
       gameResultObj["date"] = gameResultObj["date"].toIso8601String();
       gameReviewObj["mood"] = gameReviewObj["mood"].toUpperCase();
-      postGameResult(data);
+      final serverId = await postGameResult(data);
+
+      // final mapping = GameResultIdMapping(
+      //   localGameResultId: gameResult.id,
+      //   serverGameResultId: serverId,
+      // );
     }
 
     return gameResult;
@@ -309,15 +316,15 @@ class IsarService extends GetxController {
         ..createdAt = DateTime.now()
         ..updatedAt = DateTime.now()
         ..isFavorite = data["isFavorite"] ?? false
-        ..gameReview = GameReview(
-          review: data["reviewComment"],
-          rating: data["rating"],
-          playerOfTheMatch: data["playerOfTheMatch"],
-          mood: data["mood"],
-          homeTeamLineup: data["homeTeamLineup"]?.cast<String>(),
-          awayTeamLineup: data["awayTeamLineup"]?.cast<String>(),
-          food: data["food"],
-        )
+        // ..gameReview = GameReview(
+        //   review: data["reviewComment"],
+        //   rating: data["rating"],
+        //   playerOfTheMatch: data["playerOfTheMatch"],
+        //   mood: data["mood"],
+        //   homeTeamLineup: data["homeTeamLineup"]?.cast<String>(),
+        //   awayTeamLineup: data["awayTeamLineup"]?.cast<String>(),
+        //   food: data["food"],
+        // )
         ..user.value = user;
 
       // Event 업데이트

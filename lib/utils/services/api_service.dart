@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 // 로그인 (구글)
@@ -100,13 +101,10 @@ Future<Map<String, dynamic>> fetchUserID(
 }
 
 // 게임Result 포스트
-void postGameResult(Map data) async {
+Future<int> postGameResult(Map data) async {
   final url = Uri.parse('${dotenv.env['SERVER_URL']}/games');
-  print(url);
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final String? accessToken = prefs.getString('accessToken');
-
-  print("서버에게 요청할 토큰이에요 : $accessToken");
 
   // 액세스 토큰 있으면
   if (accessToken != null) {
@@ -115,7 +113,6 @@ void postGameResult(Map data) async {
       "content-type": "application/json; charset=utf-8",
       "Authorization": "Bearer $accessToken"
     };
-    //"content-type": "application/json; charset=utf-8",
 
     // 바디값 넣어 줘야 함
     final String json = jsonEncode(<dynamic, dynamic>{
@@ -125,19 +122,22 @@ void postGameResult(Map data) async {
 
     // 요청
     final response = await http.post(url, headers: headers, body: json);
-    print("뭐지?");
-    print(response.statusCode);
-    print(response.headers);
-    print(response.body);
-
+    final body = response.body;
     // 만약에 됐으면?
     if (response.statusCode == 201) {
-      print("진짜됐다!");
-      print(response.body);
+      // 매핑 엔트리 생성
+      // 서버 id 보내기
+      return 1;
+      //
     } else {
-      throw Exception('게임 결과를 저장하지 못했습니다');
+      throw Exception('게임 결과를 저장하지 못했습니다 : $body');
     }
   } else {
     throw Exception('유저 정보를 불러오지 못했습니다');
   }
+}
+
+// 게임Result 포스트
+Future<GameResult> getDetailsFormServer(dynamic data) async {
+  return GameResult();
 }

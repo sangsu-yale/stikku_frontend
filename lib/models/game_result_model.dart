@@ -1,41 +1,10 @@
+// game_result_model.dart
+
 import 'package:isar/isar.dart';
 import 'user_model.dart';
+import 'game_review_model.dart'; // GameReview 모델 가져오기
 
 part 'game_result_model.g.dart';
-
-@embedded
-class GameReview {
-  String? review;
-  int? rating;
-  String? playerOfTheMatch;
-  String? mood;
-  List<String>? homeTeamLineup;
-  List<String>? awayTeamLineup;
-  String? food;
-
-  GameReview({
-    this.review,
-    this.rating,
-    this.playerOfTheMatch,
-    this.mood,
-    this.homeTeamLineup,
-    this.awayTeamLineup,
-    this.food,
-  });
-
-  // 필드 정보를 반환하는 메서드
-  List<Map<String, dynamic>> getFieldsInfo() {
-    return [
-      {'name': 'rating', 'value': rating},
-      {'name': 'review', 'value': review},
-      {'name': 'playerOfTheMatch', 'value': playerOfTheMatch},
-      {'name': 'homeTeamLineup', 'value': homeTeamLineup?.length ?? 0},
-      {'name': 'awayTeamLineup', 'value': awayTeamLineup?.length ?? 0},
-      {'name': 'food', 'value': food},
-      {'name': 'mood', 'value': mood},
-    ];
-  }
-}
 
 @Collection()
 class GameResult {
@@ -58,7 +27,7 @@ class GameResult {
   late String pictureUrl;
 
   // game reviews (옵션)
-  GameReview? gameReview;
+  final gameReview = IsarLink<GameReview>(); // IsarLink 사용
 
   bool isFavorite = false;
 
