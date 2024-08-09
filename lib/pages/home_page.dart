@@ -12,9 +12,9 @@ import 'package:stikku_frontend/widgets/calendar/calendar_daysofweek_style.dart'
 import 'package:stikku_frontend/widgets/calendar/calendar_header_style.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-part '../widgets/calendar/save_calendar_image_button.dart';
-part '../widgets/calendar/fab_write_button.dart';
-part '../widgets/calendar/calendar.dart';
+part '../widgets/home/parts/save_calendar_image_button.dart';
+part '../widgets/home/parts/calendar.dart';
+part '../widgets/home/parts/fab_write_button.dart';
 
 class HomePage extends StatelessWidget {
   final CalendarController calendarController = Get.put(CalendarController());
@@ -24,9 +24,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final events =
-        isarController.getEventsForDay(calendarController.today.value);
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -46,22 +43,10 @@ class HomePage extends StatelessWidget {
       ),
 
       // 플로팅 버튼
-      floatingActionButton: events.isNotEmpty
-          ? IconButton(
-              style: IconButton.styleFrom(
-                backgroundColor: Colors.blue[50],
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 20.0),
-              ),
-              onPressed: () async {
-                final todayTicket = await isarController
-                    .getDetails(calendarController.today.value);
-                Get.toNamed('/details', arguments: todayTicket);
-              },
-              icon: const Icon(Custom.noteblank, size: 30, color: Colors.blue))
-          : _FabWriteButton(
-              calendarController: calendarController,
-            ),
+      floatingActionButton: _FabButton(
+        calendarController: calendarController,
+        isarController: isarController,
+      ),
     );
   }
 }
