@@ -12,6 +12,10 @@ enum GameResultType {
 
 // Extension을 사용하여 각 속성을 정의
 extension GameResultTypeProperties on GameResultType {
+  String get name {
+    return toString().split('.').last;
+  }
+
   String get label {
     switch (this) {
       case GameResultType.CANCEL:

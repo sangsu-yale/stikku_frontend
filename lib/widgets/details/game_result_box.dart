@@ -26,18 +26,18 @@ class _GameResultBox extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 5.0),
                   child: Column(
                     children: [
-                      Text(gameResult.team1,
+                      Text(gameResult.team1!,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: gameResult.team1.length > 9
+                              fontSize: gameResult.team1!.length > 9
                                   ? cardWidth * 0.1 / 1.5
                                   : cardWidth * 0.1,
                               fontWeight: FontWeight.bold)),
                       Text("vs", style: TextStyle(fontSize: cardWidth * 0.1)),
-                      Text(gameResult.team2,
+                      Text(gameResult.team2!,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: gameResult.team2.length > 9
+                              fontSize: gameResult.team2!.length > 9
                                   ? cardWidth * 0.1 / 1.5
                                   : cardWidth * 0.1,
                               fontWeight: FontWeight.bold)),

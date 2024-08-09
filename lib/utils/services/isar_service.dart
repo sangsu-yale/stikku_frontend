@@ -254,7 +254,7 @@ class IsarService extends GetxController {
         ? await _isar.events
             .where()
             .filter()
-            .eventDateEqualTo(gameResult.date)
+            .eventDateEqualTo(gameResult.date!)
             .findFirst()
         : null;
 
@@ -292,7 +292,7 @@ class IsarService extends GetxController {
         ? await _isar.events
             .where()
             .filter()
-            .eventDateEqualTo(gameResult.date)
+            .eventDateEqualTo(gameResult.date!)
             .findFirst()
         : null;
 

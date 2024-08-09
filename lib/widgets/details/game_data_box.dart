@@ -41,7 +41,7 @@ class _GameDataBox extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: DateFormat('yyyy.MM.dd').format(gameResult.date),
+                        text: DateFormat('yyyy.MM.dd').format(gameResult.date!),
                       ),
                     ]),
               ),
@@ -63,7 +63,7 @@ class _GameDataBox extends StatelessWidget {
                           text: gameResult.stadium,
                           style: TextStyle(
                               fontSize:
-                                  gameResult.stadium.length > 30 ? 13 : null)),
+                                  gameResult.stadium!.length > 30 ? 13 : null)),
                     ]),
               ),
               RichText(
@@ -83,7 +83,7 @@ class _GameDataBox extends StatelessWidget {
                       TextSpan(
                           text: gameResult.seatLocation,
                           style: TextStyle(
-                              fontSize: gameResult.seatLocation.length > 30
+                              fontSize: gameResult.seatLocation!.length > 30
                                   ? 12
                                   : null)),
                     ]),

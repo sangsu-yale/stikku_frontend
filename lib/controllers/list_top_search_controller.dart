@@ -49,7 +49,9 @@ class ListTopSearchController extends GetxController {
 
     // 불러오기
     final results = await _isar.gameResults.where().findAll();
-    results.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    if (results.isNotEmpty) {
+      results.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+    }
 
     // ticketlist 반영
     ticketlist.assignAll(results);
@@ -71,15 +73,15 @@ class ListTopSearchController extends GetxController {
       final queryLower = searchQuery.toLowerCase();
       filteredTickets = filteredTickets
           .where((ticket) =>
-              ticket.team1.toLowerCase().contains(queryLower) ||
-              ticket.team2.toLowerCase().contains(queryLower) ||
+              ticket.team1!.toLowerCase().contains(queryLower) ||
+              ticket.team2!.toLowerCase().contains(queryLower) ||
               DateFormat('yyyy.MM.dd')
-                  .format(ticket.date)
+                  .format(ticket.date!)
                   .contains(queryLower) ||
-              ticket.score1.toLowerCase().contains(queryLower) ||
-              ticket.score2.toLowerCase().contains(queryLower) ||
-              ticket.seatLocation.toLowerCase().contains(queryLower) ||
-              ticket.stadium.toLowerCase().contains(queryLower))
+              ticket.score1!.toLowerCase().contains(queryLower) ||
+              ticket.score2!.toLowerCase().contains(queryLower) ||
+              ticket.seatLocation!.toLowerCase().contains(queryLower) ||
+              ticket.stadium!.toLowerCase().contains(queryLower))
           .toList();
     }
     // 여기에 상태 변경 코드를 작성하세요
@@ -150,10 +152,10 @@ class ListTopSearchController extends GetxController {
       case SortOption.writtenOrder:
         break; // 기본 정렬
       case SortOption.newestFirst:
-        sortedTickets.sort((a, b) => b.date.compareTo(a.date));
+        sortedTickets.sort((a, b) => b.date!.compareTo(a.date!));
         break;
       case SortOption.oldestFirst:
-        sortedTickets.sort((a, b) => a.date.compareTo(b.date));
+        sortedTickets.sort((a, b) => a.date!.compareTo(b.date!));
         break;
     }
 

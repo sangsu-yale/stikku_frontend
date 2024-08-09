@@ -182,7 +182,12 @@ int _gameResultEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  bytesCount += 3 + object.result.name.length * 3;
+  {
+    final value = object.result;
+    if (value != null) {
+      bytesCount += 3 + value.name.length * 3;
+    }
+  }
   {
     final value = object.score1;
     if (value != null) {
@@ -234,7 +239,7 @@ void _gameResultSerialize(
   writer.writeString(offsets[3], object.gameTitle);
   writer.writeBool(offsets[4], object.isFavorite);
   writer.writeString(offsets[5], object.pictureUrl);
-  writer.writeString(offsets[6], object.result.name);
+  writer.writeString(offsets[6], object.result?.name);
   writer.writeString(offsets[7], object.score1);
   writer.writeString(offsets[8], object.score2);
   writer.writeString(offsets[9], object.seatLocation);
@@ -256,13 +261,11 @@ GameResult _gameResultDeserialize(
   final object = GameResult(
     comment: reader.readStringOrNull(offsets[0]),
     createdAt: reader.readDateTimeOrNull(offsets[1]),
-    date: reader.readDateTime(offsets[2]),
+    date: reader.readDateTimeOrNull(offsets[2]),
     gameTitle: reader.readStringOrNull(offsets[3]),
     isFavorite: reader.readBoolOrNull(offsets[4]) ?? false,
     pictureUrl: reader.readStringOrNull(offsets[5]),
-    result:
-        _GameResultresultValueEnumMap[reader.readStringOrNull(offsets[6])] ??
-            GameResultType.WIN,
+    result: _GameResultresultValueEnumMap[reader.readStringOrNull(offsets[6])],
     score1: reader.readStringOrNull(offsets[7]),
     score2: reader.readStringOrNull(offsets[8]),
     seatLocation: reader.readStringOrNull(offsets[9]),
@@ -290,7 +293,7 @@ P _gameResultDeserializeProp<P>(
     case 1:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
@@ -298,8 +301,8 @@ P _gameResultDeserializeProp<P>(
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
-      return (_GameResultresultValueEnumMap[reader.readStringOrNull(offset)] ??
-          GameResultType.WIN) as P;
+      return (_GameResultresultValueEnumMap[reader.readStringOrNull(offset)])
+          as P;
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
@@ -889,8 +892,24 @@ extension GameResultQueryFilter
     });
   }
 
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> dateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'date',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> dateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'date',
+      ));
+    });
+  }
+
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> dateEqualTo(
-      DateTime value) {
+      DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'date',
@@ -900,7 +919,7 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> dateGreaterThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -913,7 +932,7 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> dateLessThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -926,8 +945,8 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> dateBetween(
-    DateTime lower,
-    DateTime upper, {
+    DateTime? lower,
+    DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1310,8 +1329,25 @@ extension GameResultQueryFilter
     });
   }
 
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> resultIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'result',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
+      resultIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'result',
+      ));
+    });
+  }
+
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> resultEqualTo(
-    GameResultType value, {
+    GameResultType? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1324,7 +1360,7 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> resultGreaterThan(
-    GameResultType value, {
+    GameResultType? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1339,7 +1375,7 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> resultLessThan(
-    GameResultType value, {
+    GameResultType? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1354,8 +1390,8 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> resultBetween(
-    GameResultType lower,
-    GameResultType upper, {
+    GameResultType? lower,
+    GameResultType? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -3031,7 +3067,7 @@ extension GameResultQueryProperty
     });
   }
 
-  QueryBuilder<GameResult, DateTime, QQueryOperations> dateProperty() {
+  QueryBuilder<GameResult, DateTime?, QQueryOperations> dateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'date');
     });
@@ -3055,7 +3091,7 @@ extension GameResultQueryProperty
     });
   }
 
-  QueryBuilder<GameResult, GameResultType, QQueryOperations> resultProperty() {
+  QueryBuilder<GameResult, GameResultType?, QQueryOperations> resultProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'result');
     });

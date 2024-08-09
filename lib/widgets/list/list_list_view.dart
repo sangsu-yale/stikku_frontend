@@ -37,7 +37,7 @@ class ListViewZone extends StatelessWidget {
         return GestureDetector(
           onTap: () async {
             final gameResult =
-                await isarController.getDetails(item.date.toLocal());
+                await isarController.getDetails(item.date!.toLocal());
             Get.toNamed('/details', arguments: gameResult);
           },
           child: Container(
@@ -87,10 +87,10 @@ class ListViewZone extends StatelessWidget {
                                                               .spaceBetween,
                                                       children: [
                                                         Text(
-                                                          item.team1,
+                                                          item.team1!,
                                                           style: TextStyle(
                                                               fontSize: item
-                                                                          .team1
+                                                                          .team1!
                                                                           .length >
                                                                       9
                                                                   ? 11
@@ -102,7 +102,7 @@ class ListViewZone extends StatelessWidget {
                                                                   : null),
                                                         ),
                                                         Text(
-                                                          item.score1,
+                                                          item.score1!,
                                                           style: TextStyle(
                                                               fontWeight: item
                                                                       .team1IsMyTeam
@@ -123,10 +123,10 @@ class ListViewZone extends StatelessWidget {
                                                               .spaceBetween,
                                                       children: [
                                                         Text(
-                                                          item.team2,
+                                                          item.team2!,
                                                           style: TextStyle(
                                                               fontSize: item
-                                                                          .team1
+                                                                          .team1!
                                                                           .length >
                                                                       9
                                                                   ? 11
@@ -138,7 +138,7 @@ class ListViewZone extends StatelessWidget {
                                                                   : null),
                                                         ),
                                                         Text(
-                                                          item.score2,
+                                                          item.score2!,
                                                           style: TextStyle(
                                                               fontWeight: item
                                                                       .team2IsMyTeam
@@ -234,7 +234,7 @@ class ListViewZone extends StatelessWidget {
                                           flex: 2,
                                           child: Text(
                                             DateFormat('yyyy.MM.dd')
-                                                .format(item.date),
+                                                .format(item.date!),
                                             style: const TextStyle(
                                                 color: Colors.black54,
                                                 fontWeight: FontWeight.bold),
@@ -245,7 +245,7 @@ class ListViewZone extends StatelessWidget {
                                         child: Text(
                                           style: const TextStyle(
                                               color: Colors.black54),
-                                          item.stadium,
+                                          item.stadium!,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),

@@ -33,7 +33,7 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
               textCancel: "취소",
               confirmTextColor: Colors.white,
               onConfirm: () async {
-                formController.deleteDetails(gameResult.date);
+                formController.deleteDetails(gameResult.date!);
               },
             );
           },
@@ -48,7 +48,7 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
               () => WritePage(isEditMode: true),
               arguments: {
                 "result": gameResult.result,
-                "day": gameResult.date.toUtc(),
+                "day": gameResult.date!.toUtc(),
                 "gameTitle": gameResult.gameTitle,
                 "team1": gameResult.team1,
                 "team2": gameResult.team2,

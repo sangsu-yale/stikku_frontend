@@ -39,12 +39,20 @@ class _FabWriteButton extends StatelessWidget {
         spaceBetweenChildren: 1,
         visible: true,
         curve: Curves.bounceIn,
-        children: [
-          dialChild("CANCEL", "취", Custom.umbrella__1_, Colors.grey),
-          dialChild("TIE", "무", Custom.clover__1_, Colors.green),
-          dialChild("LOSE", "패", Custom.bookmarksimple__1_, Colors.red),
-          dialChild("WIN", "승", Custom.star_1, Colors.blue),
-        ],
+        children: GameResultType.values.map((type) {
+          return dialChild(
+            type.name,
+            type.label,
+            type.icon,
+            type.color,
+          );
+        }).toList(),
+        // [
+        //   dialChild("CANCEL", "취", Custom.umbrella__1_, Colors.grey),
+        //   dialChild("TIE", "무", Custom.clover__1_, Colors.green),
+        //   dialChild("LOSE", "패", Custom.bookmarksimple__1_, Colors.red),
+        //   dialChild("WIN", "승", Custom.star_1, Colors.blue),
+        // ],
       ),
     );
   }
@@ -55,10 +63,9 @@ class _FabWriteButton extends StatelessWidget {
       backgroundColor: Colors.white,
       elevation: 0,
       onTap: () {
-        Get.toNamed('/write', arguments: {
-          "result": result,
-          "day": calendarController.today.value
-        });
+        Get.toNamed('/write',
+            arguments: GameResult(
+                result: result, date: calendarController.today.value));
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

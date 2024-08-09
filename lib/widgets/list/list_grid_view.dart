@@ -38,7 +38,7 @@ class GridViewZone extends StatelessWidget {
         return GestureDetector(
           onTap: () async {
             final gameResult =
-                await isarController.getDetails(ticket.date.toLocal());
+                await isarController.getDetails(ticket.date!.toLocal());
             Get.toNamed('/details', arguments: gameResult);
           },
           child: ClipOval(
@@ -68,7 +68,7 @@ class GridViewZone extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        DateFormat('yyyy.MM.dd').format(ticket.date),
+                        DateFormat('yyyy.MM.dd').format(ticket.date!),
                         style: const TextStyle(color: Colors.white),
                       ),
                       Text(ticket.result.toUpperCase(),

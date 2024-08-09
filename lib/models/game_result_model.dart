@@ -9,11 +9,9 @@ part 'game_result_model.g.dart';
 class GameResult {
   Id id = Isar.autoIncrement;
 
-  // 필수 필드
   @Enumerated(EnumType.name) // EnumType.name을 사용하여 String으로 저장
-  late GameResultType result;
-
-  late DateTime date;
+  GameResultType? result;
+  DateTime? date;
 
   // t/f 필드
   bool viewingMode = false;
@@ -45,8 +43,8 @@ class GameResult {
   final user = IsarLink<User>();
 
   GameResult({
-    required this.result,
-    required this.date,
+    this.result,
+    this.date,
     this.viewingMode = false,
     this.gameTitle,
     this.stadium,
@@ -68,8 +66,8 @@ class GameResult {
   // toJson: 객체를 Map<String, dynamic>으로 변환
   Map<String, dynamic> toJson() => {
         'id': id,
-        'result': result.name, // Enum을 String으로
-        'date': date.toIso8601String(),
+        'result': result?.name, // Enum을 String으로
+        'date': date?.toIso8601String(),
         'viewingMode': viewingMode,
         'team1IsMyTeam': team1IsMyTeam,
         'team2IsMyTeam': team2IsMyTeam,
