@@ -13,40 +13,45 @@ import 'package:uuid/uuid.dart';
 class IsarService extends GetxController {
   final Isar _isar;
   IsarService() : _isar = Get.find<IsarDB>().isar;
-  var uuid = ''.obs;
+
+  var isLogin = false.obs;
+  var userName = '게스트'.obs;
+  var userEmail = ''.obs;
+  var userUuid = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
-    _initialize();
+    initialize();
   }
 
   // 시작 시 게스트 로그인 확인
-  Future<void> _initialize() async {
+  Future<void> initialize() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool? isUserCreated = prefs.getBool('isUserCreated');
+    final bool? isUserLogin = prefs.getBool('isLogin');
 
+    // 없으면 유저 만들고
     if (isUserCreated == null || !isUserCreated) {
       await _addDefaultUser();
       await prefs.setBool('isUserCreated', true);
     } else {
-      uuid.value = prefs.getString('uuid')!.substring(0, 8).toUpperCase();
+      // 만약에 로그인 했으면
+      if (isUserLogin == true) {
+        // 로그인한 상황으로
+        userName.value = prefs.getString('username')!;
+      } else {}
+      // 있으면 유지시켜
+      isLogin.value = prefs.getBool('isLogin') ?? false;
+      userUuid.value = prefs.getString('uuid') ?? '';
+      userName.value =
+          '게스트-${userUuid.value == '' ? null : userUuid.value.substring(0, 8).toUpperCase()}';
     }
 
-    // TODO: 나중에 삭제 🚧 모든 사용자 정보를 콘솔에 출력 🚧
+    // TODO: 디버깅용
     // await deleteDefaultUser();
     await _printAllUsers();
   }
-
-  // TODO: 나중에 삭제 🚧 모든 사용자 정보를 콘솔에 출력 🚧
-  Future<void> _printAllUsers() async {
-    final users = await _isar.users.where().findAll();
-    for (var user in users) {
-      print(
-          '✅✅✅ 반갑습니다! User: ${user.username}, UUID: ${user.uuid}, 모든 유저를 보여줍니다 ✅✅✅');
-    }
-  }
-
 // <------------------- 유저 CRUD -------------------->
 // <------------------- 유저 CRUD -------------------->
 // <------------------- 유저 CRUD -------------------->
@@ -54,7 +59,7 @@ class IsarService extends GetxController {
   // ✅ 게스트용(로그인 전) isar user 생성
   Future<void> _addDefaultUser() async {
     final defaultUser = User()
-      ..uuid = const Uuid().v4() // Uuid 생성
+      ..uuid = const Uuid().v4()
       ..serverId = 0
       ..username = 'GUEST'
       ..email = ''
@@ -66,29 +71,86 @@ class IsarService extends GetxController {
       await _isar.users.put(defaultUser);
     });
 
-    // 로컬 스토리지 저장
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('username', defaultUser.username);
+    await prefs.setString('email', defaultUser.email);
     await prefs.setString('uuid', defaultUser.uuid);
+
+    isLogin.value = prefs.getBool('isLogin') ?? false;
+    userName.value = prefs.getString('userName') ?? 'GUEST';
+    userEmail.value = prefs.getString('userEmail') ?? '';
+    userUuid.value = prefs.getString('uuid') ?? '';
+
+    if (!isLogin.value) {
+      // 게스트 초기값 설정
+      userName.value =
+          '게스트-${userUuid.value == '' ? null : userUuid.value.substring(0, 8).toUpperCase()}';
+    }
   }
 
-  // TODO: 나중에 삭제 🚧 게스트 삭제 🚧
+  // 로그아웃은 조금 더 생각해 봅시다 (회원 탈퇴임)
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLogin', false);
+    await prefs.remove('userName');
+    await prefs.remove('userEmail');
+
+    initialize();
+  }
+
+  // 유저 완전 삭제
+  // TODO: 유저 삭제(탈퇴)하기
   Future<void> deleteDefaultUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await _isar.writeTxn(() async {
-      // 모든 User 데이터를 삭제합니다.
       await _isar.users.clear();
-
-      // 모든 GameResult 데이터를 삭제합니다.
       await _isar.gameResults.clear();
       await _isar.gameReviews.clear();
-
-      // 모든 Event 데이터를 삭제합니다.
+      await _isar.gameResultIdMappings.clear();
       await _isar.events.clear();
     });
     await prefs.clear();
 
     print("유저가 삭제되었습니다.");
+  }
+
+  // 데이터만 삭제하기
+  Future<void> deleteAllData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await _isar.writeTxn(() async {
+      await _isar.gameResults.clear();
+      await _isar.gameReviews.clear();
+      await _isar.gameResultIdMappings.clear();
+      await _isar.events.clear();
+    });
+    await prefs.remove('isFavorite');
+
+    // TODO: 데이터 전체 삭제 : 서버 데이터와 연동이 되어야 합니다
+    print("데이터가 삭제되었습니다.");
+  }
+
+  Future<void> _printAllUsers() async {
+    // 로그를 통해 저장된 사용자 정보 확인
+    final users = await _isar.users.where().findAll();
+    print("저장된 사용자: $users");
+  }
+
+  Future<User> getUser() async {
+    try {
+      // 유저의 uuid 확인
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String? uuid = prefs.getString('uuid');
+      if (uuid == null) throw Exception('UUID 발급이 안 된 유저입니다');
+
+      // 사용자 가져오기
+      final user = await _isar.users.filter().uuidEqualTo(uuid).findFirst();
+      if (user == null) throw Exception('로컬 DB에 유저가 없습니다');
+
+      return user;
+    } catch (e) {
+      print('유저 정보를 가지고 오는 과정 중에 에러가 났습니다 : $e');
+      throw Exception('Failed to fetch user: $e');
+    }
   }
 
   // (서버 연동) 유저 업데이트
@@ -145,24 +207,6 @@ class IsarService extends GetxController {
       );
       // 필요시 에러 메시지를 담은 GameResult 반환 또는 예외 재발생
       throw Exception('티켓 반환 실패: $e');
-    }
-  }
-
-  Future<User> getUser() async {
-    try {
-      // 유저의 uuid 확인
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? uuid = prefs.getString('uuid');
-      if (uuid == null) throw Exception('UUID 발급이 안 된 유저입니다');
-
-      // 사용자 가져오기
-      final user = await _isar.users.filter().uuidEqualTo(uuid).findFirst();
-      if (user == null) throw Exception('로컬 DB에 유저가 없습니다');
-
-      return user;
-    } catch (e) {
-      print('유저 정보를 가지고 오는 과정 중에 에러가 났습니다 : $e');
-      throw Exception('Failed to fetch user: $e');
     }
   }
 
