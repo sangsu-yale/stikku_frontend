@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 // 로그인 (구글)
@@ -86,16 +85,14 @@ Future<Map<String, dynamic>> fetchUser(String accessToken) async {
   }
 }
 
-// 유저 정보 불러오기 (처음)
+// 유저 정보 불러오기 (유저 아이디 판별)
 Future<Map<String, dynamic>> fetchUserID(
     int serverId, String serverAccessToken) async {
   final url = Uri.parse('${dotenv.env['SERVER_URL']}/users/$serverId');
   final response = await http
       .get(url, headers: {'Authorization': "Bearer $serverAccessToken"});
-  print(response.statusCode);
+
   if (response.statusCode == 200) {
-    print("유저 정보를 반환 222");
-    print(response.body);
     return jsonDecode(response.body) as Map<String, dynamic>;
   } else {
     throw Exception('유저 정보를 불러오지 못했습니다');
@@ -103,7 +100,7 @@ Future<Map<String, dynamic>> fetchUserID(
 }
 
 // 게임Result 포스트
-Future<int> postGameResult(Map data) async {
+Future<Map<String, dynamic>> postGameResult(Map data) async {
   final url = Uri.parse('${dotenv.env['SERVER_URL']}/games');
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final String? accessToken = prefs.getString('accessToken');
@@ -124,12 +121,17 @@ Future<int> postGameResult(Map data) async {
 
     // 요청
     final response = await http.post(url, headers: headers, body: json);
-    final body = response.body;
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
     // 만약에 됐으면?
     if (response.statusCode == 201) {
       // 매핑 엔트리 생성
       // 서버 id 보내기
-      return 1;
+      final serverGameResultID = body["gameResult"].id;
+      final serverGameReviewID = body["gameReview"].id;
+      return {
+        "serverGameResultID": serverGameResultID,
+        "serverGameReviewID": serverGameReviewID
+      };
       //
     } else {
       throw Exception('게임 결과를 저장하지 못했습니다 : $body');
@@ -139,7 +141,96 @@ Future<int> postGameResult(Map data) async {
   }
 }
 
-// 게임Result 포스트
-Future<GameResult> getDetailsFormServer(dynamic data) async {
-  return GameResult();
+// 게임Result 업데이트
+void updateGameResult(int id, Map data) async {
+  // TODO: game인지 games인지 확인
+  final url = Uri.parse('${dotenv.env['SERVER_URL']}/game/$id');
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String? accessToken = prefs.getString('accessToken');
+
+  // 액세스 토큰 있으면
+  if (accessToken != null) {
+    // 액세스 토큰 헤더에 넣어 줘야 해
+    final Map<String, String> headers = {
+      "content-type": "application/json; charset=utf-8",
+      "Authorization": "Bearer $accessToken"
+    };
+
+    // 바디값 넣어 줘야 함
+    final String json = jsonEncode(<dynamic, dynamic>{
+      'gameResult': data["gameResult"],
+      'gameReview': data["gameReview"]
+    });
+
+    // 요청
+    final response = await http.put(url, headers: headers, body: json);
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    // 만약에 됐으면?
+    if (response.statusCode == 201) {
+      print("성공적으로 반영되었습니다.");
+    } else {
+      throw Exception('게임 결과를 저장하지 못했습니다 : $body');
+    }
+  } else {
+    throw Exception('유저 정보를 불러오지 못했습니다');
+  }
+}
+
+// 게임 Result 삭제
+void deleteGameResult(int id) async {
+  // TODO: game인지 games인지 확인
+  final url = Uri.parse('${dotenv.env['SERVER_URL']}/game/$id');
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String? accessToken = prefs.getString('accessToken');
+
+  // 액세스 토큰 있으면
+  if (accessToken != null) {
+    // 액세스 토큰 헤더에 넣어 줘야 해
+    final Map<String, String> headers = {
+      "content-type": "application/json; charset=utf-8",
+      "Authorization": "Bearer $accessToken"
+    };
+
+    // 요청
+    final response = await http.put(url, headers: headers);
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    // 만약에 됐으면?
+    if (response.statusCode == 200) {
+      print("성공적으로 삭제되었습니다.");
+    } else {
+      throw Exception('게임 결과를 저장하지 못했습니다 : $body');
+    }
+  } else {
+    throw Exception('유저 정보를 불러오지 못했습니다');
+  }
+}
+
+void putGameFavorite(int id, bool isFavorite) async {
+  final url = Uri.parse('${dotenv.env['SERVER_URL']}/game/$id/favorite');
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String? accessToken = prefs.getString('accessToken');
+
+  // 액세스 토큰 있으면
+  if (accessToken != null) {
+    // 액세스 토큰 헤더에 넣어 줘야 해
+    final Map<String, String> headers = {
+      "content-type": "application/json; charset=utf-8",
+      "Authorization": "Bearer $accessToken"
+    };
+
+    // isFavorite true
+    // 바디값 넣어 줘야 함
+    final String json = jsonEncode(<dynamic, dynamic>{
+      'isFavorite': !isFavorite,
+    });
+
+    // 요청
+    final response = await http.put(url, headers: headers, body: json);
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    // 만약에 됐으면?
+    if (response.statusCode != 204) {
+      throw Exception('좋아요가 반영되지 못했습니다. : $body');
+    }
+    throw Exception('유저 정보를 불러오지 못했습니다');
+  }
 }

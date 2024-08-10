@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/constants/result_enum.dart';

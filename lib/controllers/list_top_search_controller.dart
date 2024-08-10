@@ -3,8 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
-import 'package:isar/isar.dart';
-import 'package:stikku_frontend/config/isar_db.dart';
+import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 // 정렬순 옵션
 enum SortOption { writtenOrder, newestFirst, oldestFirst }
@@ -16,9 +15,7 @@ enum FilterOption { all, teamSupport, live, home, won, lost }
 enum ViewOption { list, grid }
 
 class ListTopSearchController extends GetxController {
-  final Isar _isar;
-
-  ListTopSearchController() : _isar = Get.find<IsarDB>().isar;
+  final isarController = Get.find<IsarService>();
 
   // 검색어 입력
   var searchQuery = ''.obs;
@@ -49,7 +46,8 @@ class ListTopSearchController extends GetxController {
     isLoading.value = true;
 
     // 불러오기
-    final results = await _isar.gameResults.where().findAll();
+    final results = await isarController.loadGameResultFromLocalDB();
+
     if (results.isNotEmpty) {
       results.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
     }
@@ -116,19 +114,14 @@ class ListTopSearchController extends GetxController {
 
   // 즐겨찾기 버튼 누르기
   void toggleFavorite(int id) async {
-    await _isar.writeTxn(() async {
-      final gameResult = await _isar.gameResults.get(id);
-      if (gameResult != null) {
-        gameResult.isFavorite = !gameResult.isFavorite;
-        await _isar.gameResults.put(gameResult);
-        // 티켓 리스트에서 해당 게임 결과 업데이트
-        int index = ticketlist.indexWhere((ticket) => ticket.id == id);
-        if (index != -1) {
-          ticketlist[index] = gameResult;
-          ticketlist.refresh(); // 리스트 갱신
-        }
-      }
-    });
+    final gameResult = await isarController.onOffTofavorite(id);
+
+    // 티켓 리스트에서 해당 게임 결과 업데이트
+    int index = ticketlist.indexWhere((ticket) => ticket.id == id);
+    if (index != -1) {
+      ticketlist[index] = gameResult;
+      ticketlist.refresh(); // 리스트 갱신
+    }
   }
 
 //

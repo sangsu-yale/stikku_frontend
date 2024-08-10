@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/models/event_model.dart';
 import 'package:stikku_frontend/models/game_result_id_mapping_model.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
@@ -217,8 +216,6 @@ class IsarService extends GetxController {
         gameResultObj["result"].toString().split('.').last
       ]; // 경기 결과를 이벤트 디테일로 저장
 
-    print("gameResult에서 나온 데이터 : ${gameResult.date}");
-
     await _isar.writeTxn(() async {
       // GameReview 저장
       await _isar.gameReviews.put(gameReview);
@@ -239,19 +236,23 @@ class IsarService extends GetxController {
     });
 
     // 만약에 서버가 연결되어 있으면?
-    // if (user.serverId != 0) {
-    //   // 서버 연결
-    //   gameResultObj["userId"] = user.serverId;
-    //   gameResultObj["result"] = gameResultObj["result"].toUpperCase();
-    //   gameResultObj["date"] = gameResultObj["date"].toIso8601String();
-    //   gameReviewObj["mood"] = gameReviewObj["mood"].toUpperCase();
-    //   final serverId = await postGameResult(data);
+    if (user.serverId != 0) {
+      // 서버 연결
+      gameResultObj["userId"] = user.serverId;
 
-    //   // final mapping = GameResultIdMapping(
-    //   //   localGameResultId: gameResult.id,
-    //   //   serverGameResultId: serverId,
-    //   // );
-    // }
+      // 맵핑 테이블 생성
+      final Map<String, dynamic> serverIDs = await postGameResult(data);
+
+      final mapping = GameResultIdMapping(
+          localGameResultId: gameResult.id,
+          serverGameResultId: serverIDs["serverGameResultID"],
+          serverGameReviewId: serverIDs["serverGameReviewID"]);
+
+      // 매핑 테이블에 저장
+      await _isar.writeTxn(() async {
+        await _isar.gameResultIdMappings.put(mapping);
+      });
+    }
 
     return gameResult;
   }
@@ -336,6 +337,21 @@ class IsarService extends GetxController {
         await user.events.save();
       });
 
+      // 만약에 서버가 연결되어 있으면?
+      if (user.serverId != 0) {
+        // 맵핑 테이블에서 게임 아이디 받아와야 함
+        // 로컬 디비 아이디로 받아올 수 있지
+        final mapping = await _isar.gameResultIdMappings
+            .filter()
+            .localGameResultIdEqualTo(gameResultObj["id"])
+            .findFirst();
+
+        // 받아와서 넘겨주기
+        if (mapping != null) {
+          updateGameResult(mapping.serverGameResultId, data);
+        }
+      }
+
       return gameResult;
     } else {
       return GameResult();
@@ -359,6 +375,27 @@ class IsarService extends GetxController {
         : null;
 
     if (gameResult != null && event != null) {
+      // 만약에 서버가 연결되어 있으면?
+      //  서버부터 삭제
+      if (user.serverId != 0) {
+        // 맵핑 테이블에서 게임 아이디 받아와야 함
+        // 로컬 디비 아이디로 받아올 수 있지
+        final mapping = await _isar.gameResultIdMappings
+            .filter()
+            .localGameResultIdEqualTo(gameResult.id)
+            .findFirst();
+
+        // 받아와서 넘겨주기
+        if (mapping != null) {
+          deleteGameResult(mapping.serverGameResultId);
+
+          // mapping 삭제
+          await _isar.writeTxn(() async {
+            await _isar.gameResultIdMappings.delete(mapping.id);
+          });
+        }
+      }
+
       // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에서 삭제하고, User와의 관계를 갱신합니다.
       await _isar.writeTxn(() async {
         // GameReview 삭제
@@ -392,5 +429,36 @@ class IsarService extends GetxController {
     final gameResults = await _isar.gameResults.where().findAll();
 
     return gameResults;
+  }
+
+// <------------------- 리스트 -------------------->
+// <------------------- 리스트 -------------------->
+// <------------------- 리스트 -------------------->
+
+// 전체 불러오기
+  Future<List<GameResult>> loadGameResultFromLocalDB() async {
+    return await _isar.gameResults.where().findAll();
+  }
+
+// 토글
+  Future<GameResult> onOffTofavorite(int id) async {
+    final gameResult = await _isar.gameResults.get(id);
+
+    if (gameResult != null) {
+      final mapping = await _isar.gameResultIdMappings
+          .filter()
+          .localGameResultIdEqualTo(gameResult.id)
+          .findFirst();
+
+      if (mapping != null) {
+        putGameFavorite(mapping.serverGameResultId, gameResult.isFavorite);
+      }
+
+      await _isar.writeTxn(() async {
+        gameResult.isFavorite = !gameResult.isFavorite;
+        await _isar.gameResults.put(gameResult);
+      });
+    }
+    return gameResult!;
   }
 }
