@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
+import 'package:stikku_frontend/controllers/navigation_controller.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class UserNDataPage extends StatelessWidget {
@@ -9,7 +10,8 @@ class UserNDataPage extends StatelessWidget {
 
   final IsarService isarController = Get.find<IsarService>();
   final ListTopSearchController listTopSearchController = Get.find();
-
+  final NavigationController navigationController =
+      Get.find<NavigationController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,6 +58,7 @@ class UserNDataPage extends StatelessWidget {
                               onPressed: () async {
                                 await isarController.deleteAllData();
                                 listTopSearchController.loadGameResults();
+                                navigationController.changePage(0);
                                 Get.offAndToNamed('/');
                                 Get.dialog(
                                   AlertDialog(
@@ -99,7 +102,6 @@ class UserNDataPage extends StatelessWidget {
                               onPressed: () async {
                                 await isarController.deleteDefaultUser();
                                 listTopSearchController.loadGameResults();
-                                // TODO: 회원탈퇴 - 재부팅
                                 Get.offAndToNamed('/');
                                 Get.dialog(
                                   AlertDialog(

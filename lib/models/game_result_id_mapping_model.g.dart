@@ -95,11 +95,11 @@ GameResultIdMapping _gameResultIdMappingDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = GameResultIdMapping(
+    createdAt: reader.readDateTimeOrNull(offsets[0]),
     localGameResultId: reader.readLong(offsets[1]),
     serverGameResultId: reader.readLong(offsets[2]),
     serverGameReviewId: reader.readLong(offsets[3]),
   );
-  object.createdAt = reader.readDateTime(offsets[0]);
   object.id = id;
   return object;
 }
@@ -112,7 +112,7 @@ P _gameResultIdMappingDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 1:
       return (reader.readLong(offset)) as P;
     case 2:
@@ -227,7 +227,29 @@ extension GameResultIdMappingQueryWhere
   }
 
   QueryBuilder<GameResultIdMapping, GameResultIdMapping, QAfterWhereClause>
-      createdAtEqualTo(DateTime createdAt) {
+      createdAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'createdAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<GameResultIdMapping, GameResultIdMapping, QAfterWhereClause>
+      createdAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<GameResultIdMapping, GameResultIdMapping, QAfterWhereClause>
+      createdAtEqualTo(DateTime? createdAt) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'createdAt',
@@ -237,7 +259,7 @@ extension GameResultIdMappingQueryWhere
   }
 
   QueryBuilder<GameResultIdMapping, GameResultIdMapping, QAfterWhereClause>
-      createdAtNotEqualTo(DateTime createdAt) {
+      createdAtNotEqualTo(DateTime? createdAt) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -273,7 +295,7 @@ extension GameResultIdMappingQueryWhere
 
   QueryBuilder<GameResultIdMapping, GameResultIdMapping, QAfterWhereClause>
       createdAtGreaterThan(
-    DateTime createdAt, {
+    DateTime? createdAt, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -288,7 +310,7 @@ extension GameResultIdMappingQueryWhere
 
   QueryBuilder<GameResultIdMapping, GameResultIdMapping, QAfterWhereClause>
       createdAtLessThan(
-    DateTime createdAt, {
+    DateTime? createdAt, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -303,8 +325,8 @@ extension GameResultIdMappingQueryWhere
 
   QueryBuilder<GameResultIdMapping, GameResultIdMapping, QAfterWhereClause>
       createdAtBetween(
-    DateTime lowerCreatedAt,
-    DateTime upperCreatedAt, {
+    DateTime? lowerCreatedAt,
+    DateTime? upperCreatedAt, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -323,7 +345,25 @@ extension GameResultIdMappingQueryWhere
 extension GameResultIdMappingQueryFilter on QueryBuilder<GameResultIdMapping,
     GameResultIdMapping, QFilterCondition> {
   QueryBuilder<GameResultIdMapping, GameResultIdMapping, QAfterFilterCondition>
-      createdAtEqualTo(DateTime value) {
+      createdAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'createdAt',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResultIdMapping, GameResultIdMapping, QAfterFilterCondition>
+      createdAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'createdAt',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResultIdMapping, GameResultIdMapping, QAfterFilterCondition>
+      createdAtEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'createdAt',
@@ -334,7 +374,7 @@ extension GameResultIdMappingQueryFilter on QueryBuilder<GameResultIdMapping,
 
   QueryBuilder<GameResultIdMapping, GameResultIdMapping, QAfterFilterCondition>
       createdAtGreaterThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -348,7 +388,7 @@ extension GameResultIdMappingQueryFilter on QueryBuilder<GameResultIdMapping,
 
   QueryBuilder<GameResultIdMapping, GameResultIdMapping, QAfterFilterCondition>
       createdAtLessThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -362,8 +402,8 @@ extension GameResultIdMappingQueryFilter on QueryBuilder<GameResultIdMapping,
 
   QueryBuilder<GameResultIdMapping, GameResultIdMapping, QAfterFilterCondition>
       createdAtBetween(
-    DateTime lower,
-    DateTime upper, {
+    DateTime? lower,
+    DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -780,7 +820,7 @@ extension GameResultIdMappingQueryProperty
     });
   }
 
-  QueryBuilder<GameResultIdMapping, DateTime, QQueryOperations>
+  QueryBuilder<GameResultIdMapping, DateTime?, QQueryOperations>
       createdAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'createdAt');

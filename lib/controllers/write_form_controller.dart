@@ -99,18 +99,30 @@ class FormController extends GetxController {
       score2Con.text = gameResult.score2!;
       stadiumCon.text = gameResult.stadium!;
       seatLocationCon.text = gameResult.seatLocation!;
+      viewingMode.value = gameResult.viewingMode; // 직관, 집관
+      team1IsMyTeam.value = gameResult.team1IsMyTeam; // 응원팀
+      team2IsMyTeam.value = gameResult.team1IsMyTeam; // 응원팀
+
+      updateResult(gameResult.result!);
 
       commentCon.text = gameResult.comment ?? '';
       gameTitleCon.text = gameResult.gameTitle ?? '';
 
       final gameReview = await gameResult.loadGameReview();
+
       if (gameReview != null) {
-        // 게임 리뷰 있을 때 세팅해 놓기
-        review.text.isEmpty ? 'null' : gameReview.review;
-        rating.value == 0 ? null : gameReview.rating;
-        playerOfTheMatch.text.isEmpty ? null : gameReview.playerOfTheMatch;
-        mood.value == '' ? null : gameReview.mood;
-        food.text.isEmpty ? null : gameReview.food;
+        rating.value = gameReview.rating ?? 0;
+        mood.value = gameReview.mood ?? '';
+
+        if (gameReview.review != null) {
+          review.text = gameReview.review!;
+        }
+        if (gameReview.playerOfTheMatch != null) {
+          playerOfTheMatch.text = gameReview.playerOfTheMatch!;
+        }
+        if (gameReview.food != null) {
+          food.text = gameReview.food!;
+        }
       }
     }
   }

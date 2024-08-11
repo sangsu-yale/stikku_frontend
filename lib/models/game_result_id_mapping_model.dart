@@ -6,16 +6,18 @@ part 'game_result_id_mapping_model.g.dart';
 class GameResultIdMapping {
   Id id = Isar.autoIncrement;
 
-  late int localGameResultId; // 로컬 DB의 ID
-  late int serverGameResultId; // 서버의 게임 리졸트 ID
-  late int serverGameReviewId; // 서버의 게임 리뷰 ID
+  final int localGameResultId;
+  final int serverGameResultId;
+  final int serverGameReviewId;
 
   @Index()
-  late DateTime createdAt;
+  DateTime? createdAt;
 
+  // 생성자에서 DateTime 타입의 매개변수를 사용
   GameResultIdMapping({
     required this.localGameResultId,
     required this.serverGameResultId,
     required this.serverGameReviewId,
-  });
+    DateTime? createdAt, // Optional DateTime parameter
+  }) : createdAt = createdAt ?? DateTime.now(); // 초기화 시 기본값 설정
 }

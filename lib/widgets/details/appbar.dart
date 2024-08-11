@@ -42,8 +42,10 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           onPressed: () async {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              // Do everything you want here...
+              // TODO: 수정시 데이터 불러오는 작업 확인
+              // write 페이지에서 기능 조절할 게 아니라 여기에다가 다 때려박으면 되었던 거야... ㅠㅠ
             });
+            formController.currentFormIndex(0);
             await Get.to(
               () => WritePage(isEditMode: true),
               arguments: gameResult,

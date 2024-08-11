@@ -25,7 +25,7 @@ class BackView extends StatelessWidget {
     final moods = {
       'HAPPY': Custom.smiley_1,
       'SURPRISED': Custom.smileyxeyes_1,
-      'MAD': Custom.smileyangry_1,
+      'ANGRY': Custom.smileyangry_1,
       'BORED': Custom.smileyblank_1,
       'FUN': Custom.smileywink_1
     };

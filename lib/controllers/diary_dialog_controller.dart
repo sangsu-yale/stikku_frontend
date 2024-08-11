@@ -39,8 +39,8 @@ class DiaryDialogController extends GetxController {
     if (!selectedWidgets.any(
         (selectedWidget) => selectedWidget.keys.first == widget.keys.first)) {
       selectedWidgets.add(widget);
-      update(); // Notify the change
     }
+    update(); // Notify the change
   }
 
   void removeWidget(Map<String, Widget> widget) {

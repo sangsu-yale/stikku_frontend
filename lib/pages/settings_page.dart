@@ -36,23 +36,23 @@ class SettingsPage extends StatelessWidget {
                         ),
                         Text(
                           isarController.isLogin.value
-                              ? ""
+                              ? "반가워요!"
                               : "로그인하면 다른 기기 연동이 가능해요!",
                           style:
                               const TextStyle(fontSize: 13, color: Colors.grey),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            if (isarController.isLogin.value) {
-                              isarController.logout();
-                            } else {
-                              Get.toNamed('/login');
-                            }
-                          },
-                          child: Text(isarController.isLogin.value
-                              ? "로그아웃"
-                              : "가입/로그인하기"),
-                        ),
+                        isarController.isLogin.value
+                            ? const SizedBox()
+                            : TextButton(
+                                onPressed: () {
+                                  if (isarController.isLogin.value) {
+                                    isarController.logout();
+                                  } else {
+                                    Get.toNamed('/login');
+                                  }
+                                },
+                                child: const Text("가입/로그인하기"),
+                              ),
                       ],
                     )),
               ],
@@ -82,6 +82,9 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
+                  onTap: () {
+                    Get.toNamed('/splash');
+                  },
                   child: const ListTile(
                     leading: Icon(Custom.target, color: Colors.blue),
                     title: Text("문의하기"),

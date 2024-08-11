@@ -145,7 +145,7 @@ class Mood extends StatelessWidget {
   final List<Map<String, dynamic>> moods = [
     {'icon': Custom.smiley, 'label': 'HAPPY'},
     {'icon': Custom.smileyxeyes, 'label': 'SURPRISED'},
-    {'icon': Custom.smileyangry, 'label': 'MAD'},
+    {'icon': Custom.smileyangry, 'label': 'ANGRY'},
     {'icon': Custom.smileyblank, 'label': 'BORED'},
     {'icon': Custom.smileywink, 'label': 'FUN'},
   ];

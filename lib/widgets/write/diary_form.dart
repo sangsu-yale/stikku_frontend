@@ -15,36 +15,40 @@ class DiaryForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 예시: formController에 데이터를 설정합니다.
+
     if (isEditMode) {
-      if (formController.rating.value != 0) {
-        diaryDialogController.addWidget(
-          {'rating': Rating(id: 'rating', title: '별점')},
-        );
-      }
-      if (formController.review.text != '') {
-        diaryDialogController.addWidget(
-          {'review': Review(id: 'review', title: '경기 리뷰')},
-        );
-      }
-      if (formController.playerOfTheMatch.text != '') {
-        diaryDialogController.addWidget(
-          {
-            'playerOfTheMatch':
-                PlayerOfTheMatch(id: 'playerOfTheMatch', title: '수훈 선수')
-          },
-        );
-      }
-      if (formController.mood.value != '') {
-        diaryDialogController.addWidget(
-          {'mood': Mood(id: 'mood', title: '기분')},
-        );
-      }
-      if (formController.food.text != '') {
-        diaryDialogController.addWidget(
-          {'food': Food(id: 'food', title: '음식')},
-        );
-      }
-      diaryDialogController.confirmSelection();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (formController.rating.value != 0) {
+          diaryDialogController.addWidget(
+            {'rating': Rating(id: 'rating', title: '별점')},
+          );
+        }
+        if (formController.review.text != '') {
+          diaryDialogController.addWidget(
+            {'review': Review(id: 'review', title: '경기 리뷰')},
+          );
+        }
+        if (formController.playerOfTheMatch.text != '') {
+          diaryDialogController.addWidget(
+            {
+              'playerOfTheMatch':
+                  PlayerOfTheMatch(id: 'playerOfTheMatch', title: '수훈 선수')
+            },
+          );
+        }
+        if (formController.mood.value != '') {
+          diaryDialogController.addWidget(
+            {'mood': Mood(id: 'mood', title: '기분')},
+          );
+        }
+        if (formController.food.text != '') {
+          diaryDialogController.addWidget(
+            {'food': Food(id: 'food', title: '음식')},
+          );
+        }
+
+        diaryDialogController.confirmSelection();
+      });
     }
 
     return Container(

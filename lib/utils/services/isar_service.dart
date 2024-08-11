@@ -35,21 +35,23 @@ class IsarService extends GetxController {
     if (isUserCreated == null || !isUserCreated) {
       await _addDefaultUser();
       await prefs.setBool('isUserCreated', true);
+
+      // 유저가 있다
     } else {
       // 만약에 로그인 했으면
       if (isUserLogin == true) {
         // 로그인한 상황으로
+        isLogin.value = prefs.getBool('isLogin')!;
         userName.value = prefs.getString('username')!;
-      } else {}
-      // 있으면 유지시켜
-      isLogin.value = prefs.getBool('isLogin') ?? false;
-      userUuid.value = prefs.getString('uuid') ?? '';
-      userName.value =
-          '게스트-${userUuid.value == '' ? null : userUuid.value.substring(0, 8).toUpperCase()}';
+      } else {
+        // 로그인 안 했고, 있으면 유지시켜
+        isLogin.value = prefs.getBool('isLogin') ?? false;
+        userUuid.value = prefs.getString('uuid') ?? '';
+        userName.value =
+            '게스트-${userUuid.value == '' ? null : userUuid.value.substring(0, 8).toUpperCase()}';
+      }
     }
 
-    // TODO: 디버깅용
-    // await deleteDefaultUser();
     await _printAllUsers();
   }
 // <------------------- 유저 CRUD -------------------->
@@ -77,8 +79,8 @@ class IsarService extends GetxController {
     await prefs.setString('uuid', defaultUser.uuid);
 
     isLogin.value = prefs.getBool('isLogin') ?? false;
-    userName.value = prefs.getString('userName') ?? 'GUEST';
-    userEmail.value = prefs.getString('userEmail') ?? '';
+    userName.value = prefs.getString('username') ?? 'GUEST';
+    userEmail.value = prefs.getString('email') ?? '';
     userUuid.value = prefs.getString('uuid') ?? '';
 
     if (!isLogin.value) {
@@ -88,20 +90,39 @@ class IsarService extends GetxController {
     }
   }
 
+  Future<void> loadUserState() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final storageIsLogin = prefs.getBool("isLogin");
+    final storageUsername = prefs.getString("username");
+    final storageEmail = prefs.getString("email");
+    if (storageIsLogin != false) {
+      isLogin.value = storageIsLogin!;
+      userName.value = storageUsername!;
+      userEmail.value = storageEmail!;
+    }
+  }
+
   // 로그아웃은 조금 더 생각해 봅시다 (회원 탈퇴임)
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLogin', false);
-    await prefs.remove('userName');
-    await prefs.remove('userEmail');
+    await prefs.remove('username');
+    await prefs.remove('email');
 
     initialize();
   }
 
   // 유저 완전 삭제
-  // TODO: 유저 삭제(탈퇴)하기
   Future<void> deleteDefaultUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final user = await getUser();
+    final accessToken = prefs.getString('accessToken');
+
+    // 만약에 서버가 연결되어 있으면?
+    if (user.serverId != 0 && accessToken != null) {
+      // 서버 연결
+      await deleteUser(user.serverId, accessToken);
+    }
     await _isar.writeTxn(() async {
       await _isar.users.clear();
       await _isar.gameResults.clear();
@@ -110,8 +131,9 @@ class IsarService extends GetxController {
       await _isar.events.clear();
     });
     await prefs.clear();
-
     print("유저가 삭제되었습니다.");
+
+    await initialize();
   }
 
   // 데이터만 삭제하기
@@ -218,7 +240,7 @@ class IsarService extends GetxController {
     final gameResultObj = data["gameResult"];
     final gameReviewObj = data["gameReview"];
 
-    print("postSubmit에서 들어온 데이터 : ${gameResultObj["date"]}");
+    print("postSubmit에서 들어온 데이터 : ${gameResultObj["result"]}");
 
     final gameReview = GameReview()
       ..review = gameReviewObj["review"]
@@ -282,15 +304,20 @@ class IsarService extends GetxController {
     // 만약에 서버가 연결되어 있으면?
     if (user.serverId != 0) {
       // 서버 연결
+      // 형변환 정리
       gameResultObj["userId"] = user.serverId;
+      gameResultObj["result"] =
+          gameResultObj["result"].toString().split('.').last;
+      gameResultObj["date"] = gameResultObj["date"].toIso8601String();
 
       // 맵핑 테이블 생성
       final Map<String, dynamic> serverIDs = await postGameResult(data);
 
       final mapping = GameResultIdMapping(
-          localGameResultId: gameResult.id,
-          serverGameResultId: serverIDs["serverGameResultID"],
-          serverGameReviewId: serverIDs["serverGameReviewID"]);
+        localGameResultId: gameResult.id,
+        serverGameResultId: serverIDs["serverGameResultID"],
+        serverGameReviewId: serverIDs["serverGameReviewID"],
+      );
 
       // 매핑 테이블에 저장
       await _isar.writeTxn(() async {
@@ -385,9 +412,16 @@ class IsarService extends GetxController {
       if (user.serverId != 0) {
         // 맵핑 테이블에서 게임 아이디 받아와야 함
         // 로컬 디비 아이디로 받아올 수 있지
+        // 서버 연결
+        // 형변환 정리
+        gameResultObj["userId"] = user.serverId;
+        gameResultObj["result"] =
+            gameResultObj["result"].toString().split('.').last;
+        gameResultObj["date"] = gameResultObj["date"].toIso8601String();
+
         final mapping = await _isar.gameResultIdMappings
             .filter()
-            .localGameResultIdEqualTo(gameResultObj["id"])
+            .localGameResultIdEqualTo(gameResult.id)
             .findFirst();
 
         // 받아와서 넘겨주기
