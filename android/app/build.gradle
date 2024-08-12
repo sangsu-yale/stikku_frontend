@@ -36,7 +36,7 @@ android {
     defaultConfig {
         // 기존 설정 유지
         applicationId = "com.example.stikku_frontend"
-        minSdkVersion flutter.minSdkVersion // 여기에 minSdkVersion을 19로 설정
+        minSdkVersion 24 // 24 이상으로 설정
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
