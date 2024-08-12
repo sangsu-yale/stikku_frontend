@@ -28,15 +28,15 @@ class _Section4Form extends StatelessWidget {
         children: [
           Obx(() {
             return formController.selectedImage.value != null
-                ? Row(
+                ? Column(
                     children: [
                       Image.file(
                         formController.selectedImage.value!,
-                        height: 100,
+                        width: MediaQuery.of(context).size.width / 1.2,
                       ),
                       IconButton(
                         onPressed: formController.deleteImage,
-                        icon: const Icon(Icons.cancel),
+                        icon: const Icon(Custom.x, color: Colors.blue),
                       )
                     ],
                   )

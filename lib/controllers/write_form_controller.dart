@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
@@ -208,11 +209,33 @@ class FormController extends GetxController {
 // <!-- 이미지 (어드밴스드) -->
   // 이미지 픽
   Future<void> pickImage() async {
-    final pickedFile =
+    final XFile? pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       // selectedImage.value = File(pickedFile.path);
+
+      final CroppedFile? croppedFile = await ImageCropper().cropImage(
+        sourcePath: pickedFile.path,
+
+        aspectRatio: const CropAspectRatio(
+            ratioX: 16, ratioY: 9), // Specify a default aspect ratio
+
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: '사진 편집',
+            toolbarColor: Colors.blue,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.ratio16x9,
+            lockAspectRatio: true, // 비율고정
+          ),
+          IOSUiSettings(
+            minimumAspectRatio: 1.0,
+          ),
+        ],
+      );
+
+      if (croppedFile != null) selectedImage.value = File(croppedFile.path);
     }
   }
 
@@ -221,7 +244,7 @@ class FormController extends GetxController {
 
   // 이미지 삭제
   void deleteImage() {
-    // selectedImage.value = null;
+    selectedImage.value = null;
   }
 }
 
