@@ -7,7 +7,8 @@ import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/models/game_review_model.dart';
 import 'package:stikku_frontend/models/user_model.dart';
 import 'package:stikku_frontend/config/isar_db.dart';
-import 'package:stikku_frontend/utils/services/api_service.dart';
+import 'package:stikku_frontend/utils/services/api_game_service.dart';
+import 'package:stikku_frontend/utils/services/api_user_service.dart';
 import 'package:uuid/uuid.dart';
 
 class IsarService extends GetxController {
@@ -102,12 +103,14 @@ class IsarService extends GetxController {
     }
   }
 
-  // 로그아웃은 조금 더 생각해 봅시다 (회원 탈퇴임)
+  // 로그아웃
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
+
     await prefs.setBool('isLogin', false);
     await prefs.remove('username');
     await prefs.remove('email');
+    await prefs.remove('accessToken');
 
     initialize();
   }

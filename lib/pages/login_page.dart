@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/config/custom_icons.dart';
-import 'package:stikku_frontend/utils/services/api_service.dart';
+import 'package:stikku_frontend/utils/services/api_user_service.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});

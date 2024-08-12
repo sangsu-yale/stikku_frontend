@@ -41,18 +41,18 @@ class SettingsPage extends StatelessWidget {
                           style:
                               const TextStyle(fontSize: 13, color: Colors.grey),
                         ),
-                        isarController.isLogin.value
-                            ? const SizedBox()
-                            : TextButton(
-                                onPressed: () {
-                                  if (isarController.isLogin.value) {
-                                    isarController.logout();
-                                  } else {
-                                    Get.toNamed('/login');
-                                  }
-                                },
-                                child: const Text("가입/로그인하기"),
-                              ),
+                        TextButton(
+                          onPressed: () {
+                            if (isarController.isLogin.value) {
+                              isarController.logout();
+                            } else {
+                              Get.toNamed('/login');
+                            }
+                          },
+                          child: isarController.isLogin.value
+                              ? const Text("로그아웃")
+                              : const Text("가입/로그인하기"),
+                        ),
                       ],
                     )),
               ],
