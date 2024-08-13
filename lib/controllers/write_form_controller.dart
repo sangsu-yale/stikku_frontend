@@ -1,14 +1,16 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/controllers/calendar_controller.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
+import 'package:path/path.dart' as path; // 여기서 패키지를 import
 
 class FormController extends GetxController {
   final CalendarController calendarController = Get.find();
@@ -207,6 +209,8 @@ class FormController extends GetxController {
   }
 
 // <!-- 이미지 (어드밴스드) -->
+  var selectedImage = Rx<File?>(null);
+
   // 이미지 픽
   Future<void> pickImage() async {
     final XFile? pickedFile =
@@ -215,7 +219,7 @@ class FormController extends GetxController {
     if (pickedFile != null) {
       // selectedImage.value = File(pickedFile.path);
 
-      final CroppedFile? croppedFile = await ImageCropper().cropImage(
+      final CroppedFile? croppedFilePath = await ImageCropper().cropImage(
         sourcePath: pickedFile.path,
 
         aspectRatio: const CropAspectRatio(
@@ -235,16 +239,42 @@ class FormController extends GetxController {
         ],
       );
 
-      if (croppedFile != null) selectedImage.value = File(croppedFile.path);
+      if (croppedFilePath != null) {
+        final compressedImage = await compressImage(File(croppedFilePath.path));
+        compressedImage != null
+            ? selectedImage.value = File(compressedImage.path)
+            : selectedImage.value = File(croppedFilePath.path);
+      }
     }
   }
-
-  var image = ByteData(8).obs;
-  var selectedImage = Rx<File?>(null);
 
   // 이미지 삭제
   void deleteImage() {
     selectedImage.value = null;
+  }
+}
+
+Future<File?> compressImage(File imageFile) async {
+  try {
+    // 임시 디렉토리 경로 가져오기
+    final directory = await getApplicationDocumentsDirectory();
+    final targetPath = path.join(
+      directory.path,
+      'compressed_${path.basename(imageFile.path)}',
+    );
+
+    // 이미지 압축 수행
+    var result = await FlutterImageCompress.compressAndGetFile(
+      imageFile.absolute.path, // 원본 이미지 파일 경로
+      targetPath, // 결과를 저장할 경로
+      quality: 80, // 압축 품질 (0-100)
+    );
+
+    // 압축 결과 반환
+    return File(result!.path);
+  } catch (e) {
+    print('Error compressing image: $e');
+    return null;
   }
 }
 
