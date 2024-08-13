@@ -30,7 +30,7 @@ class GameResult {
 
   // 옵션 필드
   String? comment;
-  String? picture;
+  String? pictureUrl;
   String? pictureLocalPath;
 
   // game reviews와 user link (옵션)
@@ -56,7 +56,7 @@ class GameResult {
     this.team1IsMyTeam = false,
     this.team2IsMyTeam = false,
     this.comment,
-    this.picture,
+    this.pictureUrl,
     this.pictureLocalPath,
     this.isFavorite = false,
     DateTime? createdAt,
@@ -81,7 +81,7 @@ class GameResult {
         'score1': score1,
         'score2': score2,
         'comment': comment,
-        'picture': picture,
+        'pictureUrl': pictureUrl,
         'pictureLocalPath': pictureLocalPath,
       };
 
@@ -101,7 +101,7 @@ class GameResult {
       team1IsMyTeam: json['team1IsMyTeam'] ?? false,
       team2IsMyTeam: json['team2IsMyTeam'] ?? false,
       comment: json['comment'],
-      picture: json['picture'],
+      pictureUrl: json['pictureUrl'],
       pictureLocalPath: json['pictureLocalPath'],
       isFavorite: json['isFavorite'] ?? false,
     );

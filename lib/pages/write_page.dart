@@ -22,7 +22,6 @@ class WritePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final GameResult gameResult = Get.arguments;
-
     // 경기 결과 및 날짜 설정
     WidgetsBinding.instance.addPostFrameCallback((_) {
       formController.getGameResultFromArguments(gameResult, isEditMode);

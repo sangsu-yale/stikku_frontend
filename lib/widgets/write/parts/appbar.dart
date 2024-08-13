@@ -15,18 +15,21 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: isEditMode ? Colors.grey[200] : null,
-      leading: IconButton(
-        icon: Icon(
-          Custom.caretleft,
-          color: isEditMode ? Colors.blue : Colors.white,
+        backgroundColor: isEditMode ? Colors.grey[200] : null,
+        leading: IconButton(
+          icon: Icon(
+            Custom.caretleft,
+            color: isEditMode ? Colors.blue : Colors.white,
+          ),
+          onPressed: () => Get.back(),
         ),
-        onPressed: () => Get.back(),
-      ),
-      title: Text(
-        DateFormat('yyyy.MM.dd').format(formController.date),
-        style: TextStyle(color: isEditMode ? Colors.blue : Colors.white),
-      ),
-    );
+        title: Obx(
+          () {
+            return Text(
+              DateFormat('yyyy.MM.dd').format(formController.date.value),
+              style: TextStyle(color: isEditMode ? Colors.blue : Colors.white),
+            );
+          },
+        ));
   }
 }

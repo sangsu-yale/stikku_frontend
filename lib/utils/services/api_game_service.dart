@@ -62,6 +62,7 @@ Future<Map<String, dynamic>> postGameResult(Map data) async {
       if (response.statusCode == 201) {
         final serverGameResultID = body["gameResult"]["id"];
         final serverGameReviewID = body["gameReview"]["id"];
+
         return {
           "serverGameResultID": serverGameResultID,
           "serverGameReviewID": serverGameReviewID

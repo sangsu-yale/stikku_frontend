@@ -237,23 +237,22 @@ class IsarService extends GetxController {
 
   // 티켓 생성 함수
   Future<GameResult> postSubmit(Map data) async {
-// 유저 GET
+    // 유저 GET
     final user = await getUser();
 
     final gameResultObj = data["gameResult"];
     final gameReviewObj = data["gameReview"];
     final pictureLocalPath = data["pictureLocalPath"];
-    String? imageUrl;
     dynamic localPath;
 
     // 이미지가 있다면?
     if (pictureLocalPath != null) {
       // 서버 이미지 연동
-      imageUrl = await getImageUrl(pictureLocalPath);
+      gameResultObj["pictureUrl"] = await getImageUrl(pictureLocalPath);
       localPath = pictureLocalPath.path.toString();
     } else {
       // 이미지 선택 안 했을 시 null 처리
-      imageUrl = null;
+      gameResultObj["pictureUrl"] = null;
       localPath = null;
     }
 
@@ -280,7 +279,7 @@ class IsarService extends GetxController {
       ..gameTitle = gameResultObj["title"]
       ..comment = gameResultObj["comment"]
       ..pictureLocalPath = localPath // 이미지 기능 추가, File이 아닌 stirng으로 저장됨
-      ..picture = imageUrl
+      ..pictureUrl = gameResultObj["pictureUrl"]
       ..date = gameResultObj["date"].toUtc()
       ..createdAt = DateTime.now()
       ..updatedAt = DateTime.now()
@@ -351,7 +350,6 @@ class IsarService extends GetxController {
 
     final gameResultObj = data["gameResult"];
     final gameReviewObj = data["gameReview"];
-    final pictureLocalPath = data["pictureLocalPath"];
 
     // 기존 GameResult와 Event 찾기
     final gameResult = await _isar.gameResults
@@ -359,7 +357,31 @@ class IsarService extends GetxController {
         .dateEqualTo(gameResultObj["date"])
         .findFirst();
 
-    print("업데이트 에서 들어온 데이터 : ${gameResultObj["date"]}");
+    // 이미지 처리
+    final pictureLocalPath = data["pictureLocalPath"]; // File
+    dynamic localPath;
+
+    // 만약에 받아온 이미지가 있다면?
+    if (pictureLocalPath != null) {
+      // 같은 이미지인지 판별하기
+      final isSame =
+          gameResult?.pictureLocalPath == pictureLocalPath.path.toString();
+
+      // 다른 이미지
+      if (!isSame) {
+        // 서버 연동
+        gameResultObj["pictureUrl"] = await getImageUrl(pictureLocalPath);
+        localPath = pictureLocalPath.path.toString();
+      } else {
+        // 같은 이미지
+        gameResultObj["pictureUrl"] = gameResult!.pictureUrl;
+        localPath = gameResult.pictureLocalPath;
+      }
+    } else {
+      // 이미지 선택 안 했을 시 null 처리
+      gameResultObj["pictureUrl"] = null;
+      localPath = null;
+    }
 
     final event = gameResult != null
         ? await _isar.events
@@ -383,7 +405,8 @@ class IsarService extends GetxController {
         ..team2IsMyTeam = gameResultObj["team2IsMyTeam"] ?? false
         ..gameTitle = gameResultObj["title"]
         ..comment = gameResultObj["comment"]
-        ..pictureLocalPath = ''
+        ..pictureLocalPath = localPath // 이미지 기능 추가, File이 아닌 stirng으로 저장됨
+        ..pictureUrl = gameResultObj["pictureUrl"]
         ..date = gameResultObj["date"].toUtc()
         ..createdAt = DateTime.now()
         ..updatedAt = DateTime.now()
@@ -426,26 +449,26 @@ class IsarService extends GetxController {
       });
 
       // 만약에 서버가 연결되어 있으면?
-      if (user.serverId != 0) {
-        // 맵핑 테이블에서 게임 아이디 받아와야 함
-        // 로컬 디비 아이디로 받아올 수 있지
-        // 서버 연결
-        // 형변환 정리
-        gameResultObj["userId"] = user.serverId;
-        gameResultObj["result"] =
-            gameResultObj["result"].toString().split('.').last;
-        gameResultObj["date"] = gameResultObj["date"].toIso8601String();
+      // if (user.serverId != 0) {
+      //   // 맵핑 테이블에서 게임 아이디 받아와야 함
+      //   // 로컬 디비 아이디로 받아올 수 있지
+      //   // 서버 연결
+      //   // 형변환 정리
+      //   gameResultObj["userId"] = user.serverId;
+      //   gameResultObj["result"] =
+      //       gameResultObj["result"].toString().split('.').last;
+      //   gameResultObj["date"] = gameResultObj["date"].toIso8601String();
 
-        final mapping = await _isar.gameResultIdMappings
-            .filter()
-            .localGameResultIdEqualTo(gameResult.id)
-            .findFirst();
+      //   final mapping = await _isar.gameResultIdMappings
+      //       .filter()
+      //       .localGameResultIdEqualTo(gameResult.id)
+      //       .findFirst();
 
-        // 받아와서 넘겨주기
-        if (mapping != null) {
-          updateGameResult(mapping.serverGameResultId, data);
-        }
-      }
+      //   // 받아와서 넘겨주기
+      //   if (mapping != null) {
+      //     updateGameResult(mapping.serverGameResultId, data);
+      //   }
+      // }
 
       return gameResult;
     } else {

@@ -84,7 +84,7 @@ class FormController extends GetxController {
 
   // <!-- 유효성 시작 -->
   var isFormValid = false.obs;
-  var date = DateTime.now().toUtc();
+  var date = DateTime.now().toUtc().obs;
 
   // arguments 처리
   void getGameResultFromArguments(
@@ -93,8 +93,10 @@ class FormController extends GetxController {
     if (gameResult.result != null) {
       updateResult(gameResult.result!);
     }
-    date = gameResult.date!;
+    // 날짜 설정
+    date.value = gameResult.date!;
 
+    // 수정 모드
     if (isEditMode) {
       team1Con.text = gameResult.team1!;
       team2Con.text = gameResult.team2!;
@@ -110,6 +112,12 @@ class FormController extends GetxController {
 
       commentCon.text = gameResult.comment ?? '';
       gameTitleCon.text = gameResult.gameTitle ?? '';
+
+      // 사진
+      // 만약에 사진이 있을 경우 (판별은 pictureLocalPath)
+      if (gameResult.pictureLocalPath != null) {
+        selectedImage.value = File(gameResult.pictureLocalPath!);
+      }
 
       final gameReview = await gameResult.loadGameReview();
 
@@ -148,7 +156,7 @@ class FormController extends GetxController {
         "result": result.value,
         "isLiveView": viewingMode.value,
         "title": gameTitleCon.text,
-        "date": date,
+        "date": date.value,
         "stadium": stadiumCon.text,
         "seatLocation": seatLocationCon.text,
         "team1": team1Con.text,
@@ -158,7 +166,7 @@ class FormController extends GetxController {
         "team1IsMyTeam": team1IsMyTeam.value,
         "team2IsMyTeam": team2IsMyTeam.value,
         "comment": commentCon.text,
-        "picture": null,
+        "pictureUrl": null,
         "isFavorite": false
       },
       // 옵션이기 때문에 null 처리
