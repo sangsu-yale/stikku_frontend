@@ -30,7 +30,8 @@ class GameResult {
 
   // 옵션 필드
   String? comment;
-  String? pictureUrl;
+  String? picture;
+  String? pictureLocalPath;
 
   // game reviews와 user link (옵션)
   final gameReview = IsarLink<GameReview>();
@@ -55,7 +56,8 @@ class GameResult {
     this.team1IsMyTeam = false,
     this.team2IsMyTeam = false,
     this.comment,
-    this.pictureUrl,
+    this.picture,
+    this.pictureLocalPath,
     this.isFavorite = false,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -79,7 +81,8 @@ class GameResult {
         'score1': score1,
         'score2': score2,
         'comment': comment,
-        'pictureUrl': pictureUrl,
+        'picture': picture,
+        'pictureLocalPath': pictureLocalPath,
       };
 
   // fromJson: Map<String, dynamic>으로부터 객체 생성
@@ -98,7 +101,8 @@ class GameResult {
       team1IsMyTeam: json['team1IsMyTeam'] ?? false,
       team2IsMyTeam: json['team2IsMyTeam'] ?? false,
       comment: json['comment'],
-      pictureUrl: json['pictureUrl'],
+      picture: json['picture'],
+      pictureLocalPath: json['pictureLocalPath'],
       isFavorite: json['isFavorite'] ?? false,
     );
   }

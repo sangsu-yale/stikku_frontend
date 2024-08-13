@@ -158,7 +158,7 @@ class FormController extends GetxController {
         "team1IsMyTeam": team1IsMyTeam.value,
         "team2IsMyTeam": team2IsMyTeam.value,
         "comment": commentCon.text,
-        "picture": '',
+        "picture": null,
         "isFavorite": false
       },
       // 옵션이기 때문에 null 처리
@@ -171,7 +171,8 @@ class FormController extends GetxController {
         "homeTeamLineup": null,
         "awayTeamLineup": null,
         "food": food.text.isEmpty ? null : food.text
-      }
+      },
+      "pictureLocalPath": selectedImage.value,
     };
 
     if (isEditMode) {

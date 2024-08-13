@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:stikku_frontend/constants/result_enum.dart';
@@ -32,7 +34,7 @@ class FrontView extends StatelessWidget {
           // 경기 내용
           _GameDataBox(gameResult: gameResult),
           // 사진
-          const _GamePicBox(),
+          _GamePicBox(gameResult: gameResult),
         ],
       ),
     );

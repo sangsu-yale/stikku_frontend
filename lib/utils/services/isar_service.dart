@@ -242,8 +242,20 @@ class IsarService extends GetxController {
 
     final gameResultObj = data["gameResult"];
     final gameReviewObj = data["gameReview"];
+    final pictureLocalPath = data["pictureLocalPath"];
+    String? imageUrl;
+    dynamic localPath;
 
-    print("postSubmit에서 들어온 데이터 : ${gameResultObj["result"]}");
+    // 이미지가 있다면?
+    if (pictureLocalPath != null) {
+      // 서버 이미지 연동
+      imageUrl = await getImageUrl(pictureLocalPath);
+      localPath = pictureLocalPath.path.toString();
+    } else {
+      // 이미지 선택 안 했을 시 null 처리
+      imageUrl = null;
+      localPath = null;
+    }
 
     final gameReview = GameReview()
       ..review = gameReviewObj["review"]
@@ -267,7 +279,8 @@ class IsarService extends GetxController {
       ..team2IsMyTeam = gameResultObj["team2IsMyTeam"] ?? false
       ..gameTitle = gameResultObj["title"]
       ..comment = gameResultObj["comment"]
-      ..pictureUrl = ''
+      ..pictureLocalPath = localPath // 이미지 기능 추가, File이 아닌 stirng으로 저장됨
+      ..picture = imageUrl
       ..date = gameResultObj["date"].toUtc()
       ..createdAt = DateTime.now()
       ..updatedAt = DateTime.now()
@@ -338,6 +351,7 @@ class IsarService extends GetxController {
 
     final gameResultObj = data["gameResult"];
     final gameReviewObj = data["gameReview"];
+    final pictureLocalPath = data["pictureLocalPath"];
 
     // 기존 GameResult와 Event 찾기
     final gameResult = await _isar.gameResults
@@ -369,7 +383,7 @@ class IsarService extends GetxController {
         ..team2IsMyTeam = gameResultObj["team2IsMyTeam"] ?? false
         ..gameTitle = gameResultObj["title"]
         ..comment = gameResultObj["comment"]
-        ..pictureUrl = ''
+        ..pictureLocalPath = ''
         ..date = gameResultObj["date"].toUtc()
         ..createdAt = DateTime.now()
         ..updatedAt = DateTime.now()

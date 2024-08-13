@@ -1,7 +1,38 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+// 이미지 post 및 get
+Future<String> getImageUrl(File file) async {
+  final url = Uri.parse('${dotenv.env['SERVER_URL']}/images/ticket');
+
+  try {
+    // MultipartRequest 생성
+    final request = http.MultipartRequest('POST', url);
+
+    // 파일 추가
+    request.files.add(await http.MultipartFile.fromPath('image', file.path));
+
+    // 요청 보내기
+    final response = await request.send();
+
+    // 응답 처리
+    if (response.statusCode == 201) {
+      print('Image uploaded successfully');
+      dynamic responseBody = await response.stream.bytesToString();
+      responseBody = jsonDecode(responseBody) as Map<String, dynamic>;
+
+      return responseBody["imageUrl"];
+    } else {
+      print('Image upload failed with status: ${response.statusCode}');
+    }
+  } catch (error) {
+    Exception(error);
+  }
+  return 'dd';
+}
 
 // ✅ 게임Result 포스트
 Future<Map<String, dynamic>> postGameResult(Map data) async {

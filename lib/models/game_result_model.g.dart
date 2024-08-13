@@ -42,64 +42,69 @@ const GameResultSchema = CollectionSchema(
       name: r'isFavorite',
       type: IsarType.bool,
     ),
-    r'pictureUrl': PropertySchema(
+    r'picture': PropertySchema(
       id: 5,
-      name: r'pictureUrl',
+      name: r'picture',
+      type: IsarType.string,
+    ),
+    r'pictureLocalPath': PropertySchema(
+      id: 6,
+      name: r'pictureLocalPath',
       type: IsarType.string,
     ),
     r'result': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'result',
       type: IsarType.string,
       enumMap: _GameResultresultEnumValueMap,
     ),
     r'score1': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'score1',
       type: IsarType.string,
     ),
     r'score2': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'score2',
       type: IsarType.string,
     ),
     r'seatLocation': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'seatLocation',
       type: IsarType.string,
     ),
     r'stadium': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'stadium',
       type: IsarType.string,
     ),
     r'team1': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'team1',
       type: IsarType.string,
     ),
     r'team1IsMyTeam': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'team1IsMyTeam',
       type: IsarType.bool,
     ),
     r'team2': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'team2',
       type: IsarType.string,
     ),
     r'team2IsMyTeam': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'team2IsMyTeam',
       type: IsarType.bool,
     ),
     r'updatedAt': PropertySchema(
-      id: 15,
+      id: 16,
       name: r'updatedAt',
       type: IsarType.dateTime,
     ),
     r'viewingMode': PropertySchema(
-      id: 16,
+      id: 17,
       name: r'viewingMode',
       type: IsarType.bool,
     )
@@ -177,7 +182,13 @@ int _gameResultEstimateSize(
     }
   }
   {
-    final value = object.pictureUrl;
+    final value = object.picture;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.pictureLocalPath;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -238,18 +249,19 @@ void _gameResultSerialize(
   writer.writeDateTime(offsets[2], object.date);
   writer.writeString(offsets[3], object.gameTitle);
   writer.writeBool(offsets[4], object.isFavorite);
-  writer.writeString(offsets[5], object.pictureUrl);
-  writer.writeString(offsets[6], object.result?.name);
-  writer.writeString(offsets[7], object.score1);
-  writer.writeString(offsets[8], object.score2);
-  writer.writeString(offsets[9], object.seatLocation);
-  writer.writeString(offsets[10], object.stadium);
-  writer.writeString(offsets[11], object.team1);
-  writer.writeBool(offsets[12], object.team1IsMyTeam);
-  writer.writeString(offsets[13], object.team2);
-  writer.writeBool(offsets[14], object.team2IsMyTeam);
-  writer.writeDateTime(offsets[15], object.updatedAt);
-  writer.writeBool(offsets[16], object.viewingMode);
+  writer.writeString(offsets[5], object.picture);
+  writer.writeString(offsets[6], object.pictureLocalPath);
+  writer.writeString(offsets[7], object.result?.name);
+  writer.writeString(offsets[8], object.score1);
+  writer.writeString(offsets[9], object.score2);
+  writer.writeString(offsets[10], object.seatLocation);
+  writer.writeString(offsets[11], object.stadium);
+  writer.writeString(offsets[12], object.team1);
+  writer.writeBool(offsets[13], object.team1IsMyTeam);
+  writer.writeString(offsets[14], object.team2);
+  writer.writeBool(offsets[15], object.team2IsMyTeam);
+  writer.writeDateTime(offsets[16], object.updatedAt);
+  writer.writeBool(offsets[17], object.viewingMode);
 }
 
 GameResult _gameResultDeserialize(
@@ -264,18 +276,19 @@ GameResult _gameResultDeserialize(
     date: reader.readDateTimeOrNull(offsets[2]),
     gameTitle: reader.readStringOrNull(offsets[3]),
     isFavorite: reader.readBoolOrNull(offsets[4]) ?? false,
-    pictureUrl: reader.readStringOrNull(offsets[5]),
-    result: _GameResultresultValueEnumMap[reader.readStringOrNull(offsets[6])],
-    score1: reader.readStringOrNull(offsets[7]),
-    score2: reader.readStringOrNull(offsets[8]),
-    seatLocation: reader.readStringOrNull(offsets[9]),
-    stadium: reader.readStringOrNull(offsets[10]),
-    team1: reader.readStringOrNull(offsets[11]),
-    team1IsMyTeam: reader.readBoolOrNull(offsets[12]) ?? false,
-    team2: reader.readStringOrNull(offsets[13]),
-    team2IsMyTeam: reader.readBoolOrNull(offsets[14]) ?? false,
-    updatedAt: reader.readDateTimeOrNull(offsets[15]),
-    viewingMode: reader.readBoolOrNull(offsets[16]) ?? false,
+    picture: reader.readStringOrNull(offsets[5]),
+    pictureLocalPath: reader.readStringOrNull(offsets[6]),
+    result: _GameResultresultValueEnumMap[reader.readStringOrNull(offsets[7])],
+    score1: reader.readStringOrNull(offsets[8]),
+    score2: reader.readStringOrNull(offsets[9]),
+    seatLocation: reader.readStringOrNull(offsets[10]),
+    stadium: reader.readStringOrNull(offsets[11]),
+    team1: reader.readStringOrNull(offsets[12]),
+    team1IsMyTeam: reader.readBoolOrNull(offsets[13]) ?? false,
+    team2: reader.readStringOrNull(offsets[14]),
+    team2IsMyTeam: reader.readBoolOrNull(offsets[15]) ?? false,
+    updatedAt: reader.readDateTimeOrNull(offsets[16]),
+    viewingMode: reader.readBoolOrNull(offsets[17]) ?? false,
   );
   object.id = id;
   return object;
@@ -301,10 +314,10 @@ P _gameResultDeserializeProp<P>(
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
+      return (reader.readStringOrNull(offset)) as P;
+    case 7:
       return (_GameResultresultValueEnumMap[reader.readStringOrNull(offset)])
           as P;
-    case 7:
-      return (reader.readStringOrNull(offset)) as P;
     case 8:
       return (reader.readStringOrNull(offset)) as P;
     case 9:
@@ -314,14 +327,16 @@ P _gameResultDeserializeProp<P>(
     case 11:
       return (reader.readStringOrNull(offset)) as P;
     case 12:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 13:
       return (reader.readStringOrNull(offset)) as P;
-    case 14:
+    case 13:
       return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 14:
+      return (reader.readStringOrNull(offset)) as P;
     case 15:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 16:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 17:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1176,31 +1191,30 @@ extension GameResultQueryFilter
     });
   }
 
-  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
-      pictureUrlIsNull() {
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> pictureIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'pictureUrl',
+        property: r'picture',
       ));
     });
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
-      pictureUrlIsNotNull() {
+      pictureIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'pictureUrl',
+        property: r'picture',
       ));
     });
   }
 
-  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> pictureUrlEqualTo(
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> pictureEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'pictureUrl',
+        property: r'picture',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1208,7 +1222,7 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
-      pictureUrlGreaterThan(
+      pictureGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1216,15 +1230,14 @@ extension GameResultQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'pictureUrl',
+        property: r'picture',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
-      pictureUrlLessThan(
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> pictureLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1232,14 +1245,14 @@ extension GameResultQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'pictureUrl',
+        property: r'picture',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> pictureUrlBetween(
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> pictureBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1248,7 +1261,160 @@ extension GameResultQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'pictureUrl',
+        property: r'picture',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> pictureStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'picture',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> pictureEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'picture',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> pictureContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'picture',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> pictureMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'picture',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> pictureIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'picture',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
+      pictureIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'picture',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
+      pictureLocalPathIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'pictureLocalPath',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
+      pictureLocalPathIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'pictureLocalPath',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
+      pictureLocalPathEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'pictureLocalPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
+      pictureLocalPathGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'pictureLocalPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
+      pictureLocalPathLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'pictureLocalPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
+      pictureLocalPathBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'pictureLocalPath',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1259,13 +1425,13 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
-      pictureUrlStartsWith(
+      pictureLocalPathStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'pictureUrl',
+        property: r'pictureLocalPath',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1273,13 +1439,13 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
-      pictureUrlEndsWith(
+      pictureLocalPathEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'pictureUrl',
+        property: r'pictureLocalPath',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1287,22 +1453,21 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
-      pictureUrlContains(String value, {bool caseSensitive = true}) {
+      pictureLocalPathContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'pictureUrl',
+        property: r'pictureLocalPath',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> pictureUrlMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
+      pictureLocalPathMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'pictureUrl',
+        property: r'pictureLocalPath',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -1310,20 +1475,20 @@ extension GameResultQueryFilter
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
-      pictureUrlIsEmpty() {
+      pictureLocalPathIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'pictureUrl',
+        property: r'pictureLocalPath',
         value: '',
       ));
     });
   }
 
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
-      pictureUrlIsNotEmpty() {
+      pictureLocalPathIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'pictureUrl',
+        property: r'pictureLocalPath',
         value: '',
       ));
     });
@@ -2568,15 +2733,28 @@ extension GameResultQuerySortBy
     });
   }
 
-  QueryBuilder<GameResult, GameResult, QAfterSortBy> sortByPictureUrl() {
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> sortByPicture() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pictureUrl', Sort.asc);
+      return query.addSortBy(r'picture', Sort.asc);
     });
   }
 
-  QueryBuilder<GameResult, GameResult, QAfterSortBy> sortByPictureUrlDesc() {
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> sortByPictureDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pictureUrl', Sort.desc);
+      return query.addSortBy(r'picture', Sort.desc);
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> sortByPictureLocalPath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pictureLocalPath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterSortBy>
+      sortByPictureLocalPathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pictureLocalPath', Sort.desc);
     });
   }
 
@@ -2787,15 +2965,28 @@ extension GameResultQuerySortThenBy
     });
   }
 
-  QueryBuilder<GameResult, GameResult, QAfterSortBy> thenByPictureUrl() {
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> thenByPicture() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pictureUrl', Sort.asc);
+      return query.addSortBy(r'picture', Sort.asc);
     });
   }
 
-  QueryBuilder<GameResult, GameResult, QAfterSortBy> thenByPictureUrlDesc() {
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> thenByPictureDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pictureUrl', Sort.desc);
+      return query.addSortBy(r'picture', Sort.desc);
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> thenByPictureLocalPath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pictureLocalPath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterSortBy>
+      thenByPictureLocalPathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pictureLocalPath', Sort.desc);
     });
   }
 
@@ -2966,10 +3157,18 @@ extension GameResultQueryWhereDistinct
     });
   }
 
-  QueryBuilder<GameResult, GameResult, QDistinct> distinctByPictureUrl(
+  QueryBuilder<GameResult, GameResult, QDistinct> distinctByPicture(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'pictureUrl', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'picture', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QDistinct> distinctByPictureLocalPath(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'pictureLocalPath',
+          caseSensitive: caseSensitive);
     });
   }
 
@@ -3085,9 +3284,16 @@ extension GameResultQueryProperty
     });
   }
 
-  QueryBuilder<GameResult, String?, QQueryOperations> pictureUrlProperty() {
+  QueryBuilder<GameResult, String?, QQueryOperations> pictureProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'pictureUrl');
+      return query.addPropertyName(r'picture');
+    });
+  }
+
+  QueryBuilder<GameResult, String?, QQueryOperations>
+      pictureLocalPathProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'pictureLocalPath');
     });
   }
 
