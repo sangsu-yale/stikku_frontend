@@ -128,3 +128,40 @@ Future<Map<String, dynamic>> deleteUser(
     throw Exception('유저 정보를 불러오지 못했습니다');
   }
 }
+
+// 유저 닉네임 수정
+Future<void> updateUsername(int serverId, String username) async {
+  final url = Uri.parse('${dotenv.env['SERVER_URL']}/users/$serverId');
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String? accessToken = prefs.getString('accessToken');
+
+  // 액세스 토큰 있으면
+  if (accessToken != null) {
+    // 액세스 토큰 헤더에 넣어 줘야 해
+    final Map<String, String> headers = {
+      "content-type": "application/json; charset=utf-8",
+      "Authorization": "Bearer $accessToken"
+    };
+
+    // 바디값 넣어 줘야 함
+    final String json = jsonEncode(<String, dynamic>{
+      'username': username,
+      "email": prefs.getString('email'),
+      "profile_image": prefs.getString('profile_image')
+    });
+
+    try {
+      // 서버에 데이터 전송
+      final response = await http.put(url, headers: headers, body: json);
+      final body = jsonDecode(response.body) as Map<String, dynamic>;
+      if (response.statusCode != 200) {
+        print('Error: 닉네임 변경 실패: $body');
+      }
+    } catch (error) {
+      // 서버 연결 실패 또는 네트워크 오류 발생
+      print('Error: 서버에 연결할 수 없습니다. $error');
+    }
+  } else {
+    print('Error: 유저 정보를 불러오지 못했습니다');
+  }
+}

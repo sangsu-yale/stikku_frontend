@@ -123,6 +123,23 @@ class IsarService extends GetxController {
     });
   }
 
+  Future<void> changeUsername(String username) async {
+    final localuser = await getUser();
+    final serverUser = User()
+      ..uuid = localuser.uuid
+      ..id = localuser.id
+      ..username = username
+      ..serverId = localuser.serverId
+      ..email = localuser.email
+      ..profileImage = localuser.profileImage
+      ..createdAt = localuser.createdAt
+      ..updatedAt = DateTime.now();
+
+    await _isar.writeTxn(() async {
+      await _isar.users.put(serverUser);
+    });
+  }
+
 // <------------------- 티켓 CRUD -------------------->
 // <------------------- 티켓 CRUD -------------------->
 // <------------------- 티켓 CRUD -------------------->

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stikku_frontend/utils/services/api_user_service.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 class UserController extends GetxController {
@@ -84,5 +85,26 @@ class UserController extends GetxController {
   Future<void> deleteUser() async {
     await isarController.deleteDefaultUser();
     await initialize();
+  }
+
+  Future<void> changeNickname(String username) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    print(username);
+    // isar의 닉네임 변경
+    await isarController.changeUsername(username);
+    // 로컬 스토리지 닉네임 변경
+    await prefs.setString('username', username);
+    final isLogin = prefs.getBool('isLogin');
+    final String? accessToken = prefs.getString('accessToken');
+
+    // 서버가 연결되었다면 서버에도 닉네임 변경
+    if (isLogin == true && accessToken != null) {
+      final user = await isarController.getUser();
+      print(user);
+      updateUsername(user.serverId, username);
+    }
+    // settings 페이지 변경
+    loadUserState();
   }
 }
