@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -36,38 +37,51 @@ void login() async {
         "content-type": "application/json; charset=utf-8"
       };
 
-      final response = await http.post(url, headers: headers, body: json);
-      // user 정보를 isar에 저장
+      try {
+        final response = await http
+            .post(url, headers: headers, body: json)
+            .timeout(const Duration(seconds: 10));
 
-      // 서버와의 인증 성공할 시
-      if (response.statusCode == 200) {
-        // "accessToken" 값을 받아옴
-        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        // 서버와의 인증 성공할 시
+        if (response.statusCode == 200) {
+          // "accessToken" 값을 받아옴
+          final body = jsonDecode(response.body) as Map<String, dynamic>;
 
-        final String serverAccessToken = body["accessToken"];
-        await prefs.setString('accessToken', serverAccessToken);
+          final String serverAccessToken = body["accessToken"];
+          await prefs.setString('accessToken', serverAccessToken);
 
-        // 유저 정보 받아오기(serverID)
-        final userInfo = await fetchUser(serverAccessToken);
+          // 유저 정보 받아오기(serverID)
+          final userInfo = await fetchUser(serverAccessToken);
 
-        // user 업데이트 (유저 업데이트 및 유저 생성은 똑같다)
-        isarController.updateUser(userInfo["id"], userInfo["username"],
-            userInfo["email"], userInfo["profileImage"]);
+          // user 업데이트 (유저 업데이트 및 유저 생성은 똑같다)
+          isarController.updateUser(userInfo["id"], userInfo["username"],
+              userInfo["email"], userInfo["profileImage"]);
 
-        // prefs 업데이트 해 주고 (유저 이름과 이메일만 필요)
-        await prefs.setString('username', userInfo["username"]);
-        await prefs.setString('email', userInfo["email"]);
-        await prefs.setBool('isLogin', true);
-        userController.loadUserState();
-        // 아닐 시
-      } else {
-        Exception('POST request failed with status: ${response.statusCode}');
+          // prefs 업데이트 해 주고 (유저 이름과 이메일만 필요)
+          await prefs.setString('username', userInfo["username"]);
+          await prefs.setString('email', userInfo["email"]);
+          await prefs.setBool('isLogin', true);
+          userController.loadUserState();
+
+          await prefs.setBool('isLogin', true);
+          Get.toNamed('/');
+        } else {
+          Get.snackbar(
+            "오류",
+            "서버에 문제가 있습니다. 빠른 시일 내에 고칠 수 있도록 할게요!",
+            snackPosition: SnackPosition.TOP,
+          );
+          Exception('POST request failed with status: ${response.statusCode}');
+        }
+      } on TimeoutException catch (_) {
+        // 타임아웃 처리
+        Get.snackbar(
+          "오류",
+          "서버 응답이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.",
+          snackPosition: SnackPosition.BOTTOM,
+        );
       }
     }
-
-    await prefs.setBool('isLogin', true);
-    Get.toNamed('/');
-
     // 구글 로그인 실패한 경우
   } else {
     print("로그인에 실패했습니다.");
