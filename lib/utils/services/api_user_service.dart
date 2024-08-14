@@ -4,10 +4,12 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stikku_frontend/controllers/user_controller.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 // 로그인 (구글)
 void login() async {
+  final UserController userController = Get.put(UserController());
   final isarController = Get.find<IsarService>();
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -29,6 +31,7 @@ void login() async {
       final String json = jsonEncode(<String, String>{
         'accessToken': authorizationCode,
       });
+
       final Map<String, String> headers = {
         "content-type": "application/json; charset=utf-8"
       };
@@ -55,7 +58,7 @@ void login() async {
         await prefs.setString('username', userInfo["username"]);
         await prefs.setString('email', userInfo["email"]);
         await prefs.setBool('isLogin', true);
-        isarController.loadUserState();
+        userController.loadUserState();
         // 아닐 시
       } else {
         Exception('POST request failed with status: ${response.statusCode}');
@@ -106,7 +109,6 @@ Future<Map<String, dynamic>> deleteUser(
       await http.delete(url, headers: {'Authorization': "Bearer $accessToken"});
 
   if (response.statusCode == 200) {
-    print(response.body);
     return jsonDecode(response.body) as Map<String, dynamic>;
   } else {
     throw Exception('유저 정보를 불러오지 못했습니다');

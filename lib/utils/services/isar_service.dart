@@ -15,52 +15,12 @@ class IsarService extends GetxController {
   final Isar _isar;
   IsarService() : _isar = Get.find<IsarDB>().isar;
 
-  var isLogin = false.obs;
-  var userName = '게스트'.obs;
-  var userEmail = ''.obs;
-  var userUuid = ''.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    initialize();
-  }
-
-  // 시작 시 게스트 로그인 확인
-  Future<void> initialize() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final bool? isUserCreated = prefs.getBool('isUserCreated');
-    final bool? isUserLogin = prefs.getBool('isLogin');
-
-    // 없으면 유저 만들고
-    if (isUserCreated == null || !isUserCreated) {
-      await _addDefaultUser();
-      await prefs.setBool('isUserCreated', true);
-
-      // 유저가 있다
-    } else {
-      // 만약에 로그인 했으면
-      if (isUserLogin == true) {
-        // 로그인한 상황으로
-        isLogin.value = prefs.getBool('isLogin')!;
-        userName.value = prefs.getString('username')!;
-      } else {
-        // 로그인 안 했고, 있으면 유지시켜
-        isLogin.value = prefs.getBool('isLogin') ?? false;
-        userUuid.value = prefs.getString('uuid') ?? '';
-        userName.value =
-            '게스트-${userUuid.value == '' ? null : userUuid.value.substring(0, 8).toUpperCase()}';
-      }
-    }
-
-    await _printAllUsers();
-  }
 // <------------------- 유저 CRUD -------------------->
 // <------------------- 유저 CRUD -------------------->
 // <------------------- 유저 CRUD -------------------->
 
   // ✅ 게스트용(로그인 전) isar user 생성
-  Future<void> _addDefaultUser() async {
+  Future<void> addDefaultUser() async {
     final defaultUser = User()
       ..uuid = const Uuid().v4()
       ..serverId = 0
@@ -78,41 +38,6 @@ class IsarService extends GetxController {
     await prefs.setString('username', defaultUser.username);
     await prefs.setString('email', defaultUser.email);
     await prefs.setString('uuid', defaultUser.uuid);
-
-    isLogin.value = prefs.getBool('isLogin') ?? false;
-    userName.value = prefs.getString('username') ?? 'GUEST';
-    userEmail.value = prefs.getString('email') ?? '';
-    userUuid.value = prefs.getString('uuid') ?? '';
-
-    if (!isLogin.value) {
-      // 게스트 초기값 설정
-      userName.value =
-          '게스트-${userUuid.value == '' ? null : userUuid.value.substring(0, 8).toUpperCase()}';
-    }
-  }
-
-  Future<void> loadUserState() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final storageIsLogin = prefs.getBool("isLogin");
-    final storageUsername = prefs.getString("username");
-    final storageEmail = prefs.getString("email");
-    if (storageIsLogin != false) {
-      isLogin.value = storageIsLogin!;
-      userName.value = storageUsername!;
-      userEmail.value = storageEmail!;
-    }
-  }
-
-  // 로그아웃
-  Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    await prefs.setBool('isLogin', false);
-    await prefs.remove('username');
-    await prefs.remove('email');
-    await prefs.remove('accessToken');
-
-    initialize();
   }
 
   // 유저 완전 삭제
@@ -135,8 +60,6 @@ class IsarService extends GetxController {
     });
     await prefs.clear();
     print("유저가 삭제되었습니다.");
-
-    await initialize();
   }
 
   // 데이터만 삭제하기
@@ -154,10 +77,13 @@ class IsarService extends GetxController {
     print("데이터가 삭제되었습니다.");
   }
 
-  Future<void> _printAllUsers() async {
+  Future<void> printAllUsers() async {
     // 로그를 통해 저장된 사용자 정보 확인
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final isLogin = prefs.getBool('isLogin');
     final users = await _isar.users.where().findAll();
-    print("저장된 사용자: $users");
+    print("저장된 사용자: ${users[0].username}, $isLogin");
   }
 
   Future<User> getUser() async {
@@ -247,8 +173,15 @@ class IsarService extends GetxController {
 
     // 이미지가 있다면?
     if (pictureLocalPath != null) {
-      // 서버 이미지 연동
-      gameResultObj["pictureUrl"] = await getImageUrl(pictureLocalPath);
+      // 서버 연결
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final isLogin = prefs.getBool('isLogin');
+      if (isLogin == true) {
+        // 서버 이미지 연동
+        gameResultObj["pictureUrl"] = await getImageUrl(pictureLocalPath);
+      }
+
+      // 로컬 작업
       localPath = pictureLocalPath.path.toString();
     } else {
       // 이미지 선택 안 했을 시 null 처리
@@ -317,7 +250,9 @@ class IsarService extends GetxController {
     });
 
     // 만약에 서버가 연결되어 있으면?
-    if (user.serverId != 0) {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final isLogin = prefs.getBool('isLogin');
+    if (isLogin == true) {
       // 서버 연결
       // 형변환 정리
       gameResultObj["userId"] = user.serverId;
@@ -369,8 +304,15 @@ class IsarService extends GetxController {
 
       // 다른 이미지
       if (!isSame) {
-        // 서버 연동
-        gameResultObj["pictureUrl"] = await getImageUrl(pictureLocalPath);
+        // 서버 연결
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        final isLogin = prefs.getBool('isLogin');
+        if (isLogin == true) {
+          // 서버 이미지 연동
+          gameResultObj["pictureUrl"] = await getImageUrl(pictureLocalPath);
+        }
+
+        // 로컬 작업
         localPath = pictureLocalPath.path.toString();
       } else {
         // 같은 이미지
@@ -449,26 +391,28 @@ class IsarService extends GetxController {
       });
 
       // 만약에 서버가 연결되어 있으면?
-      // if (user.serverId != 0) {
-      //   // 맵핑 테이블에서 게임 아이디 받아와야 함
-      //   // 로컬 디비 아이디로 받아올 수 있지
-      //   // 서버 연결
-      //   // 형변환 정리
-      //   gameResultObj["userId"] = user.serverId;
-      //   gameResultObj["result"] =
-      //       gameResultObj["result"].toString().split('.').last;
-      //   gameResultObj["date"] = gameResultObj["date"].toIso8601String();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final isLogin = prefs.getBool('isLogin');
+      if (isLogin == true) {
+        // 맵핑 테이블에서 게임 아이디 받아와야 함
+        // 로컬 디비 아이디로 받아올 수 있지
+        // 서버 연결
+        // 형변환 정리
+        gameResultObj["userId"] = user.serverId;
+        gameResultObj["result"] =
+            gameResultObj["result"].toString().split('.').last;
+        gameResultObj["date"] = gameResultObj["date"].toIso8601String();
 
-      //   final mapping = await _isar.gameResultIdMappings
-      //       .filter()
-      //       .localGameResultIdEqualTo(gameResult.id)
-      //       .findFirst();
+        final mapping = await _isar.gameResultIdMappings
+            .filter()
+            .localGameResultIdEqualTo(gameResult.id)
+            .findFirst();
 
-      //   // 받아와서 넘겨주기
-      //   if (mapping != null) {
-      //     updateGameResult(mapping.serverGameResultId, data);
-      //   }
-      // }
+        // 받아와서 넘겨주기
+        if (mapping != null) {
+          updateGameResult(mapping.serverGameResultId, data);
+        }
+      }
 
       return gameResult;
     } else {
@@ -495,7 +439,9 @@ class IsarService extends GetxController {
     if (gameResult != null && event != null) {
       // 만약에 서버가 연결되어 있으면?
       //  서버부터 삭제
-      if (user.serverId != 0) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final isLogin = prefs.getBool('isLogin');
+      if (isLogin == true) {
         // 맵핑 테이블에서 게임 아이디 받아와야 함
         // 로컬 디비 아이디로 받아올 수 있지
         final mapping = await _isar.gameResultIdMappings
@@ -568,7 +514,10 @@ class IsarService extends GetxController {
           .localGameResultIdEqualTo(gameResult.id)
           .findFirst();
 
-      if (mapping != null) {
+      // 서버 연결
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final isLogin = prefs.getBool('isLogin');
+      if (mapping != null && isLogin == true) {
         putGameFavorite(mapping.serverGameResultId, gameResult.isFavorite);
       }
 

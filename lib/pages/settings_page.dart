@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
-import 'package:stikku_frontend/utils/services/isar_service.dart';
+import 'package:stikku_frontend/controllers/user_controller.dart';
 
 class SettingsPage extends StatelessWidget {
-  final IsarService isarController = Get.find<IsarService>();
   final ListTopSearchController listTopSearchController = Get.find();
+  final UserController userController = Get.put(UserController());
 
   SettingsPage({super.key});
 
@@ -30,12 +30,12 @@ class SettingsPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "${isarController.userName} 님",
+                          "${userController.userName} 님",
                           style: const TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          isarController.isLogin.value
+                          userController.isLogin.value
                               ? "반가워요!"
                               : "로그인하면 다른 기기 연동이 가능해요!",
                           style:
@@ -43,13 +43,13 @@ class SettingsPage extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () {
-                            if (isarController.isLogin.value) {
-                              isarController.logout();
+                            if (userController.isLogin.value) {
+                              userController.logout();
                             } else {
                               Get.toNamed('/login');
                             }
                           },
-                          child: isarController.isLogin.value
+                          child: userController.isLogin.value
                               ? const Text("로그아웃")
                               : const Text("가입/로그인하기"),
                         ),
