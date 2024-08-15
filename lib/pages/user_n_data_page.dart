@@ -11,23 +11,13 @@ part '../widgets/userndata/parts/list.dart';
 part '../widgets/userndata/parts/appbar.dart';
 
 class UserNDataPage extends StatelessWidget {
-  UserNDataPage({super.key});
-
-  final IsarService isarController = Get.find<IsarService>();
-  final ListTopSearchController listTopSearchController = Get.find();
-  final NavigationController navigationController =
-      Get.find<NavigationController>();
-  final UserController userController = Get.put(UserController());
+  const UserNDataPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const _Appbar(),
-      body: _List(
-          isarController: isarController,
-          listTopSearchController: listTopSearchController,
-          navigationController: navigationController,
-          userController: userController),
+      body: _List(),
     );
   }
 }

@@ -1,18 +1,11 @@
 part of '../../../pages/user_n_data_page.dart';
 
 class _List extends StatelessWidget {
-  const _List({
-    super.key,
-    required this.isarController,
-    required this.listTopSearchController,
-    required this.navigationController,
-    required this.userController,
-  });
-
-  final IsarService isarController;
-  final ListTopSearchController listTopSearchController;
-  final NavigationController navigationController;
-  final UserController userController;
+  final IsarService isarController = Get.find<IsarService>();
+  final ListTopSearchController listTopSearchController = Get.find();
+  final NavigationController navigationController =
+      Get.find<NavigationController>();
+  final UserController userController = Get.put(UserController());
 
   @override
   Widget build(BuildContext context) {
