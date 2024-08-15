@@ -3,16 +3,11 @@ import 'package:stikku_frontend/config/bindings.dart';
 import 'package:stikku_frontend/pages/main/main_screen.dart';
 import 'package:stikku_frontend/pages/details_page.dart';
 import 'package:stikku_frontend/pages/login_page.dart';
-import 'package:stikku_frontend/pages/splash_page.dart';
 import 'package:stikku_frontend/pages/user_n_data_page.dart';
 import 'package:stikku_frontend/pages/write_page.dart';
 
 // 상수로 정의
 final List<GetPage> appRoutes = [
-  GetPage(
-    name: '/splash',
-    page: () => const SplashPage(),
-  ),
   GetPage(
     name: '/',
     page: () => MainScreen(),
@@ -36,6 +31,6 @@ final List<GetPage> appRoutes = [
   ),
   GetPage(
     name: '/userdata',
-    page: () => UserNDataPage(),
+    page: () => const UserNDataPage(),
   ),
 ];
