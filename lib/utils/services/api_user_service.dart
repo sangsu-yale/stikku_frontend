@@ -10,39 +10,38 @@ import 'package:stikku_frontend/utils/services/isar_service.dart';
 
 // 로그인 (구글)
 void login() async {
+  // URL
+  final url = Uri.parse('${dotenv.env['SERVER_URL']}/login/oauth/google');
+
+  // 컨트롤러 정리
   final UserController userController = Get.put(UserController());
   final isarController = Get.find<IsarService>();
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  final url = Uri.parse('${dotenv.env['SERVER_URL']}/login/oauth/google');
-
   // 구글 통신 로그인
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  final GoogleSignInAccount? user = await googleSignIn.signIn();
+  final GoogleSignInAccount? googleAccount = await googleSignIn.signIn();
 
-  // 구글 로그인 성공한 경우
-  if (user != null) {
-    final GoogleSignInAuthentication auth = await user.authentication;
+  // 구글 로그인 통신 성공한 경우
+  if (googleAccount != null) {
+    final GoogleSignInAuthentication auth = await googleAccount.authentication;
     final String? authorizationCode = auth.accessToken;
 
     print("서버에게 보낼 액세스 토큰 : $authorizationCode");
+
+    // 토큰 있는 경우
     if (authorizationCode != null) {
-      // 서버와 통신
-
-      final String json = jsonEncode(<String, String>{
-        'accessToken': authorizationCode,
-      });
-
-      final Map<String, String> headers = {
-        "content-type": "application/json; charset=utf-8"
-      };
-
+      // 서버 로그인 연결 시도
       try {
+        // 연결 코드
         final response = await http
-            .post(url, headers: headers, body: json)
+            .post(url,
+                headers: {"content-type": "application/json; charset=utf-8"},
+                body: jsonEncode(
+                    <String, String>{'accessToken': authorizationCode}))
             .timeout(const Duration(seconds: 10));
 
-        // 서버와의 인증 성공할 시
+        // 서버 연동 성공 (200)
         if (response.statusCode == 200) {
           // "accessToken" 값을 받아옴
           final body = jsonDecode(response.body) as Map<String, dynamic>;
@@ -65,6 +64,8 @@ void login() async {
 
           await prefs.setBool('isLogin', true);
           Get.toNamed('/');
+
+          // 서버 연동 실패 (!200)
         } else {
           Get.snackbar(
             "오류",
@@ -73,6 +74,8 @@ void login() async {
           );
           Exception('POST request failed with status: ${response.statusCode}');
         }
+
+        // 타임아웃일 시 (응답없음)
       } on TimeoutException catch (_) {
         // 타임아웃 처리
         Get.snackbar(
@@ -81,8 +84,12 @@ void login() async {
           snackPosition: SnackPosition.BOTTOM,
         );
       }
+
+      // 구글 계정 토큰 없는 경우
+    } else {
+      print("로그인에 실패했습니다.");
     }
-    // 구글 로그인 실패한 경우
+    // 구글 계정 진입 실패한 경우
   } else {
     print("로그인에 실패했습니다.");
   }

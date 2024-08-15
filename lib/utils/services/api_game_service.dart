@@ -4,6 +4,42 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+Future<List<dynamic>> getAllTicketListFromServer(int userId) async {
+  final url = Uri.parse('${dotenv.env['SERVER_URL']}/users/$userId/game');
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String? accessToken = prefs.getString('accessToken');
+
+  // 액세스 토큰 있으면
+  if (accessToken != null) {
+    // 액세스 토큰 헤더에 넣어 줘야 해
+    final Map<String, String> headers = {
+      "content-type": "application/json; charset=utf-8",
+      "Authorization": "Bearer $accessToken"
+    };
+
+    try {
+      // 서버에 데이터 전송
+      final response = await http.get(url, headers: headers);
+      final body = jsonDecode(response.body) as List<dynamic>;
+
+      if (response.statusCode == 200) {
+        return body;
+      } else {
+        // 서버 응답이 있지만 오류 발생
+        print('Error: 게임 결과 저장 실패: $body');
+        return []; // 빈 맵 반환
+      }
+    } catch (error) {
+      // 서버 연결 실패 또는 네트워크 오류 발생
+      print('Error: 서버에 연결할 수 없습니다. $error');
+      return []; // 빈 맵 반환
+    }
+  } else {
+    print('Error: 유저 정보를 불러오지 못했습니다');
+    return []; // 빈 맵 반환
+  }
+}
+
 // 이미지 post 및 get
 Future<String> getImageUrl(File file) async {
   final url = Uri.parse('${dotenv.env['SERVER_URL']}/images/ticket');
@@ -31,7 +67,7 @@ Future<String> getImageUrl(File file) async {
   } catch (error) {
     Exception(error);
   }
-  return 'dd';
+  return '';
 }
 
 // ✅ 게임Result 포스트
@@ -185,6 +221,38 @@ void putGameFavorite(int id, bool isFavorite) async {
       }
     } catch (error) {
       // 네트워크 오류 또는 서버 연결 실패 시
+      print('Error: 서버에 연결할 수 없습니다. $error');
+    }
+  } else {
+    print('Error: 유저 정보를 불러오지 못했습니다');
+  }
+}
+
+Future<void> deleteAllGameResult(int id) async {
+  final url = Uri.parse('${dotenv.env['SERVER_URL']}/users/$id/game');
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String? accessToken = prefs.getString('accessToken');
+
+  // 액세스 토큰 있으면
+  if (accessToken != null) {
+    // 액세스 토큰 헤더에 넣어 줘야 해
+    final Map<String, String> headers = {
+      "content-type": "application/json; charset=utf-8",
+      "Authorization": "Bearer $accessToken"
+    };
+
+    try {
+      // 서버에 DELETE 요청
+      final response = await http.delete(url, headers: headers);
+      if (response.statusCode == 200) {
+        print("성공적으로 삭제되었습니다.");
+      } else {
+        // 서버 응답 오류
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        print('Error: 게임 결과 삭제 실패: $body');
+      }
+    } catch (error) {
+      // 서버 연결 실패 또는 네트워크 오류 발생
       print('Error: 서버에 연결할 수 없습니다. $error');
     }
   } else {

@@ -45,6 +45,50 @@ class _List extends StatelessWidget {
                 onTap: () {
                   Get.dialog(
                     AlertDialog(
+                      title: const Text('이전에 작성했던 데이터를 불러올까요?'),
+                      content: const Text('로그인한 사용자는 이전에 썼던 데이터를 불러올 수 있습니다.'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          child: const Text('닫기'),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            await isarController.getAllTickets();
+                            listTopSearchController.loadGameResults();
+                            navigationController.changePage(0);
+                            Get.offAndToNamed('/');
+                            Get.dialog(
+                              AlertDialog(
+                                title: const Text('데이터를 불러왔습니다'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () async {
+                                      Get.back();
+                                    },
+                                    child: const Text('닫기'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          child: const Text('불러오기'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                child: const ListTile(
+                  leading: Icon(Custom.strategy, color: Colors.blue),
+                  title: Text("이전 데이터 불러오기"),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Get.dialog(
+                    AlertDialog(
                       title: const Text('데이터를 전부 삭제할까요?'),
                       content: const Text('한번 삭제된 데이터는 복구할 수 없으니 신중히 선택해 주세요.'),
                       actions: <Widget>[

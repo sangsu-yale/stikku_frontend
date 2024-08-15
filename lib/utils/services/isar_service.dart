@@ -45,9 +45,10 @@ class IsarService extends GetxController {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final user = await getUser();
     final accessToken = prefs.getString('accessToken');
+    final isLogin = prefs.getBool('isLogin');
 
     // 만약에 서버가 연결되어 있으면?
-    if (user.serverId != 0 && accessToken != null) {
+    if (isLogin == true && accessToken != null) {
       // 서버 연결
       await deleteUser(user.serverId, accessToken);
     }
@@ -62,9 +63,19 @@ class IsarService extends GetxController {
     print("유저가 삭제되었습니다.");
   }
 
-  // 데이터만 삭제하기
+  // 데이터 전체 삭제하기
   Future<void> deleteAllData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final user = await getUser();
+    final isLogin = prefs.getBool('isLogin');
+
+    // 만약에 서버가 연결되어 있으면?
+    if (isLogin == true) {
+      // 서버 연결
+      await deleteAllGameResult(user.serverId);
+    }
+
     await _isar.writeTxn(() async {
       await _isar.gameResults.clear();
       await _isar.gameReviews.clear();
@@ -73,7 +84,6 @@ class IsarService extends GetxController {
     });
     await prefs.remove('isFavorite');
 
-    // TODO: 데이터 전체 삭제 : 서버 데이터와 연동이 되어야 합니다
     print("데이터가 삭제되었습니다.");
   }
 
@@ -435,6 +445,21 @@ class IsarService extends GetxController {
     } else {
       return GameResult();
     }
+  }
+
+// 티켓 전체 불러오기
+// 서버 데이터 가지고 온 후 로컬과 합친 뒤에 동기화 요청
+  Future<void> getAllTickets() async {
+    // 서버에 있는 데이터 전체 불러오기
+    final user = await getUser();
+    final List<dynamic> ticketList =
+        await getAllTicketListFromServer(user.serverId);
+
+    // 로컬 맵핑 테이블과 비교하여 로컬에 없는 내용물만 추리기
+    // 로컬에 떼로 저장하기 + 맵핑 업데이트
+
+    // 서버쪽 동기화 요청
+    // 요청 후 들어온 서버 ID 받아서 맵핑에 업데이트?
   }
 
 // 티켓 삭제 함수
