@@ -1,4 +1,4 @@
-part of '../../pages/details_page.dart';
+part of '../../../pages/details_page.dart';
 
 class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   const _AppBar({

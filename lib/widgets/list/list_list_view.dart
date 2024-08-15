@@ -4,7 +4,6 @@ import 'package:stikku_frontend/config/custom_icons.dart';
 import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
-import 'package:stikku_frontend/utils/dotted_separator.dart';
 import 'package:stikku_frontend/utils/functions.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
 import 'package:stikku_frontend/utils/ticket_clipper.dart';
@@ -211,7 +210,11 @@ class ListViewZone extends StatelessWidget {
                                           ],
                                         ),
                                       ]))),
-                              const DottedSeparator(color: Colors.grey),
+                              const Divider(
+                                thickness: 1,
+                                height: 1,
+                                color: Color.fromARGB(139, 255, 255, 255),
+                              ),
                               Expanded(
                                 flex: 2,
                                 child: Container(

@@ -2,7 +2,6 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/pages/main/main_screen.dart';
-import 'package:stikku_frontend/pages/notfound_page.dart';
 import 'package:stikku_frontend/config/routes.dart';
 import 'package:stikku_frontend/config/theme.dart';
 
@@ -19,10 +18,6 @@ class MyApp extends StatelessWidget {
       theme: appTheme(context),
       initialRoute: '/',
       getPages: appRoutes,
-      unknownRoute: GetPage(
-        name: '/notfound',
-        page: () => const NotfoundPage(),
-      ),
       home: MainScreen(),
     );
   }

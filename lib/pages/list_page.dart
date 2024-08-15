@@ -6,7 +6,7 @@ import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 import 'package:stikku_frontend/widgets/list/list_grid_view.dart';
 import 'package:stikku_frontend/widgets/list/list_list_view.dart';
 
-part '../widgets/list/parts/card_list.dart';
+part '../widgets/list/parts/cards_list.dart';
 part '../widgets/list/parts/list_filter_bar.dart';
 part '../widgets/list/parts/list_search_bar.dart';
 
@@ -35,7 +35,7 @@ class ListPage extends StatelessWidget {
             FilterBar(listTopSearchController: listTopSearchController),
 
             // 카드 리스트 ZONE
-            CardList(
+            CardsList(
                 listTopSearchController: listTopSearchController,
                 isarController: isarController),
           ],

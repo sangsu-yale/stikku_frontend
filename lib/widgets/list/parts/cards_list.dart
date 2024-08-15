@@ -1,7 +1,7 @@
 part of '../../../pages/list_page.dart';
 
-class CardList extends StatelessWidget {
-  const CardList({
+class CardsList extends StatelessWidget {
+  const CardsList({
     super.key,
     required this.listTopSearchController,
     required this.isarController,
