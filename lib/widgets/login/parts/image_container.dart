@@ -2,7 +2,6 @@ part of '../../../pages/login_page.dart';
 
 class _ImageContainer extends StatelessWidget {
   const _ImageContainer({
-    super.key,
     required List<String> imagePaths,
     required this.index,
   }) : _imagePaths = imagePaths;

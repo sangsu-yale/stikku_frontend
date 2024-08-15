@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/config/custom_icons.dart';
-import 'package:stikku_frontend/utils/services/api_user_service.dart';
+import 'package:stikku_frontend/widgets/login/google_login_button.dart';
 
 part '../widgets/login/parts/appbar.dart';
 part '../widgets/login/parts/image_container.dart';
@@ -26,12 +26,12 @@ class LoginPage extends StatelessWidget {
     final int index = random.nextInt(_imagePaths.length);
 
     return Scaffold(
-      appBar: const _Appbar(),
+      appBar: _Appbar(),
       body: SizedBox(
         child: Column(
           children: [
             _ImageContainer(imagePaths: _imagePaths, index: index),
-            const _LoginContainer()
+            _LoginContainer()
           ],
         ),
       ),
