@@ -441,52 +441,58 @@ class IsarService extends GetxController {
     }
   }
 
-// TODO: 여기 해야 함
 // 임시 게스트 때 썼던 티켓을 로그인시 서버로 넘겨 주는 작업
   Future<void> syncLocalToServer() async {
-    // // 처음 시작할 때, 서버에서 모든 데이터를 받아오는 작업이 필요함.
-    // // (있을지도 모르니까)
+    // 서버에 있는 내용물 전체 가지고 와서 로컬에 연동시키기
+    final User user = await getUser();
+    List<dynamic> list = await getAllTicketListFromServer(user.serverId);
 
-    // final gameResults = await _isar.gameResults.where().findAll();
-    // final user = await getUser();
+    if (list.isNotEmpty) {
+      for (var e in list) {
+        final GameResult? haveTicket = await _isar.gameResults
+            .filter()
+            .uuidEqualTo(e["gameResult"]["uuid"])
+            .findFirst();
 
-    // final List<Map<String, dynamic>> existedTickets = [];
-    // final List<Map<String, dynamic>> newTickets = [];
+        if (haveTicket != null) continue;
 
-    // for (var i = 0; i < gameResults.length; i++) {
-    //   final GameResultIdMapping? isMapping = await _isar.gameResultIdMappings
-    //       .filter()
-    //       .localGameResultIdEqualTo(gameResults[i].id)
-    //       .findFirst();
+        int gameResultServerId = e["gameResult"]["id"];
+        int gameReviewServerId = e["gameReview"]["id"];
+        e["gameResult"]["serverId"] = gameResultServerId;
+        e["gameReview"]["serverId"] = gameReviewServerId;
+        e["gameResult"].remove('id');
+        e["gameReview"].remove('id');
+        e["gameResult"].remove('userId');
 
-    //   late Map<String, dynamic> json = {};
-    //   json = gameResults[i].toJson();
-    //   json["userId"] = user.serverId; // 유저 아이디 이관
+        GameResult gameResult = GameResult.fromJson(e["gameResult"]);
+        GameReview gameReview = GameReview.fromJson(e["gameReview"]);
 
-    //   // 서버에도 있는 티켓일 경우?
-    //   if (isMapping != null) {
-    //     existedTickets.add(json);
-    //   } else {
-    //     newTickets.add(json);
-    //   }
-    // }
-    // // 서버한테 전체 이관해야만 함
-    // final serverData =
-    //     await syncServerToLocal(existedTickets, newTickets, user.serverId);
+        // Event 객체 생성
+        final event = Event()
+          ..eventDate = gameResult.date!
+          ..eventDetails = [
+            gameResult.result?.toString().split('.').last ?? ''
+          ];
 
-    // print(serverData);
-    // // 받아온 서버 데이터를 로컬에 덮어씌우자...
+        // 관계 설정
+        gameResult.gameReview.value = gameReview;
+        gameResult.user.value = user;
+        gameReview.gameResult.value = gameResult;
 
-    // // 서버에서 받아온 데이터 내역을 가지고 다시 만들어야 한다
-    // final List<GameResult> result = serverData.map((data) {
-    //   final serverGameResult = data["gameResult"];
-    //   final serverGameReview = data["gameReivew"];
-
-    //   // 유저ID 삭제
-    //   serverGameResult.remove("userId");
-
-    //   return GameResult.fromJson(data);
-    // }).toList();
+        // 데이터베이스에 저장
+        await _isar.writeTxn(() async {
+          await _isar.gameReviews.put(gameReview);
+          await _isar.gameResults.put(gameResult);
+          user.gameResults.add(gameResult);
+          await _isar.events.put(event);
+          user.events.add(event);
+          await gameResult.gameReview.save();
+          await gameResult.user.save();
+          await user.gameResults.save();
+          await user.events.save();
+        });
+      }
+    }
   }
 
 // 티켓 삭제 함수

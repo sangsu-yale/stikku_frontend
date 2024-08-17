@@ -23,6 +23,7 @@ Future<List<dynamic>> getAllTicketListFromServer(int userId) async {
       final body = jsonDecode(response.body) as List<dynamic>;
 
       if (response.statusCode == 200) {
+        print(body);
         return body;
       } else {
         // 서버 응답이 있지만 오류 발생

@@ -47,6 +47,7 @@ class ListTopSearchController extends GetxController {
 
     // 불러오기
     final results = await isarController.loadGameResultFromLocalDB();
+    print("하... 제발 되어야 할 텐데 마지막이야 $results");
 
     if (results.isNotEmpty) {
       results.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
