@@ -30,15 +30,14 @@ class _Settings extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onTap: () {
-              Get.toNamed('/splash');
-            },
+            onTap: () {},
             child: const ListTile(
               leading: Icon(Custom.target, color: Colors.blue),
               title: Text("문의하기"),
             ),
           ),
           GestureDetector(
+            onTap: () async {},
             child: const ListTile(
               leading: Icon(Custom.checkerboard_1, color: Colors.blue),
               title: Text("메뉴 아이콘 변경하기"),

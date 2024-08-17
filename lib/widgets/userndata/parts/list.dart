@@ -56,23 +56,23 @@ class _List extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () async {
-                            await isarController.getAllTickets();
-                            listTopSearchController.loadGameResults();
-                            navigationController.changePage(0);
-                            Get.offAndToNamed('/');
-                            Get.dialog(
-                              AlertDialog(
-                                title: const Text('데이터를 불러왔습니다'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () async {
-                                      Get.back();
-                                    },
-                                    child: const Text('닫기'),
-                                  ),
-                                ],
-                              ),
-                            );
+                            await isarController.syncLocalToServer();
+                            // listTopSearchController.loadGameResults();
+                            // navigationController.changePage(0);
+                            // Get.offAndToNamed('/');
+                            // Get.dialog(
+                            //   AlertDialog(
+                            //     title: const Text('데이터를 불러왔습니다'),
+                            //     actions: <Widget>[
+                            //       TextButton(
+                            //         onPressed: () async {
+                            //           Get.back();
+                            //         },
+                            //         child: const Text('닫기'),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // );
                           },
                           child: const Text('불러오기'),
                         ),

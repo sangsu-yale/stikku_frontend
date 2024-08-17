@@ -73,38 +73,48 @@ const GameResultSchema = CollectionSchema(
       name: r'seatLocation',
       type: IsarType.string,
     ),
-    r'stadium': PropertySchema(
+    r'serverId': PropertySchema(
       id: 11,
+      name: r'serverId',
+      type: IsarType.long,
+    ),
+    r'stadium': PropertySchema(
+      id: 12,
       name: r'stadium',
       type: IsarType.string,
     ),
     r'team1': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'team1',
       type: IsarType.string,
     ),
     r'team1IsMyTeam': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'team1IsMyTeam',
       type: IsarType.bool,
     ),
     r'team2': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'team2',
       type: IsarType.string,
     ),
     r'team2IsMyTeam': PropertySchema(
-      id: 15,
+      id: 16,
       name: r'team2IsMyTeam',
       type: IsarType.bool,
     ),
     r'updatedAt': PropertySchema(
-      id: 16,
+      id: 17,
       name: r'updatedAt',
       type: IsarType.dateTime,
     ),
+    r'uuid': PropertySchema(
+      id: 18,
+      name: r'uuid',
+      type: IsarType.string,
+    ),
     r'viewingMode': PropertySchema(
-      id: 17,
+      id: 19,
       name: r'viewingMode',
       type: IsarType.bool,
     )
@@ -235,6 +245,12 @@ int _gameResultEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  {
+    final value = object.uuid;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -255,13 +271,15 @@ void _gameResultSerialize(
   writer.writeString(offsets[8], object.score1);
   writer.writeString(offsets[9], object.score2);
   writer.writeString(offsets[10], object.seatLocation);
-  writer.writeString(offsets[11], object.stadium);
-  writer.writeString(offsets[12], object.team1);
-  writer.writeBool(offsets[13], object.team1IsMyTeam);
-  writer.writeString(offsets[14], object.team2);
-  writer.writeBool(offsets[15], object.team2IsMyTeam);
-  writer.writeDateTime(offsets[16], object.updatedAt);
-  writer.writeBool(offsets[17], object.viewingMode);
+  writer.writeLong(offsets[11], object.serverId);
+  writer.writeString(offsets[12], object.stadium);
+  writer.writeString(offsets[13], object.team1);
+  writer.writeBool(offsets[14], object.team1IsMyTeam);
+  writer.writeString(offsets[15], object.team2);
+  writer.writeBool(offsets[16], object.team2IsMyTeam);
+  writer.writeDateTime(offsets[17], object.updatedAt);
+  writer.writeString(offsets[18], object.uuid);
+  writer.writeBool(offsets[19], object.viewingMode);
 }
 
 GameResult _gameResultDeserialize(
@@ -282,13 +300,15 @@ GameResult _gameResultDeserialize(
     score1: reader.readStringOrNull(offsets[8]),
     score2: reader.readStringOrNull(offsets[9]),
     seatLocation: reader.readStringOrNull(offsets[10]),
-    stadium: reader.readStringOrNull(offsets[11]),
-    team1: reader.readStringOrNull(offsets[12]),
-    team1IsMyTeam: reader.readBoolOrNull(offsets[13]) ?? false,
-    team2: reader.readStringOrNull(offsets[14]),
-    team2IsMyTeam: reader.readBoolOrNull(offsets[15]) ?? false,
-    updatedAt: reader.readDateTimeOrNull(offsets[16]),
-    viewingMode: reader.readBoolOrNull(offsets[17]) ?? false,
+    serverId: reader.readLongOrNull(offsets[11]),
+    stadium: reader.readStringOrNull(offsets[12]),
+    team1: reader.readStringOrNull(offsets[13]),
+    team1IsMyTeam: reader.readBoolOrNull(offsets[14]) ?? false,
+    team2: reader.readStringOrNull(offsets[15]),
+    team2IsMyTeam: reader.readBoolOrNull(offsets[16]) ?? false,
+    updatedAt: reader.readDateTimeOrNull(offsets[17]),
+    uuid: reader.readStringOrNull(offsets[18]),
+    viewingMode: reader.readBoolOrNull(offsets[19]) ?? false,
   );
   object.id = id;
   return object;
@@ -325,18 +345,22 @@ P _gameResultDeserializeProp<P>(
     case 10:
       return (reader.readStringOrNull(offset)) as P;
     case 11:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 12:
       return (reader.readStringOrNull(offset)) as P;
     case 13:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 14:
       return (reader.readStringOrNull(offset)) as P;
-    case 15:
+    case 14:
       return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 15:
+      return (reader.readStringOrNull(offset)) as P;
     case 16:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 17:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 18:
+      return (reader.readStringOrNull(offset)) as P;
+    case 19:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2096,6 +2120,77 @@ extension GameResultQueryFilter
     });
   }
 
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> serverIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'serverId',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
+      serverIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'serverId',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> serverIdEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'serverId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
+      serverIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'serverId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> serverIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'serverId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> serverIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'serverId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition> stadiumIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -2631,6 +2726,152 @@ extension GameResultQueryFilter
     });
   }
 
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> uuidIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'uuid',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> uuidIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'uuid',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> uuidEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'uuid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> uuidGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'uuid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> uuidLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'uuid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> uuidBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'uuid',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> uuidStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'uuid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> uuidEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'uuid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> uuidContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'uuid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> uuidMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'uuid',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> uuidIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'uuid',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterFilterCondition> uuidIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'uuid',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<GameResult, GameResult, QAfterFilterCondition>
       viewingModeEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
@@ -2810,6 +3051,18 @@ extension GameResultQuerySortBy
     });
   }
 
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> sortByServerId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> sortByServerIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.desc);
+    });
+  }
+
   QueryBuilder<GameResult, GameResult, QAfterSortBy> sortByStadium() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'stadium', Sort.asc);
@@ -2879,6 +3132,18 @@ extension GameResultQuerySortBy
   QueryBuilder<GameResult, GameResult, QAfterSortBy> sortByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> sortByUuid() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'uuid', Sort.asc);
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> sortByUuidDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'uuid', Sort.desc);
     });
   }
 
@@ -3042,6 +3307,18 @@ extension GameResultQuerySortThenBy
     });
   }
 
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> thenByServerId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> thenByServerIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.desc);
+    });
+  }
+
   QueryBuilder<GameResult, GameResult, QAfterSortBy> thenByStadium() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'stadium', Sort.asc);
@@ -3111,6 +3388,18 @@ extension GameResultQuerySortThenBy
   QueryBuilder<GameResult, GameResult, QAfterSortBy> thenByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> thenByUuid() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'uuid', Sort.asc);
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QAfterSortBy> thenByUuidDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'uuid', Sort.desc);
     });
   }
 
@@ -3204,6 +3493,12 @@ extension GameResultQueryWhereDistinct
     });
   }
 
+  QueryBuilder<GameResult, GameResult, QDistinct> distinctByServerId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'serverId');
+    });
+  }
+
   QueryBuilder<GameResult, GameResult, QDistinct> distinctByStadium(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -3240,6 +3535,13 @@ extension GameResultQueryWhereDistinct
   QueryBuilder<GameResult, GameResult, QDistinct> distinctByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'updatedAt');
+    });
+  }
+
+  QueryBuilder<GameResult, GameResult, QDistinct> distinctByUuid(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'uuid', caseSensitive: caseSensitive);
     });
   }
 
@@ -3325,6 +3627,12 @@ extension GameResultQueryProperty
     });
   }
 
+  QueryBuilder<GameResult, int?, QQueryOperations> serverIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'serverId');
+    });
+  }
+
   QueryBuilder<GameResult, String?, QQueryOperations> stadiumProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'stadium');
@@ -3358,6 +3666,12 @@ extension GameResultQueryProperty
   QueryBuilder<GameResult, DateTime?, QQueryOperations> updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'updatedAt');
+    });
+  }
+
+  QueryBuilder<GameResult, String?, QQueryOperations> uuidProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'uuid');
     });
   }
 

@@ -10,7 +10,8 @@ import 'package:stikku_frontend/controllers/calendar_controller.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
-import 'package:path/path.dart' as path; // 여기서 패키지를 import
+import 'package:path/path.dart' as path;
+import 'package:uuid/uuid.dart'; // 여기서 패키지를 import
 
 class FormController extends GetxController {
   final CalendarController calendarController = Get.find();
@@ -77,6 +78,10 @@ class FormController extends GetxController {
   var rating = 0.obs;
   var mood = ''.obs;
 
+  // <----------uuid--------------->
+  var resultUUID = ''.obs;
+  var reviewUUID = ''.obs;
+
   // 폼에 필요한 함수 정리
   void setSelectedValue(bool value) => viewingMode.value = value;
   void setRating(int value) => rating.value = value;
@@ -98,6 +103,8 @@ class FormController extends GetxController {
 
     // 수정 모드
     if (isEditMode) {
+      resultUUID.value = gameResult.uuid!;
+
       team1Con.text = gameResult.team1!;
       team2Con.text = gameResult.team2!;
       score1Con.text = gameResult.score1!;
@@ -122,6 +129,7 @@ class FormController extends GetxController {
       final gameReview = await gameResult.loadGameReview();
 
       if (gameReview != null) {
+        reviewUUID.value = gameReview.uuid!;
         rating.value = gameReview.rating ?? 0;
         mood.value = gameReview.mood ?? '';
 
@@ -150,9 +158,10 @@ class FormController extends GetxController {
       seatLocationCon.text = "집관";
     }
 
-    Map data = {
+    final Map data = {
       "gameResult": {
-        "userId": 0,
+        "userId": 0, // 서버용
+        "uuid": resultUUID.value == '' ? const Uuid().v4() : resultUUID.value,
         "result": result.value,
         "isLiveView": viewingMode.value,
         "title": gameTitleCon.text,
@@ -171,6 +180,7 @@ class FormController extends GetxController {
       },
       // 옵션이기 때문에 null 처리
       "gameReview": {
+        "uuid": reviewUUID.value == '' ? const Uuid().v4() : reviewUUID.value,
         "review": review.text.isEmpty ? null : review.text,
         "rating": rating.value == 0 ? null : rating.value,
         "playerOfTheMatch":
@@ -197,8 +207,8 @@ class FormController extends GetxController {
         arguments: {"gameResult": gameResult, "gameReview": gameReview});
   }
 
-  void deleteDetails(DateTime date) async {
-    await isarController.deleteSubmit(date);
+  void deleteDetails(String uuid) async {
+    await isarController.deleteSubmit(uuid);
     listTopSearchController.loadGameResults();
     Get.toNamed('/');
   }

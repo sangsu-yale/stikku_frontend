@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stikku_frontend/models/event_model.dart';
-import 'package:stikku_frontend/models/game_result_id_mapping_model.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/models/game_review_model.dart';
 import 'package:stikku_frontend/models/user_model.dart';
@@ -56,7 +55,6 @@ class IsarService extends GetxController {
       await _isar.users.clear();
       await _isar.gameResults.clear();
       await _isar.gameReviews.clear();
-      await _isar.gameResultIdMappings.clear();
       await _isar.events.clear();
     });
     await prefs.clear();
@@ -79,7 +77,6 @@ class IsarService extends GetxController {
     await _isar.writeTxn(() async {
       await _isar.gameResults.clear();
       await _isar.gameReviews.clear();
-      await _isar.gameResultIdMappings.clear();
       await _isar.events.clear();
     });
     await prefs.remove('isFavorite');
@@ -198,7 +195,7 @@ class IsarService extends GetxController {
     final pictureLocalPath = data["pictureLocalPath"];
     dynamic localPath;
 
-    // 이미지가 있다면?
+    // 1. 이미지가 있다면?
     if (pictureLocalPath != null) {
       // 서버 연결
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -216,7 +213,10 @@ class IsarService extends GetxController {
       localPath = null;
     }
 
+    // 2. 로컬
     final gameReview = GameReview()
+      ..uuid = gameReviewObj["uuid"]
+      ..serverId = 0
       ..review = gameReviewObj["review"]
       ..rating = gameReviewObj["rating"]
       ..playerOfTheMatch = gameReviewObj["playerOfTheMatch"]
@@ -226,6 +226,8 @@ class IsarService extends GetxController {
       ..food = gameReviewObj["food"];
 
     final gameResult = GameResult()
+      ..uuid = gameResultObj["uuid"]
+      ..serverId = 0
       ..stadium = gameResultObj["stadium"]
       ..seatLocation = gameResultObj["seatLocation"]
       ..result = gameResultObj["result"]
@@ -245,17 +247,40 @@ class IsarService extends GetxController {
       ..updatedAt = DateTime.now()
       ..isFavorite = gameResultObj["isFavorite"] ?? false;
 
+    // Event 객체 생성 및 필요한 필드를 설정합니다.
+    final event = Event()
+      ..eventDate = gameResultObj["date"]
+      ..eventDetails = [
+        gameResultObj["result"].toString().split('.').last
+      ]; // 경기 결과를 이벤트 디테일로 저장
+
+    // 3. 서버
+    // 만약에 서버가 연결되어 있으면?
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final isLogin = prefs.getBool('isLogin');
+    if (isLogin == true) {
+      // 서버 연결
+      // 형변환 정리
+      gameResultObj["userId"] = user.serverId;
+      gameResultObj["result"] =
+          gameResultObj["result"].toString().split('.').last;
+      gameResultObj["date"] =
+          data["gameResult"]["date"].toIso8601String(); // 시간변환
+
+      // 서버 id
+      final Map<String, dynamic> serverId = await postGameResult(data);
+
+      if (serverId.isNotEmpty) {
+        // 만약에 서버 id를 받았으면 로컬에 서버 id 동기화
+        gameResult.serverId = serverId["serverGameResultID"];
+        gameReview.serverId = serverId["serverGameReviewID"];
+      }
+    }
+
     // 관계 설정
     gameResult.gameReview.value = gameReview;
     gameResult.user.value = user;
     gameReview.gameResult.value = gameResult;
-
-    // Event 객체 생성 및 필요한 필드를 설정합니다.
-    final event = Event()
-      ..eventDate = gameResultObj["date"].toUtc()
-      ..eventDetails = [
-        gameResultObj["result"].toString().split('.').last
-      ]; // 경기 결과를 이벤트 디테일로 저장
 
     await _isar.writeTxn(() async {
       // GameReview 저장
@@ -276,32 +301,6 @@ class IsarService extends GetxController {
       await user.events.save();
     });
 
-    // 만약에 서버가 연결되어 있으면?
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final isLogin = prefs.getBool('isLogin');
-    if (isLogin == true) {
-      // 서버 연결
-      // 형변환 정리
-      gameResultObj["userId"] = user.serverId;
-      gameResultObj["result"] =
-          gameResultObj["result"].toString().split('.').last;
-      gameResultObj["date"] = gameResultObj["date"].toIso8601String();
-
-      // 맵핑 테이블 생성
-      final Map<String, dynamic> serverIDs = await postGameResult(data);
-
-      final mapping = GameResultIdMapping(
-        localGameResultId: gameResult.id,
-        serverGameResultId: serverIDs["serverGameResultID"],
-        serverGameReviewId: serverIDs["serverGameReviewID"],
-      );
-
-      // 매핑 테이블에 저장
-      await _isar.writeTxn(() async {
-        await _isar.gameResultIdMappings.put(mapping);
-      });
-    }
-
     return gameResult;
   }
 
@@ -313,10 +312,10 @@ class IsarService extends GetxController {
     final gameResultObj = data["gameResult"];
     final gameReviewObj = data["gameReview"];
 
-    // 기존 GameResult와 Event 찾기
+    // 기존 GameResult 찾기 (uuid 사용)
     final gameResult = await _isar.gameResults
         .filter()
-        .dateEqualTo(gameResultObj["date"])
+        .uuidEqualTo(gameResultObj["uuid"])
         .findFirst();
 
     // 이미지 처리
@@ -324,10 +323,10 @@ class IsarService extends GetxController {
     dynamic localPath;
 
     // 만약에 받아온 이미지가 있다면?
-    if (pictureLocalPath != null) {
+    if (pictureLocalPath != null && gameResult != null) {
       // 같은 이미지인지 판별하기
       final isSame =
-          gameResult?.pictureLocalPath == pictureLocalPath.path.toString();
+          gameResult.pictureLocalPath == pictureLocalPath.path.toString();
 
       // 다른 이미지
       if (!isSame) {
@@ -343,7 +342,7 @@ class IsarService extends GetxController {
         localPath = pictureLocalPath.path.toString();
       } else {
         // 같은 이미지
-        gameResultObj["pictureUrl"] = gameResult!.pictureUrl;
+        gameResultObj["pictureUrl"] = gameResult.pictureUrl;
         localPath = gameResult.pictureLocalPath;
       }
     } else {
@@ -359,9 +358,11 @@ class IsarService extends GetxController {
             .findFirst()
         : null;
 
-    if (gameResult != null && event != null) {
+    if (event != null && gameResult != null) {
       // GameResult 업데이트
       gameResult
+        ..uuid = gameResult.uuid
+        ..serverId = gameResult.serverId
         ..stadium = gameResultObj["stadium"]
         ..seatLocation = gameResultObj["seatLocation"]
         ..result = gameResultObj["result"]
@@ -385,7 +386,10 @@ class IsarService extends GetxController {
 
       await gameResult.gameReview.load();
       final gameReview = gameResult.gameReview.value!;
+
       gameReview
+        ..uuid = gameReview.uuid
+        ..serverId = gameReview.serverId
         ..review = gameReviewObj["review"]
         ..rating = gameReviewObj["rating"]
         ..playerOfTheMatch = gameReviewObj["playerOfTheMatch"]
@@ -400,6 +404,20 @@ class IsarService extends GetxController {
         ..eventDetails = [
           gameResultObj["result"].toString().split('.').last
         ]; // 문자열 변환 필요
+
+      // 만약에 서버가 연결되어 있으면?
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final isLogin = prefs.getBool('isLogin');
+      if (isLogin == true) {
+        // 서버 연결
+        // 형변환 정리
+        gameResultObj["userId"] = user.serverId;
+        gameResultObj["result"] =
+            gameResultObj["result"].toString().split('.').last;
+        gameResultObj["date"] = gameResultObj["date"].toIso8601String();
+
+        updateGameResult(gameResultObj["uuid"], data);
+      }
 
       // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에 업데이트하고, User와의 관계를 갱신합니다.
       await _isar.writeTxn(() async {
@@ -417,59 +435,68 @@ class IsarService extends GetxController {
         await user.events.save();
       });
 
-      // 만약에 서버가 연결되어 있으면?
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final isLogin = prefs.getBool('isLogin');
-      if (isLogin == true) {
-        // 맵핑 테이블에서 게임 아이디 받아와야 함
-        // 로컬 디비 아이디로 받아올 수 있지
-        // 서버 연결
-        // 형변환 정리
-        gameResultObj["userId"] = user.serverId;
-        gameResultObj["result"] =
-            gameResultObj["result"].toString().split('.').last;
-        gameResultObj["date"] = gameResultObj["date"].toIso8601String();
-
-        final mapping = await _isar.gameResultIdMappings
-            .filter()
-            .localGameResultIdEqualTo(gameResult.id)
-            .findFirst();
-
-        // 받아와서 넘겨주기
-        if (mapping != null) {
-          updateGameResult(mapping.serverGameResultId, data);
-        }
-      }
-
       return gameResult;
     } else {
       return GameResult();
     }
   }
 
-// 티켓 전체 불러오기
-// 서버 데이터 가지고 온 후 로컬과 합친 뒤에 동기화 요청
-  Future<void> getAllTickets() async {
-    // 서버에 있는 데이터 전체 불러오기
-    final user = await getUser();
-    final List<dynamic> ticketList =
-        await getAllTicketListFromServer(user.serverId);
+// TODO: 여기 해야 함
+// 임시 게스트 때 썼던 티켓을 로그인시 서버로 넘겨 주는 작업
+  Future<void> syncLocalToServer() async {
+    // // 처음 시작할 때, 서버에서 모든 데이터를 받아오는 작업이 필요함.
+    // // (있을지도 모르니까)
 
-    // 로컬 맵핑 테이블과 비교하여 로컬에 없는 내용물만 추리기
-    // 로컬에 떼로 저장하기 + 맵핑 업데이트
+    // final gameResults = await _isar.gameResults.where().findAll();
+    // final user = await getUser();
 
-    // 서버쪽 동기화 요청
-    // 요청 후 들어온 서버 ID 받아서 맵핑에 업데이트?
+    // final List<Map<String, dynamic>> existedTickets = [];
+    // final List<Map<String, dynamic>> newTickets = [];
+
+    // for (var i = 0; i < gameResults.length; i++) {
+    //   final GameResultIdMapping? isMapping = await _isar.gameResultIdMappings
+    //       .filter()
+    //       .localGameResultIdEqualTo(gameResults[i].id)
+    //       .findFirst();
+
+    //   late Map<String, dynamic> json = {};
+    //   json = gameResults[i].toJson();
+    //   json["userId"] = user.serverId; // 유저 아이디 이관
+
+    //   // 서버에도 있는 티켓일 경우?
+    //   if (isMapping != null) {
+    //     existedTickets.add(json);
+    //   } else {
+    //     newTickets.add(json);
+    //   }
+    // }
+    // // 서버한테 전체 이관해야만 함
+    // final serverData =
+    //     await syncServerToLocal(existedTickets, newTickets, user.serverId);
+
+    // print(serverData);
+    // // 받아온 서버 데이터를 로컬에 덮어씌우자...
+
+    // // 서버에서 받아온 데이터 내역을 가지고 다시 만들어야 한다
+    // final List<GameResult> result = serverData.map((data) {
+    //   final serverGameResult = data["gameResult"];
+    //   final serverGameReview = data["gameReivew"];
+
+    //   // 유저ID 삭제
+    //   serverGameResult.remove("userId");
+
+    //   return GameResult.fromJson(data);
+    // }).toList();
   }
 
 // 티켓 삭제 함수
-  Future<void> deleteSubmit(DateTime date) async {
+  Future<void> deleteSubmit(String uuid) async {
     // 유저 GET
     final user = await getUser();
 
     // 기존 GameResult와 Event 찾기
     final gameResult =
-        await _isar.gameResults.filter().dateEqualTo(date.toUtc()).findFirst();
+        await _isar.gameResults.filter().uuidEqualTo(uuid).findFirst();
 
     final event = gameResult != null
         ? await _isar.events
@@ -483,23 +510,11 @@ class IsarService extends GetxController {
       //  서버부터 삭제
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final isLogin = prefs.getBool('isLogin');
+      // 서버 연동
       if (isLogin == true) {
+        deleteGameResult(uuid);
         // 맵핑 테이블에서 게임 아이디 받아와야 함
         // 로컬 디비 아이디로 받아올 수 있지
-        final mapping = await _isar.gameResultIdMappings
-            .filter()
-            .localGameResultIdEqualTo(gameResult.id)
-            .findFirst();
-
-        // 받아와서 넘겨주기
-        if (mapping != null) {
-          deleteGameResult(mapping.serverGameResultId);
-
-          // mapping 삭제
-          await _isar.writeTxn(() async {
-            await _isar.gameResultIdMappings.delete(mapping.id);
-          });
-        }
       }
 
       // 트랜잭션을 사용하여 GameResult와 Event를 데이터베이스에서 삭제하고, User와의 관계를 갱신합니다.
@@ -551,16 +566,11 @@ class IsarService extends GetxController {
     final gameResult = await _isar.gameResults.get(id);
 
     if (gameResult != null) {
-      final mapping = await _isar.gameResultIdMappings
-          .filter()
-          .localGameResultIdEqualTo(gameResult.id)
-          .findFirst();
-
       // 서버 연결
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final isLogin = prefs.getBool('isLogin');
-      if (mapping != null && isLogin == true) {
-        putGameFavorite(mapping.serverGameResultId, gameResult.isFavorite);
+      if (isLogin == true) {
+        putGameFavorite(gameResult.isFavorite, gameResult.uuid!);
       }
 
       await _isar.writeTxn(() async {

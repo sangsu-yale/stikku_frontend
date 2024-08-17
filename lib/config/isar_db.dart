@@ -1,7 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:stikku_frontend/models/event_model.dart';
-import 'package:stikku_frontend/models/game_result_id_mapping_model.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';
 import 'package:stikku_frontend/models/game_review_model.dart';
 import 'package:stikku_frontend/models/settings_model.dart';
@@ -29,7 +28,6 @@ class IsarDB {
         UserSchema,
         GameResultSchema,
         GameReviewSchema,
-        GameResultIdMappingSchema,
         SettingsSchema,
         EventSchema
       ],

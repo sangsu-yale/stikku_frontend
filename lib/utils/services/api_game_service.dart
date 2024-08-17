@@ -120,8 +120,8 @@ Future<Map<String, dynamic>> postGameResult(Map data) async {
 }
 
 // ✅ 게임Result 업데이트
-void updateGameResult(int id, Map data) async {
-  final url = Uri.parse('${dotenv.env['SERVER_URL']}/games/$id');
+void updateGameResult(String uuid, Map data) async {
+  final url = Uri.parse('${dotenv.env['SERVER_URL']}/games/$uuid');
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final String? accessToken = prefs.getString('accessToken');
 
@@ -142,7 +142,7 @@ void updateGameResult(int id, Map data) async {
       // 서버에 PUT 요청
       final response = await http.put(url, headers: headers, body: json);
       final body = jsonDecode(response.body) as Map<String, dynamic>;
-
+      print(body);
       if (response.statusCode == 200) {
         print("성공적으로 반영되었습니다.");
         print(body);
@@ -158,8 +158,8 @@ void updateGameResult(int id, Map data) async {
 }
 
 // ✅ 게임 Result 삭제
-void deleteGameResult(int id) async {
-  final url = Uri.parse('${dotenv.env['SERVER_URL']}/games/$id');
+void deleteGameResult(String uuid) async {
+  final url = Uri.parse('${dotenv.env['SERVER_URL']}/games/$uuid');
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final String? accessToken = prefs.getString('accessToken');
 
@@ -191,8 +191,8 @@ void deleteGameResult(int id) async {
 }
 
 // ✅ 게임 좋아요
-void putGameFavorite(int id, bool isFavorite) async {
-  final url = Uri.parse('${dotenv.env['SERVER_URL']}/games/$id/favorite');
+void putGameFavorite(bool isFavorite, String uuid) async {
+  final url = Uri.parse('${dotenv.env['SERVER_URL']}/games/$uuid/favorite');
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final String? accessToken = prefs.getString('accessToken');
   // 액세스 토큰 있으면
@@ -257,5 +257,55 @@ Future<void> deleteAllGameResult(int id) async {
     }
   } else {
     print('Error: 유저 정보를 불러오지 못했습니다');
+  }
+}
+
+Future<List<Map<String, dynamic>>> syncServerToLocal(
+    List<Map<String, dynamic>> existedTickets,
+    List<Map<String, dynamic>> newTickets,
+    int id) async {
+  // /users/{user_id}/game/sync
+  final url = Uri.parse('${dotenv.env['SERVER_URL']}/users/$id/game');
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String? accessToken = prefs.getString('accessToken');
+
+  // 액세스 토큰 있으면
+  if (accessToken != null) {
+    // 액세스 토큰 헤더에 넣어 줘야 해
+    final Map<String, String> headers = {
+      "content-type": "application/json; charset=utf-8",
+      "Authorization": "Bearer $accessToken"
+    };
+
+    // 바디값 넣어 줘야 함
+    final String json = jsonEncode(<dynamic, dynamic>{
+      "existedTickets": existedTickets,
+      "newTickets": newTickets
+    });
+
+    try {
+      // 서버에 put 요청
+      final response = await http.put(url, headers: headers, body: json);
+      final body = jsonDecode(response.body) as List<Map<String, dynamic>>;
+
+      // 반응
+      if (response.statusCode == 201) {
+        print("성공적으로 반영되었습니다.");
+        // 얘 갖고 와서 mapping 따로 해 줘야 함
+        return body;
+      } else {
+        // 서버 응답 오류
+
+        print('Error: 게임 결과 삭제 실패: $body');
+        return [];
+      }
+    } catch (error) {
+      // 서버 연결 실패 또는 네트워크 오류 발생
+      print('Error: 서버에 연결할 수 없습니다. $error');
+      return [];
+    }
+  } else {
+    print('Error: 유저 정보를 불러오지 못했습니다');
+    return [];
   }
 }

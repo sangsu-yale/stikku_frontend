@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:stikku_frontend/constants/result_enum.dart'; // GameResultType enum import
+import 'package:uuid/uuid.dart';
 import 'user_model.dart';
 import 'game_review_model.dart';
 
@@ -8,6 +9,8 @@ part 'game_result_model.g.dart';
 @Collection()
 class GameResult {
   Id id = Isar.autoIncrement;
+  String? uuid;
+  int? serverId;
 
   @Enumerated(EnumType.name) // EnumType.name을 사용하여 String으로 저장
   GameResultType? result;
@@ -43,6 +46,7 @@ class GameResult {
   DateTime? updatedAt;
 
   GameResult({
+    this.serverId,
     this.result,
     this.date,
     this.viewingMode = false,
@@ -59,14 +63,18 @@ class GameResult {
     this.pictureUrl,
     this.pictureLocalPath,
     this.isFavorite = false,
+    String? uuid, // 생성자에 uuid 추가
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
+        updatedAt = updatedAt ?? DateTime.now(),
+        uuid = uuid ?? const Uuid().v4();
 
   // toJson: 객체를 Map<String, dynamic>으로 변환
   Map<String, dynamic> toJson() => {
         'id': id,
+        'uuid': uuid, // UUID 추가
+        'serverId': serverId,
         'result': result?.name, // Enum을 String으로
         'date': date?.toIso8601String(),
         'viewingMode': viewingMode,
@@ -88,6 +96,8 @@ class GameResult {
   // fromJson: Map<String, dynamic>으로부터 객체 생성
   static GameResult fromJson(Map<String, dynamic> json) {
     return GameResult(
+      uuid: json['uuid'], // JSON에서 UUID 읽어오기
+      serverId: json['serverId'],
       result: GameResultType.values.firstWhere((e) => e.name == json['result']),
       date: DateTime.parse(json['date']),
       viewingMode: json['viewingMode'] ?? false,
