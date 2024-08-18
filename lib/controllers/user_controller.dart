@@ -73,6 +73,8 @@ class UserController extends GetxController {
   // 로그아웃
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
+    // TODO: 잘 되는지 확인 동기화 드가자
+    await isarController.syncLocalToServer();
 
     await prefs.setBool('isLogin', false);
     await prefs.remove('username');

@@ -56,7 +56,7 @@ class _List extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () async {
-                            await isarController.syncLocalToServer();
+                            await isarController.getBackupData();
                             // 리스트 업데이트
                             listTopSearchController.loadGameResults();
 

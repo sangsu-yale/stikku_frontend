@@ -63,6 +63,10 @@ void login() async {
           userController.loadUserState();
 
           await prefs.setBool('isLogin', true);
+
+          // TODO: 잘 되는지 확인 동기화 드가자
+          await isarController.syncLocalToServer();
+
           Get.toNamed('/');
 
           // 서버 연동 실패 (!200)

@@ -469,9 +469,9 @@ class IsarService extends GetxController {
     }
   }
 
-// 임시 게스트 때 썼던 티켓을 로그인시 서버로 넘겨 주는 작업
-  Future<void> syncLocalToServer() async {
-    // 서버에 있는 내용물 전체 가지고 와서 로컬에 연동시키기
+  // 백업
+  Future<void> getBackupData() async {
+// 서버에 있는 내용물 전체 가지고 와서 로컬에 연동시키기
     final User user = await getUser();
     List<dynamic> list = await getAllTicketListFromServer(user.serverId);
 
@@ -521,6 +521,53 @@ class IsarService extends GetxController {
         });
       }
     }
+  }
+
+// 데이터 동기화 (로컬 <-> 서버)
+  Future<void> syncLocalToServer() async {
+    // 1. 백업(불러오기)
+    getBackupData();
+    // 2. 가진 것을 전부 서버에게 보내기
+
+    // 모든 티켓 불러와서
+    final List<GameResult> tickets = await _isar.gameResults.where().findAll();
+    // 서버 아이디가 0인 것(서버 미연동)과 아닌 것(서버 연동) 구분하기
+    final user = await getUser();
+    final List<Map<String, dynamic>> existedTickets = [];
+    final List<Map<String, dynamic>> newTickets = [];
+
+    for (var i = 0; i < tickets.length; i++) {
+      final gameResult = tickets[i];
+      final gameReveiw = await gameResult.loadGameReview();
+
+      final Map<String, dynamic> jsonGameResult = gameResult.toJson();
+      final Map<String, dynamic> jsonGameReview = gameReveiw!.toJson();
+
+      jsonGameResult["id"] = jsonGameResult["serverId"];
+      jsonGameResult["userId"] = user.serverId;
+
+      // 정리해놨습니다...
+      Map<String, dynamic> result = {
+        "gameResult": jsonGameResult,
+        "gameReview": jsonGameReview
+      };
+
+      // 서버 연동했다면
+      if (jsonGameResult["serverId"] != 0) {
+        existedTickets.add(result);
+      } else {
+        newTickets.add(result);
+        jsonGameResult.remove('id'); // 아이디 삭제 (새로운 티켓이라 0)
+      }
+
+      jsonGameResult.remove('serverId'); // 서버 아이디 항목 삭제
+      jsonGameResult.remove('pictureLocalPath'); // 로컬 패스 항목 삭제
+      jsonGameReview.remove('serverId'); // 리뷰 : 서버 아이디 항목 삭제
+      jsonGameReview.remove('id'); // 리뷰 : 아이디 삭제
+    }
+
+    // /users/{user_id}/game/sync로 전송
+    syncServerToLocal(existedTickets, newTickets, user.serverId);
   }
 
 // 티켓 삭제 함수

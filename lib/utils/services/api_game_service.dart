@@ -261,12 +261,10 @@ Future<void> deleteAllGameResult(int id) async {
   }
 }
 
-Future<List<Map<String, dynamic>>> syncServerToLocal(
-    List<Map<String, dynamic>> existedTickets,
-    List<Map<String, dynamic>> newTickets,
-    int id) async {
+Future<void> syncServerToLocal(List<Map<String, dynamic>> existedTickets,
+    List<Map<String, dynamic>> newTickets, int id) async {
   // /users/{user_id}/game/sync
-  final url = Uri.parse('${dotenv.env['SERVER_URL']}/users/$id/game');
+  final url = Uri.parse('${dotenv.env['SERVER_URL']}/users/$id/game/sync');
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final String? accessToken = prefs.getString('accessToken');
 
@@ -292,21 +290,16 @@ Future<List<Map<String, dynamic>>> syncServerToLocal(
       // 반응
       if (response.statusCode == 201) {
         print("성공적으로 반영되었습니다.");
-        // 얘 갖고 와서 mapping 따로 해 줘야 함
-        return body;
       } else {
         // 서버 응답 오류
 
         print('Error: 게임 결과 삭제 실패: $body');
-        return [];
       }
     } catch (error) {
       // 서버 연결 실패 또는 네트워크 오류 발생
       print('Error: 서버에 연결할 수 없습니다. $error');
-      return [];
     }
   } else {
     print('Error: 유저 정보를 불러오지 못했습니다');
-    return [];
   }
 }
