@@ -91,6 +91,8 @@ class FormController extends GetxController {
   var isFormValid = false.obs;
   var date = DateTime.now().toUtc().obs;
 
+  String? pictureUrl;
+
   // arguments 처리
   void getGameResultFromArguments(
       GameResult gameResult, bool isEditMode) async {
@@ -103,8 +105,8 @@ class FormController extends GetxController {
 
     // 수정 모드
     if (isEditMode) {
+      pictureUrl = gameResult.pictureUrl;
       resultUUID.value = gameResult.uuid!;
-
       team1Con.text = gameResult.team1!;
       team2Con.text = gameResult.team2!;
       score1Con.text = gameResult.score1!;
@@ -175,7 +177,7 @@ class FormController extends GetxController {
         "team1IsMyTeam": team1IsMyTeam.value,
         "team2IsMyTeam": team2IsMyTeam.value,
         "comment": commentCon.text,
-        "pictureUrl": null,
+        "pictureUrl": pictureUrl,
         "isFavorite": false
       },
       // 옵션이기 때문에 null 처리

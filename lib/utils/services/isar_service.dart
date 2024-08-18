@@ -319,36 +319,64 @@ class IsarService extends GetxController {
         .findFirst();
 
     // 이미지 처리
-    final pictureLocalPath = data["pictureLocalPath"]; // File
+    final pictureLocalPath = data["pictureLocalPath"]; // File 로컬
+    final pictureUrl = data["gameResult"]["pictureUrl"]; // String 서버
     dynamic localPath;
 
-    // 만약에 받아온 이미지가 있다면?
-    if (pictureLocalPath != null && gameResult != null) {
-      // 같은 이미지인지 판별하기
-      final isSame =
-          gameResult.pictureLocalPath == pictureLocalPath.path.toString();
+    // 티켓이 있고
+    if (gameResult != null) {
+      // 만약에 받아온 이미지가 있다면?
 
-      // 다른 이미지
-      if (!isSame) {
-        // 서버 연결
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        final isLogin = prefs.getBool('isLogin');
-        if (isLogin == true) {
-          // 서버 이미지 연동
-          gameResultObj["pictureUrl"] = await getImageUrl(pictureLocalPath);
+      // 로컬인 경우
+      if (pictureLocalPath != null) {
+        // 같은 이미지인지 판별하기
+        final isSame = gameResult.pictureLocalPath == pictureLocalPath.path;
+
+        // 다른 이미지
+        if (!isSame) {
+          // 서버 연결
+          final SharedPreferences prefs = await SharedPreferences.getInstance();
+          final isLogin = prefs.getBool('isLogin');
+          if (isLogin == true) {
+            // 서버 이미지 연동
+            gameResultObj["pictureUrl"] = await getImageUrl(pictureLocalPath);
+          }
+
+          // 로컬 작업
+          localPath = pictureLocalPath.path.toString();
+        } else {
+          // 같은 이미지
+          gameResultObj["pictureUrl"] = gameResult.pictureUrl;
+          localPath = gameResult.pictureLocalPath;
         }
 
-        // 로컬 작업
-        localPath = pictureLocalPath.path.toString();
+        // 서버 판별
+      } else if (pictureUrl != null) {
+        final isSame = gameResult.pictureUrl == pictureUrl;
+
+        // 다른 이미지
+        if (!isSame) {
+          // 서버 연결
+          final SharedPreferences prefs = await SharedPreferences.getInstance();
+          final isLogin = prefs.getBool('isLogin');
+          if (isLogin == true) {
+            // 서버 이미지 연동
+            gameResultObj["pictureUrl"] = await getImageUrl(pictureLocalPath);
+          }
+
+          // 로컬 작업
+          localPath = pictureLocalPath.path;
+        } else {
+          // 같은 이미지
+          gameResultObj["pictureUrl"] = gameResult.pictureUrl;
+          localPath = gameResult.pictureLocalPath;
+        }
+
+        // 둘 다 아닐 경우
       } else {
-        // 같은 이미지
-        gameResultObj["pictureUrl"] = gameResult.pictureUrl;
-        localPath = gameResult.pictureLocalPath;
+        gameResultObj["pictureUrl"] = null;
+        localPath = null;
       }
-    } else {
-      // 이미지 선택 안 했을 시 null 처리
-      gameResultObj["pictureUrl"] = null;
-      localPath = null;
     }
 
     final event = gameResult != null
