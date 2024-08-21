@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
-        android:label="stikku_frontend"
+        android:label="스티꾸"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         
