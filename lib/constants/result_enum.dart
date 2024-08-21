@@ -1,7 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:stikku_frontend/config/custom_icons.dart';
 
 enum GameResultType {
   WIN,
@@ -29,16 +28,16 @@ extension GameResultTypeProperties on GameResultType {
     }
   }
 
-  IconData get icon {
+  ImageProvider get icon {
     switch (this) {
       case GameResultType.CANCEL:
-        return Custom.umbrella__1_;
+        return const AssetImage('assets/images/icons/cancel.png');
       case GameResultType.TIE:
-        return Custom.clover__1_;
+        return const AssetImage('assets/images/icons/tie.png');
       case GameResultType.LOSE:
-        return Custom.bookmarksimple__1_;
+        return const AssetImage('assets/images/icons/lose.png');
       case GameResultType.WIN:
-        return Custom.star_1;
+        return const AssetImage('assets/images/icons/win.png');
     }
   }
 

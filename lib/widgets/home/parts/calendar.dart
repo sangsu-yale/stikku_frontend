@@ -98,18 +98,19 @@ class _Calendar extends StatelessWidget {
                     return Container(
                       color: Theme.of(context).scaffoldBackgroundColor,
                       child: Center(
-                        child: Icon(
-                          resultType.icon,
-                          color: resultType.color,
-                          size: 40,
-                          shadows: [
-                            BoxShadow(
-                              color: resultType.color,
-                              spreadRadius: 10,
-                              blurRadius: 10,
-                              offset: const Offset(0, 0),
-                            ),
-                          ],
+                        child: Image(
+                          image: resultType.icon,
+                          // color: resultType.color,
+                          width: 40,
+                          // size: 40,
+                          // shadows: [
+                          //   BoxShadow(
+                          //     color: resultType.color,
+                          //     spreadRadius: 10,
+                          //     blurRadius: 10,
+                          //     offset: const Offset(0, 0),
+                          //   ),
+                          // ],
                         ),
                       ),
                     );

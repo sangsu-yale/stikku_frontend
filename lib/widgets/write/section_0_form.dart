@@ -57,31 +57,25 @@ class _Section0Form extends StatelessWidget {
         children: [
           Column(
             children: [
-              Stack(
-                alignment: AlignmentDirectional.center,
-                children: [
-                  Icon(
-                    type.icon,
-                    size: 40,
-                    color: type.color.withOpacity(0.2),
-                  ),
-                  Text(
-                    type.label,
-                    style: const TextStyle(
-                      fontSize: 17,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w900,
-                      shadows: [
-                        BoxShadow(
-                          color: Colors.white,
-                          spreadRadius: 1,
-                          blurRadius: 10,
-                          offset: Offset(0, 0),
-                        ),
-                      ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: [
+                    Image(
+                      image: type.icon,
+                      width: 45,
                     ),
-                  ),
-                ],
+                    Text(
+                      type.label,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Obx(() {
                 return Radio<GameResultType>(
@@ -125,13 +119,13 @@ Widget _buildObserverButton(bool selectedValue, IconData icon, String label,
           children: [
             Icon(icon,
                 color: selectedValue == formController.viewingMode.value
-                    ? Colors.black
+                    ? Colors.blue
                     : Colors.black12),
             Text(
               label,
               style: TextStyle(
                   color: selectedValue == formController.viewingMode.value
-                      ? Colors.black
+                      ? Colors.blue
                       : Colors.black12),
             ),
           ],

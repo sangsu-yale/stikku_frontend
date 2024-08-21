@@ -81,19 +81,11 @@ class _FabButton extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            resultIcon,
-            color: color,
-            size: 30,
-            shadows: [
-              BoxShadow(
-                color: color,
-                spreadRadius: 10,
-                blurRadius: 10,
-                offset: const Offset(0, 0),
-              ),
-            ],
+          Image(
+            image: resultIcon,
+            width: 35,
           ),
+          const SizedBox(height: 5),
           Text(
             resultLabel,
             style: const TextStyle(fontSize: 12),
