@@ -115,7 +115,7 @@ class FormController extends GetxController {
       seatLocationCon.text = gameResult.seatLocation!;
       viewingMode.value = gameResult.viewingMode; // 직관, 집관
       team1IsMyTeam.value = gameResult.team1IsMyTeam; // 응원팀
-      team2IsMyTeam.value = gameResult.team1IsMyTeam; // 응원팀
+      team2IsMyTeam.value = gameResult.team2IsMyTeam; // 응원팀
 
       updateResult(gameResult.result!);
 
