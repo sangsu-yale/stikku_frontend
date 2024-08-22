@@ -1,8 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:stikku_frontend/constants/result_enum.dart';
 import 'package:stikku_frontend/models/game_result_model.dart';

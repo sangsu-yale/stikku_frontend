@@ -13,7 +13,6 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       useInheritedMediaQuery: true,
       locale: DevicePreview.locale(context),
-      builder: DevicePreview.appBuilder,
       title: "스티꾸 s t i k k u, 스포츠 티켓 꾸미기",
       theme: appTheme(context),
       initialRoute: '/',

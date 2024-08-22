@@ -64,7 +64,6 @@ void login() async {
 
           await prefs.setBool('isLogin', true);
 
-          // TODO: 잘 되는지 확인 동기화 드가자
           await isarController.syncLocalToServer();
 
           Get.toNamed('/');

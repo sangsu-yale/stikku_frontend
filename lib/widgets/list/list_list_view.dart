@@ -23,7 +23,6 @@ class ListViewZone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height * 0.14;
-    print(height / 13);
     return ListView.builder(
       itemCount: filterList.length,
       itemBuilder: (context, index) {

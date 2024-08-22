@@ -1,10 +1,6 @@
 part of '../../../pages/user_n_data_page.dart';
 
 class _Appbar extends StatelessWidget implements PreferredSizeWidget {
-  const _Appbar({
-    super.key,
-  });
-
   @override
   Widget build(BuildContext context) {
     return AppBar(

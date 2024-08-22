@@ -16,7 +16,7 @@ class UserNDataPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const _Appbar(),
+      appBar: _Appbar(),
       body: _List(),
     );
   }
