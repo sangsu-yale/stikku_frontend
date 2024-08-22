@@ -21,24 +21,31 @@ class ListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            // 검색 ZONE
-            ListSearchBar(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque, // 화면의 투명한 영역도 터치 감지
+        onTap: () {
+          FocusScope.of(context).unfocus(); // ListSearchBar 외의 영역을 클릭하면 포커스 해제
+        },
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              // 검색 ZONE
+              ListSearchBar(
                 controller: _controller,
-                listTopSearchController: listTopSearchController),
-
-            // 필터 ZONE
-            FilterBar(listTopSearchController: listTopSearchController),
-
-            // 카드 리스트 ZONE
-            CardsList(
                 listTopSearchController: listTopSearchController,
-                isarController: isarController),
-          ],
+              ),
+              // 필터 ZONE
+              FilterBar(listTopSearchController: listTopSearchController),
+
+              // 카드 리스트 ZONE
+              CardsList(
+                listTopSearchController: listTopSearchController,
+                isarController: isarController,
+              ),
+            ],
+          ),
         ),
       ),
     );

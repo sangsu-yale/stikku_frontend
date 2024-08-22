@@ -33,7 +33,7 @@ class ListViewZone extends StatelessWidget {
             await goToDetails(isarController, item.date!.toLocal());
           },
           child: Container(
-            margin: const EdgeInsets.all(10),
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: Stack(
               children: [
                 Stack(

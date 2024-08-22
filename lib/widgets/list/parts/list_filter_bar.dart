@@ -11,7 +11,7 @@ class FilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -29,7 +29,7 @@ class FilterBar extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(0, 3, 5, 3),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(7),
-                        border: Border.all(width: 1, color: Colors.black38),
+                        border: Border.all(width: 1, color: Colors.black26),
                       ),
                       child: Row(
                         children: [
