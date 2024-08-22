@@ -47,7 +47,7 @@ class GridViewZone extends StatelessWidget {
                       ticket.isFavorite
                           ? Custom.heartstraight_1
                           : Custom.heartstraight,
-                      color: Colors.red,
+                      color: Colors.white,
                       size: 17),
                   onPressed: () {
                     listTopSearchController.toggleFavorite(ticket.id);
