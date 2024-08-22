@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stikku_frontend/config/custom_icons.dart';
-import 'package:stikku_frontend/utils/services/isar_service.dart';
 import 'package:stikku_frontend/controllers/list_top_search_controller.dart';
+import 'package:stikku_frontend/utils/services/isar_service.dart';
 import 'package:stikku_frontend/widgets/list/list_grid_view.dart';
 import 'package:stikku_frontend/widgets/list/list_list_view.dart';
 
@@ -15,6 +15,7 @@ class ListPage extends StatelessWidget {
       Get.put(ListTopSearchController());
   final isarController = Get.find<IsarService>();
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode(); // FocusNode 추가
 
   ListPage({super.key});
 
@@ -24,7 +25,7 @@ class ListPage extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque, // 화면의 투명한 영역도 터치 감지
         onTap: () {
-          FocusScope.of(context).unfocus(); // ListSearchBar 외의 영역을 클릭하면 포커스 해제
+          _searchFocusNode.unfocus(); // ListSearchBar 외의 영역을 클릭하면 포커스 해제
         },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
@@ -35,6 +36,7 @@ class ListPage extends StatelessWidget {
               ListSearchBar(
                 controller: _controller,
                 listTopSearchController: listTopSearchController,
+                focusNode: _searchFocusNode, // FocusNode 전달
               ),
               // 필터 ZONE
               FilterBar(listTopSearchController: listTopSearchController),
