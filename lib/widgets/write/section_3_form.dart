@@ -18,10 +18,8 @@ class _Section3Form extends StatelessWidget {
         border: const Border(
           left: BorderSide(width: 1.0, color: Colors.blue),
           right: BorderSide(width: 1.0, color: Colors.blue),
-          // 아래쪽 경계선을 설정하지 않음
         ),
       ),
-      // * ✅ 2번 폼 (경기장, 좌석)
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,7 +34,7 @@ class _Section3Form extends StatelessWidget {
           const SizedBox(height: 10),
           // 경기장
           buildTitleAndCommentInput(
-              "예) OO리그 O차전", formController.gameTitleCon, 1, 2),
+              "(옵션) OO리그 O차전", formController.gameTitleCon, 1, 2),
           const SizedBox(height: 25),
           const Text(
             "한줄 코멘트",
@@ -48,7 +46,7 @@ class _Section3Form extends StatelessWidget {
           // 좌석
           const SizedBox(height: 10),
           buildTitleAndCommentInput(
-              "30자 이내의 코멘트", formController.commentCon, 1, 2),
+              "(옵션) 30자 이내의 코멘트", formController.commentCon, 1, 2),
         ],
       ),
     );
