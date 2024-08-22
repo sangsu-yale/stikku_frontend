@@ -55,9 +55,10 @@ class _Section2Form extends StatelessWidget {
   }
 }
 
-// 경기장 좌석
 Widget _buildStadiumAndSeatInput(String stadiumORseat, RxBool viewingMode,
     TextEditingController controller) {
+  const int maxBytes = 90; // byte로 최대 길이 설정
+
   return Obx(() {
     return TextFormField(
       validator: (value) {
@@ -69,7 +70,6 @@ Widget _buildStadiumAndSeatInput(String stadiumORseat, RxBool viewingMode,
         }
         return null;
       },
-      maxLength: 25,
       minLines: 1,
       maxLines: 2,
       controller: controller,
@@ -93,6 +93,24 @@ Widget _buildStadiumAndSeatInput(String stadiumORseat, RxBool viewingMode,
           borderSide: BorderSide(color: Colors.grey), // 비활성 상태의 보더 색상
         ),
       ),
+      onChanged: (newText) {
+        // 입력된 텍스트의 byte 길이 계산 (UTF-8 기준)
+        int byteLength = utf8.encode(newText).length;
+
+        // 최대 byte 길이를 초과하면 이전 텍스트로 롤백
+        if (byteLength > maxBytes) {
+          // 최대 byte 길이에 맞추기 위해 텍스트 자르기
+          while (utf8.encode(newText).length > maxBytes) {
+            newText = newText.substring(0, newText.length - 1);
+          }
+          // 자른 텍스트를 컨트롤러에 반영
+          controller.text = newText;
+          // 커서를 텍스트 끝으로 이동
+          controller.selection = TextSelection.fromPosition(
+            TextPosition(offset: newText.length),
+          );
+        }
+      },
     );
   });
 }
