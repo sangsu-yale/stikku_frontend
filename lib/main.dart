@@ -1,3 +1,5 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -11,7 +13,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _initializeApp();
   await dotenv.load();
-  runApp(const MyApp());
+  runApp(
+    DevicePreview(
+      enabled: !kReleaseMode, // Release 모드에서는 비활성화 (테스트 모드에서만 활성화)
+      builder: (context) => const MyApp(), // MyApp은 여러분의 기존 앱 위젯입니다.
+    ),
+  );
 }
 
 // 앱 초기화 함수

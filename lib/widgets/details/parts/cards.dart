@@ -20,15 +20,31 @@ class Cards extends StatelessWidget {
   Widget build(BuildContext context) {
     return RepaintBoundary(
       key: cardKeys[pageIndex],
-      child: Card(
-        color: Colors.white,
-        margin: const EdgeInsets.symmetric(vertical: 25, horizontal: 10),
-        elevation: 4.0,
-        child: ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: pageIndex == 0
-                ? FrontView(gameResult: gameResult, smallSize: smallSize)
-                : BackView(gameReview: gameReview, smallSize: smallSize)),
+      child: Stack(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 10),
+            child: CustomPaint(
+              size: Size(MediaQuery.of(context).size.width,
+                  MediaQuery.of(context).size.height),
+              painter: ShadowPainter(),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 10),
+            child: ClipPath(
+              clipper: DiaryTicketClipper(),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color: Colors.white,
+                child: pageIndex == 0
+                    ? FrontView(gameResult: gameResult, smallSize: smallSize)
+                    : BackView(gameReview: gameReview, smallSize: smallSize),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

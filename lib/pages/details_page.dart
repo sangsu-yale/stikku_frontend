@@ -10,6 +10,7 @@ import 'package:stikku_frontend/models/game_review_model.dart';
 import 'package:stikku_frontend/pages/write_page.dart';
 import 'package:stikku_frontend/utils/functions.dart';
 import 'package:stikku_frontend/utils/services/isar_service.dart';
+import 'package:stikku_frontend/utils/ticket_clipper.dart';
 import 'package:stikku_frontend/widgets/details/back_view.dart';
 import 'package:stikku_frontend/widgets/details/front_view.dart';
 

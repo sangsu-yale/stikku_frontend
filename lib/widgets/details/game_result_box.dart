@@ -11,13 +11,10 @@ class _GameResultBox extends StatelessWidget {
     BuildContext context,
   ) {
     return Flexible(
-        flex: 5, // 작은 것 처리
+        flex: 5,
         child: LayoutBuilder(
-          // flex의 크기
           builder: (context, constraints) {
             double cardHeight = constraints.maxHeight;
-            double cardWidth = constraints.maxWidth;
-            //  print(cardHeight * 0.05); // 280
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -26,21 +23,38 @@ class _GameResultBox extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 5.0),
                   child: Column(
                     children: [
+                      Text(
+                        DateFormat('yyyy년 MM월 dd일')
+                            .format(gameResult.date!)
+                            .toUpperCase(),
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
                       Text(gameResult.team1!,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: gameResult.team1!.length > 9
-                                  ? cardWidth * 0.1 / 1.5
-                                  : cardWidth * 0.1,
-                              fontWeight: FontWeight.bold)),
-                      Text("vs", style: TextStyle(fontSize: cardWidth * 0.1)),
+                                  ? cardHeight * 0.1 / 1.5
+                                  : cardHeight * 0.1,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic)),
+                      Text("vs",
+                          style: TextStyle(
+                              fontSize: cardHeight * 0.08,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  (gameResult.result as GameResultType).color)),
                       Text(gameResult.team2!,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: gameResult.team2!.length > 9
-                                  ? cardWidth * 0.1 / 1.5
-                                  : cardWidth * 0.1,
-                              fontWeight: FontWeight.bold)),
+                                  ? cardHeight * 0.1 / 1.5
+                                  : cardHeight * 0.1,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic)),
                     ],
                   ),
                 ),
@@ -55,7 +69,8 @@ class _GameResultBox extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 2.5, horizontal: 5),
                             decoration: BoxDecoration(
-                              color: Colors.indigo,
+                              color:
+                                  (gameResult.result as GameResultType).color,
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Text(
@@ -69,11 +84,19 @@ class _GameResultBox extends StatelessWidget {
                     RichText(
                       text: TextSpan(
                         style: TextStyle(
-                            color: Colors.black, fontSize: cardWidth * 0.15),
+                            color: Colors.black, fontSize: cardHeight * 0.15),
                         children: <TextSpan>[
-                          TextSpan(text: gameResult.score1),
-                          const TextSpan(text: ' : '),
-                          TextSpan(text: gameResult.score2),
+                          TextSpan(
+                              text: gameResult.score1,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                          const TextSpan(
+                              text: ' : ',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(
+                              text: gameResult.score2,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),

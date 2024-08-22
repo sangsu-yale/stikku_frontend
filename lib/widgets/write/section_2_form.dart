@@ -69,7 +69,7 @@ Widget _buildStadiumAndSeatInput(String stadiumORseat, RxBool viewingMode,
         }
         return null;
       },
-      maxLength: 30,
+      maxLength: 25,
       minLines: 1,
       maxLines: 2,
       controller: controller,

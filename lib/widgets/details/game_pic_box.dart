@@ -10,24 +10,54 @@ class _GamePicBox extends StatelessWidget {
         flex: 3,
         child:
             gameResult.pictureLocalPath != null || gameResult.pictureUrl != null
-                ? Container(
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        top: BorderSide(
-                          color: Colors.black, // Border 색상
-                          width: 4.0, // Border 두께
+                ? Column(
+                    children: [
+                      const DottedSeparator(
+                        height: 1,
+                        color: Colors.grey,
+                      ),
+                      Flexible(
+                        child: Opacity(
+                          opacity: 0.9,
+                          child: gameResult.pictureLocalPath != null
+                              ? Image.file(
+                                  File(gameResult.pictureLocalPath!),
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                )
+                              : Image.network(gameResult.pictureUrl!,
+                                  fit: BoxFit.cover),
                         ),
                       ),
-                    ),
-                    width: double.maxFinite,
-                    child: AspectRatio(
-                        aspectRatio: 4 / 3,
-                        child: gameResult.pictureLocalPath != null
-                            ? Image.file(File(gameResult.pictureLocalPath!),
-                                fit: BoxFit.cover)
-                            : Image.network(gameResult.pictureUrl!,
-                                fit: BoxFit.cover)),
+                    ],
                   )
-                : const SizedBox());
+                : Column(
+                    children: [
+                      const DottedSeparator(
+                        height: 1,
+                        color: Colors.grey,
+                      ),
+                      Flexible(
+                        child: Opacity(
+                          opacity: 0.5,
+                          child: ColorFiltered(
+                            colorFilter: const ColorFilter.matrix([
+                              0.2126, 0.7152, 0.0722, 0, 0, // Red channel
+                              0.2126, 0.7152, 0.0722, 0, 0, // Green channel
+                              0.2126, 0.7152, 0.0722, 0, 0, // Blue channel
+                              0, 0, 0, 1, 0, // Alpha channel
+                            ]),
+                            child: Image.asset(
+                              'assets/icon/icon.png',
+                              fit: BoxFit.contain,
+                              width: 100,
+                              height: double.infinity,
+                            ),
+                          ),
+                        ), // 이미지 경로 설정
+                      )
+                    ],
+                  ));
   }
 }

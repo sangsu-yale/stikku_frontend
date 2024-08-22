@@ -19,16 +19,21 @@ class _Marquee extends StatelessWidget {
         child: Container(
           decoration:
               BoxDecoration(color: (gameResult.result as GameResultType).color),
-          child: FittedBox(
-            fit: BoxFit.contain,
-            child: Text(
-              "${(gameResult.result as GameResultType).name} " * 20,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: screenHeight * 0.02, // 스크린 길이의 2%
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic),
-            ),
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  "${(gameResult.result as GameResultType).name} " * 20,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: screenHeight * 0.02, // 스크린 길이의 2%
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic),
+                ),
+              ),
+            ],
           ),
         ));
   }

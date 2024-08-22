@@ -32,7 +32,7 @@ class _Section4Form extends StatelessWidget {
                     children: [
                       Image.file(
                         formController.selectedImage.value!,
-                        width: MediaQuery.of(context).size.width / 1.2,
+                        width: MediaQuery.of(context).size.width / 1.4,
                       ),
                       IconButton(
                         onPressed: formController.deleteImage,

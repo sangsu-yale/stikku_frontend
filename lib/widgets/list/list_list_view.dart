@@ -22,6 +22,8 @@ class ListViewZone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.of(context).size.height * 0.14;
+    print(height / 13);
     return ListView.builder(
       itemCount: filterList.length,
       itemBuilder: (context, index) {
@@ -35,226 +37,226 @@ class ListViewZone extends StatelessWidget {
             margin: const EdgeInsets.all(10),
             child: Stack(
               children: [
-                PhysicalShape(
-                  elevation: 1,
-                  color: Colors.white,
-                  clipper: TicketClipper(),
-                  child: Stack(
-                    children: <Widget>[
-                      CustomPaint(
-                        painter: BorderPainter(),
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.14,
-                          width: MediaQuery.of(context).size.width,
-                        ),
+                Stack(
+                  children: <Widget>[
+                    CustomPaint(
+                      painter: BorderPainter(),
+                      child: SizedBox(
+                        height: height,
+                        width: MediaQuery.of(context).size.width,
                       ),
-                      ClipPath(
-                        clipper: TicketClipper(),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.14,
-                          child: Column(
-                            children: [
-                              Expanded(
-                                  flex: 4,
-                                  child: Container(
-                                      color: Colors.white,
-                                      child: Column(children: [
-                                        // 경기 결과
-                                        Row(
-                                          children: [
-                                            // 팀
-                                            Expanded(
-                                              flex: 3,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(15.0),
-                                                child: Column(
-                                                  children: [
-                                                    // 우리팀
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          item.team1!,
-                                                          style: TextStyle(
-                                                              fontSize: item
-                                                                          .team1!
-                                                                          .length >
-                                                                      9
-                                                                  ? 11
-                                                                  : null,
-                                                              fontWeight: item
-                                                                      .team1IsMyTeam
-                                                                  ? FontWeight
-                                                                      .w900
-                                                                  : null),
-                                                        ),
-                                                        Text(
-                                                          item.score1!,
-                                                          style: TextStyle(
-                                                              fontWeight: item
-                                                                      .team1IsMyTeam
-                                                                  ? FontWeight
-                                                                      .w900
-                                                                  : null),
-                                                        ),
-                                                      ],
-                                                    ),
-
-                                                    const SizedBox(
-                                                      height: 5,
-                                                    ),
-
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          item.team2!,
-                                                          style: TextStyle(
-                                                              fontSize: item
-                                                                          .team1!
-                                                                          .length >
-                                                                      9
-                                                                  ? 11
-                                                                  : null,
-                                                              fontWeight: item
-                                                                      .team2IsMyTeam
-                                                                  ? FontWeight
-                                                                      .w900
-                                                                  : null),
-                                                        ),
-                                                        Text(
-                                                          item.score2!,
-                                                          style: TextStyle(
-                                                              fontWeight: item
-                                                                      .team2IsMyTeam
-                                                                  ? FontWeight
-                                                                      .w900
-                                                                  : null),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            // 승패 유무
-                                            Expanded(
-                                              flex: 2,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  color: const Color.fromARGB(
-                                                      255, 240, 240, 240),
-                                                  border: Border(
-                                                    left: BorderSide(
-                                                      color: (item.result
-                                                              as GameResultType)
-                                                          .color, // 경계 색상
-                                                      width: 3.0, // 경계 두께
-                                                    ),
-                                                  ),
-                                                ),
+                    ),
+                    ClipPath(
+                      clipper: TicketClipper(),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: height,
+                        child: Column(
+                          children: [
+                            Expanded(
+                                flex: 4,
+                                child: Container(
+                                    color: Colors.white,
+                                    child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          // 경기 결과
+                                          Row(
+                                            children: [
+                                              // 팀
+                                              Expanded(
+                                                flex: 3,
                                                 child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(horizontal: 5),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: height / 10,
+                                                      vertical: height / 13),
+                                                  child: Column(
                                                     children: [
-                                                      Text(
-                                                        (item.result
-                                                                as GameResultType)
-                                                            .name,
-                                                        style: TextStyle(
-                                                            color: (item.result
-                                                                    as GameResultType)
-                                                                .color,
-                                                            fontSize: 23,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w300),
-                                                      ),
-                                                      // 좋아요 유무
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                vertical: 10),
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            listTopSearchController
-                                                                .toggleFavorite(
-                                                                    item.id);
-                                                          },
-                                                          child: Icon(
-                                                            item.isFavorite
-                                                                ? Custom
-                                                                    .heartstraight_1
-                                                                : Custom
-                                                                    .heartstraight,
-                                                            color: Colors.red,
+                                                      // 우리팀
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            item.team1!,
+                                                            style: TextStyle(
+                                                                fontSize:
+                                                                    item.team1!.length >
+                                                                            9
+                                                                        ? 11
+                                                                        : null,
+                                                                fontWeight: item
+                                                                        .team1IsMyTeam
+                                                                    ? FontWeight
+                                                                        .w900
+                                                                    : null),
                                                           ),
-                                                        ),
+                                                          Text(
+                                                            item.score1!,
+                                                            style: TextStyle(
+                                                                fontWeight: item
+                                                                        .team1IsMyTeam
+                                                                    ? FontWeight
+                                                                        .w900
+                                                                    : null),
+                                                          ),
+                                                        ],
+                                                      ),
+
+                                                      const SizedBox(
+                                                        height: 5,
+                                                      ),
+
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            item.team2!,
+                                                            style: TextStyle(
+                                                                fontSize:
+                                                                    item.team1!.length >
+                                                                            9
+                                                                        ? 11
+                                                                        : null,
+                                                                fontWeight: item
+                                                                        .team2IsMyTeam
+                                                                    ? FontWeight
+                                                                        .w900
+                                                                    : null),
+                                                          ),
+                                                          Text(
+                                                            item.score2!,
+                                                            style: TextStyle(
+                                                                fontWeight: item
+                                                                        .team2IsMyTeam
+                                                                    ? FontWeight
+                                                                        .w900
+                                                                    : null),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ],
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ]))),
-                              const Divider(
-                                thickness: 1,
-                                height: 1,
-                                color: Color.fromARGB(139, 255, 255, 255),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Container(
-                                  color: Colors.white,
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Flexible(
-                                          fit: FlexFit.loose,
-                                          flex: 2,
-                                          child: Text(
-                                            DateFormat('yyyy.MM.dd')
-                                                .format(item.date!),
-                                            style: const TextStyle(
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.bold),
-                                          )),
-                                      Flexible(
+                                              // 승패 유무
+                                              Expanded(
+                                                flex: 2,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: const Color.fromARGB(
+                                                        255, 240, 240, 240),
+                                                    border: Border(
+                                                      left: BorderSide(
+                                                        color: (item.result
+                                                                as GameResultType)
+                                                            .color, // 경계 색상
+                                                        width: 3.0, // 경계 두께
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 5),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          (item.result
+                                                                  as GameResultType)
+                                                              .name,
+                                                          style: TextStyle(
+                                                              color: (item.result
+                                                                      as GameResultType)
+                                                                  .color,
+                                                              fontSize: 23,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300),
+                                                        ),
+                                                        // 좋아요 유무
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  vertical: 10),
+                                                          child:
+                                                              GestureDetector(
+                                                            onTap: () {
+                                                              listTopSearchController
+                                                                  .toggleFavorite(
+                                                                      item.id);
+                                                            },
+                                                            child: Icon(
+                                                              item.isFavorite
+                                                                  ? Custom
+                                                                      .heartstraight_1
+                                                                  : Custom
+                                                                      .heartstraight,
+                                                              color: Colors.red,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ]))),
+                            const Divider(
+                              thickness: 1,
+                              height: 1,
+                              color: Color.fromARGB(139, 255, 255, 255),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                color: Colors.white,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Flexible(
                                         fit: FlexFit.loose,
-                                        flex: 3,
+                                        flex: 2,
                                         child: Text(
+                                          DateFormat('yyyy.MM.dd')
+                                              .format(item.date!),
                                           style: const TextStyle(
-                                              color: Colors.black54),
-                                          item.stadium!,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                                              color: Colors.black54,
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                    Flexible(
+                                      fit: FlexFit.loose,
+                                      flex: 3,
+                                      child: Text(
+                                        style: const TextStyle(
+                                            color: Colors.black54),
+                                        item.stadium!,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 )
               ],
             ),
