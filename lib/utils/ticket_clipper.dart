@@ -146,7 +146,7 @@ class DiaryTicketClipper extends CustomClipper<Path> {
     final Path path = Path();
 
     // 구멍의 설정
-    int holeCount = 12; // 구멍의 개수를 11개로 고정
+    int holeCount = 12;
     double holeRadius = 7.0;
     double holeDiameter = holeRadius * 2;
 
@@ -156,7 +156,7 @@ class DiaryTicketClipper extends CustomClipper<Path> {
 
     // 상단 시작 - 라인 그리기
     path.moveTo(0.0, 0.0);
-    path.lineTo(5.0 + holeRadius, 0.0);
+    path.lineTo(holeRadius - 2, 0.0);
 
     // 상단 구멍 생성 (relativeArcToPoint 사용)
     for (int i = 0; i < holeCount; i++) {
@@ -178,7 +178,7 @@ class DiaryTicketClipper extends CustomClipper<Path> {
     path.lineTo(size.width, size.height);
 
     // 하단 시작 - 라인 그리기
-    path.lineTo((size.width - 5.0) - holeRadius, size.height);
+    path.lineTo((size.width + 2) - holeRadius, size.height);
 
     // 하단 구멍 생성 (relativeArcToPoint 사용)
     for (int i = holeCount; i > 0; i--) {
@@ -220,11 +220,11 @@ class ShadowPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0
       ..color = const Color.fromARGB(255, 223, 223, 223);
-
     // 구멍 설정
-    int holeCount = 12; // 구멍의 개수를 12개로 고정
-    double holeRadius = 8.0;
+    int holeCount = 12;
+    double holeRadius = 7.0;
     double holeDiameter = holeRadius * 2;
+
     double holeSpacing =
         (size.width - 10.0 - holeDiameter * holeCount) / (holeCount - 1);
 
@@ -284,7 +284,7 @@ class ShadowPainter extends CustomPainter {
 
     // 좌측 상단 모서리
     path.moveTo(0.0, 0.0);
-    path.lineTo(5.0 + holeRadius, 0.0);
+    path.lineTo(holeRadius - 2, 0.0);
 
     // 상단 구멍 생성
     for (int i = 0; i < holeCount; i++) {
@@ -307,7 +307,7 @@ class ShadowPainter extends CustomPainter {
     path.lineTo(size.width, size.height);
 
     // 하단 구멍 생성
-    path.lineTo((size.width - 5.0) - holeRadius, size.height);
+    path.lineTo((size.width + 2) - holeRadius, size.height);
     for (int i = holeCount; i > 0; i--) {
       double x = i * (holeDiameter + holeSpacing) - holeSpacing - holeRadius;
       path.lineTo(x + holeRadius + 5.0, size.height);
