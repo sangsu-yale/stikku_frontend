@@ -29,50 +29,50 @@ List<PieChartSectionData> showingSections(stats) {
     switch (i) {
       case 0:
         return PieChartSectionData(
-          color: Colors.blue,
+          color: Colors.blue[500],
           value: stats["liveGameWinRate"],
           title: '승 ${stats["liveGameWinRate"].toStringAsFixed(0)}%',
           radius: radius,
           titleStyle: const TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: Colors.white,
           ),
         );
       case 1:
         return PieChartSectionData(
-          color: Colors.red,
+          color: Colors.red[500],
           value: stats["liveGamelose"],
           title: '패 ${stats["liveGamelose"]?.toStringAsFixed(0)}%',
           radius: radius,
           titleStyle: const TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: Colors.white,
           ),
         );
       case 2:
         return PieChartSectionData(
-          color: Colors.green,
+          color: Colors.green[500],
           value: stats["liveGameTie"],
           title: '무 ${stats["liveGameTie"]?.toStringAsFixed(0)}%',
           radius: radius,
           titleStyle: const TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: Colors.white,
           ),
         );
       case 3:
         return PieChartSectionData(
-          color: Colors.grey,
+          color: Colors.grey[500],
           value: stats["liveGameCancel"],
           title: '취 ${stats["liveGameCancel"]?.toStringAsFixed(0)}%',
           radius: radius,
           titleStyle: const TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: Colors.white,
           ),
         );
       default:
