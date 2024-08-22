@@ -22,6 +22,7 @@ class MainBottomNavigationBar extends StatelessWidget {
         ),
         child: NavigationBar(
           // 내비게이션바 설정
+          height: 70,
           onDestinationSelected: (int index) {
             navigationController.changePage(index);
           },
