@@ -2,7 +2,6 @@ part of '../../../pages/settings_page.dart';
 
 class _Profile extends StatelessWidget {
   const _Profile({
-    super.key,
     required this.userController,
   });
 
@@ -31,21 +30,21 @@ class _Profile extends StatelessWidget {
                   Text(
                     userController.isLogin.value
                         ? "반가워요!"
-                        : "로그인하면 다른 기기 연동이 가능해요!",
+                        : "로그인 기능을 기대해 주세요!", // TODO: 로그인 기능 추가시 바꿀 것
                     style: const TextStyle(fontSize: 13, color: Colors.grey),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      if (userController.isLogin.value) {
-                        userController.logout();
-                      } else {
-                        Get.toNamed('/login');
-                      }
-                    },
-                    child: userController.isLogin.value
-                        ? const Text("로그아웃")
-                        : const Text("가입/로그인하기"),
-                  ),
+                  // TextButton(
+                  //   onPressed: () {
+                  //     if (userController.isLogin.value) {
+                  //       userController.logout();
+                  //     } else {
+                  //       Get.toNamed('/login');
+                  //     }
+                  //   },
+                  //   child: userController.isLogin.value
+                  //       ? const Text("로그아웃")
+                  //       : const Text("가입/로그인하기"),
+                  // ),
                 ],
               )),
         ],

@@ -77,20 +77,28 @@ Widget _buildStadiumAndSeatInput(String stadiumORseat, RxBool viewingMode,
       decoration: InputDecoration(
         hintStyle: const TextStyle(color: Colors.black26),
         hintText: viewingMode.value ? stadiumORseat : "집관",
-        border: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.blue), // 포커스 시 보더 색상
-        ),
+        border: viewingMode.value
+            ? const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.blue),
+              )
+            : const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey),
+              ),
+        focusedBorder: viewingMode.value
+            ? const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.blue),
+              )
+            : const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey),
+              ),
         enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey), // 활성화된 상태의 보더 색상
+          borderSide: BorderSide(color: Colors.grey),
         ),
         errorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.redAccent), // 에러 상태의 보더 색상
+          borderSide: BorderSide(color: Colors.redAccent),
         ),
         disabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey), // 비활성 상태의 보더 색상
+          borderSide: BorderSide(color: Colors.grey),
         ),
       ),
       onChanged: (newText) {

@@ -7,7 +7,7 @@ class UserController extends GetxController {
   final isarController = Get.find<IsarService>();
 
   var isLogin = false.obs;
-  var userName = '게스트'.obs;
+  var userName = ''.obs;
   var userEmail = ''.obs;
   var userUuid = ''.obs;
 
@@ -36,7 +36,7 @@ class UserController extends GetxController {
       if (!isLogin.value) {
         // 게스트 초기값 설정
         userName.value =
-            '게스트-${userUuid.value == '' ? null : userUuid.value.substring(0, 8).toUpperCase()}';
+            '${userUuid.value == '' ? null : userUuid.value.substring(0, 8).toUpperCase()}';
       }
 
       // 유저가 있다
