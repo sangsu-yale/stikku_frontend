@@ -3,12 +3,6 @@
   <h1>스티다 - 스포츠 티켓 다이어리</h1>
 </div>
 
-> **2인 프로젝트** | 프론트엔드 1인, 백엔드 1인  
-**프론트엔드 단독 진행**, UI/UX 및 디자인 제작, 기획 참여  
-2024.07 ~ 2024.08 (1개월 15일)  
-**Stack** : **`Flutter` / `Dart` / `Get` / `Isar`**
-
-
 <br />
   
 ## 📚 목적
@@ -29,22 +23,33 @@
 <br />
 
 ## 📬 잠깐!
-프로젝트를 구현하며 집중한 부분, 자주 보였던 에러 등, 개발 과정에 대해 작성한 문서입니다.  
+사용자 요구사항 명세서를 비롯하여, 프로젝트를 구현하며 집중한 부분, 자주 보였던 에러 등, 개발 과정에 대해 작성한 문서입니다.  
 **스티다, 어떻게 개발했을까? ✅[스티다 프로젝트 문서로 이동](https://www.notion.so/61fa3a940f574f83a5c45473017a06f8)**
+
+
+  <br />
+  
+## 🚩 팀 소개
+- **2인 프로젝트** | 프론트엔드 1인, 백엔드 1인  
+- **프론트엔드 단독 진행**, UI/UX 및 디자인 제작, 기획 참여  
+- 2024.07 ~ 2024.08 (1개월 15일)
+  
+**<img src="https://img.shields.io/badge/flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white"> <img src="https://img.shields.io/badge/dart-0175C2?style=for-the-badge&logo=dart&logoColor=white"> <img src="https://img.shields.io/badge/getx-8A2BE2?style=for-the-badge&logo=getx&logoColor=white"> <img src="https://img.shields.io/badge/isar-4285F4?style=for-the-badge&logo=flutter&logoColor=white">**
 
 <br />
 
 ## 🚀 사용 방법
 #### 직접 사용해 보고 싶으시다면?
-- 안드로이드용 APK 파일 다운로드 후 실제 사용이 가능합니다
+- 안드로이드용 APK 파일 다운로드 후 실제 사용이 가능합니다.
 ➡️ [GoogleDrive](https://drive.google.com/file/d/1fxNMNumqiDyLxMZNN673JgLRTcuX8khD/view?usp=drive_link)
 
 #### Flutter와 AMD가 설치되어 있다면? (VSCode 기준)
-- 스티다 프로젝트를 Clone해 주세요.
-- `flutter pub get`을 해 주세요 (이유가 있어야 하는데)
-- 에뮬레이터 디바이스를 연동해 주세요.
-- `flutter run` 혹은, `main.dart`에서 `▶️`를 클릭하여 스티다 프로젝트를 실행하세요.
+1. 스티다 프로젝트를 Clone해 주세요.
+2. 터미널 > `flutter pub get` 실행해 주세요.
+3. 안드로이드 에뮬레이터 디바이스를 연동해 주세요.
+4. `flutter run` 혹은, `main.dart`에서 `▶️`를 클릭하여 스티다 프로젝트를 실행하세요.
   
+_현재 앱스토어 출시를 준비 중이며, 비공개 사용자 피드백을 반영한 업데이트를 계획하고 있습니다._
   
 <br />
   
@@ -107,8 +112,8 @@
 - 🌟 **이전 데이터 불러오기**
   - 로그인 시, 이전에 썼던 데이터 불러올 수 있음
 <img src="https://github.com/user-attachments/assets/f91d81e5-1aee-4865-806b-26d49d641b7e" alt="데이터 불러오기" width="350px"/>
-  
-  
+
+
 ---
   
 감사합니다! 😊  
