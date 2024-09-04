@@ -43,7 +43,7 @@
 ## 🚀 사용 방법
 #### 직접 사용해 보고 싶으시다면?
 - 안드로이드용 APK 파일 다운로드 후 실제 사용이 가능합니다.
-➡️ [GoogleDrive](https://drive.google.com/file/d/1fxNMNumqiDyLxMZNN673JgLRTcuX8khD/view?usp=drive_link)
+➡️ [GoogleDrive](https://drive.google.com/file/d/1bA9DIQQeE_0ptbunPMsKjGgbsIPGxSJz/view)
 
 #### Flutter와 AMD가 설치되어 있다면? (VSCode 기준)
 1. 스티다 프로젝트를 Clone해 주세요.
